@@ -7,16 +7,27 @@ namespace mpicpp_lite {
 /// Wrapper around MPI_Status
 class Status {
 public:
+    /// Construct empty `Status` object
     Status();
+
+    /// Construct `Status` object from `MPI_Status` structure
+    ///
+    /// @param s MPI_Status object used to initialize this object
     Status(const MPI_Status & s);
 
     /// Get the source of the message
+    ///
+    /// @return Source of the message (i.e. rank ID)
     int source() const;
 
     /// Get the message tag
+    ///
+    /// @return Message tag
     int tag() const;
 
     /// Get the error code
+    ///
+    /// @return Error code
     int error() const;
 
     /// Type cast operators so we can pass this class directly into the MPI API

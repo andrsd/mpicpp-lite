@@ -9,11 +9,16 @@ class Request {
 public:
     /// Create empty request
     Request();
-    /// Create request from an MPI_Request
+
+    /// Create request from an `MPI_Request`
+    ///
+    /// @param r `MPI_Request` used to initiliaze this object
     Request(const MPI_Request & r);
 
-    /// Type cast operators so we can pass this class directly into MPI calls
+    /// Type cast operator so we can pass this class directly into MPI calls
     operator MPI_Request *() { return &this->request; }
+
+    /// Type cast operator so we can pass this class directly into MPI calls
     operator const MPI_Request &() const { return this->request; }
 
 private:

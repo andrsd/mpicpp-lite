@@ -6,12 +6,19 @@ namespace mpicpp_lite {
 
 namespace op {
 
+/// Template for MPI operation `Op` on a `T` type
+///
+/// @tparam Op Operation
+/// @tparam T Datatype
 template <typename Op, typename T>
 struct Operation {
 };
 
 // Sum
 
+/// Template for summation operation on a `T` type
+///
+/// @tparam T Datatype
 template <typename T>
 struct sum {
     /// Call operator
@@ -26,8 +33,14 @@ struct sum {
     }
 };
 
+/// Template for summation operation on a `T` type
+///
+/// @tparam T Datatype
 template <typename T>
 struct Operation<sum<T>, T> {
+    /// Call operator
+    ///
+    /// @return MPI operation for sumation
     static MPI_Op
     op()
     {
@@ -37,6 +50,9 @@ struct Operation<sum<T>, T> {
 
 // Product
 
+/// Template for product operation on a `T` type
+///
+/// @tparam T Datatype
 template <typename T>
 struct prod {
     /// Call operator
@@ -51,8 +67,14 @@ struct prod {
     }
 };
 
+/// Template for product operation on a `T` type
+///
+/// @tparam T Datatype
 template <typename T>
 struct Operation<prod<T>, T> {
+    /// Call operator
+    ///
+    /// @return MPI operation for product
     static MPI_Op
     op()
     {
@@ -62,6 +84,9 @@ struct Operation<prod<T>, T> {
 
 // Maximum
 
+/// Template for finding maximum on a `T` type
+///
+/// @tparam T Datatype
 template <typename T>
 struct max {
     /// Call operator
@@ -76,8 +101,14 @@ struct max {
     }
 };
 
+/// Template for finding maximum on a `T` type
+///
+/// @tparam T Datatype
 template <typename T>
 struct Operation<max<T>, T> {
+    /// Call operator
+    ///
+    /// @return MPI operation for finding maximum
     static MPI_Op
     op()
     {
@@ -87,6 +118,9 @@ struct Operation<max<T>, T> {
 
 // Minimum
 
+/// Template for finding minimum on a `T` type
+///
+/// @tparam T Datatype
 template <typename T>
 struct min {
     /// Call operator
@@ -101,8 +135,14 @@ struct min {
     }
 };
 
+/// Template for finding minimum on a `T` type
+///
+/// @tparam T Datatype
 template <typename T>
 struct Operation<min<T>, T> {
+    /// Call operator
+    ///
+    /// @return MPI operation for finding minimum
     static MPI_Op
     op()
     {
@@ -112,4 +152,4 @@ struct Operation<min<T>, T> {
 
 } // namespace op
 
-} // namespace mpi
+} // namespace mpicpp_lite

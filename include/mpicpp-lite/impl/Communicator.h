@@ -10,12 +10,16 @@
 
 namespace mpicpp_lite {
 
+/// Wrapper around `MPI_Comm`
 class Communicator {
 public:
-    /// Create MPI_COMM_WORLD communicator
+    /// Create `MPI_COMM_WORLD` communicator
     Communicator();
+
     /// Create communicator from an `MPI_Comm` one
     explicit Communicator(const MPI_Comm & comm);
+
+    /// Copy constructure
     Communicator(const Communicator & comm);
 
     /// Determine the rank of the executing process in a communicator
@@ -29,35 +33,115 @@ public:
     int size() const;
 
     /// Send data to another process
+    ///
+    /// @tparam T C++ type of the data
+    /// @param dest Destination rank
+    /// @param tag Message tag
+    /// @param value Value to send
     template <typename T>
     void send(int dest, int tag, const T & value) const;
+
+    /// Send data to another process
+    ///
+    /// @tparam T C++ type of the data
+    /// @param dest Destination rank
+    /// @param tag Message tag
+    /// @param values Values to send
+    /// @param n Number of values to send
     template <typename T>
     void send(int dest, int tag, const T * values, int n) const;
+
+    /// Send `std::vector` of data to another process
+    ///
+    /// @tparam T C++ type of the data
+    /// @param dest Destination rank
+    /// @param tag Message tag
+    /// @param value Vector of `T` to send
     template <typename T, typename A>
     void send(int dest, int tag, const std::vector<T, A> & value) const;
 
     /// Send a message to another process without any data
+    ///
+    /// @param dest Destination rank
+    /// @param tag Message tag
     void send(int dest, int tag) const;
 
     /// Receive data from a remote process
+    ///
+    /// @tparam T C++ type of the data
+    /// @param source Source rank
+    /// @param tag Message tag
+    /// @param value Variable to recieve the data
+    /// @return `Status` of the operation
     template <typename T>
     Status recv(int source, int tag, T & value) const;
+
+    /// Receive data from a remote process
+    ///
+    /// @tparam T C++ type of the data
+    /// @param source Source rank
+    /// @param tag Message tag
+    /// @param values Variable to recieve the data
+    /// @param n Number of values to receive
+    /// @return `Status` of the operation
     template <typename T>
     Status recv(int source, int tag, T * values, int n) const;
+
+    /// Receive std::vector of data from a remote process
+    ///
+    /// @tparam T C++ type of the data
+    /// @param source Source rank
+    /// @param tag Message tag
+    /// @param value Variable to recieve the data
+    /// @return `Status` of the operation
     template <typename T, typename A>
     Status recv(int source, int tag, std::vector<T, A> & value) const;
 
     /// Receive a message from a remote process without any data
+    ///
+    /// @param source Source rank
+    /// @param tag Message tag
+    /// @return `Status` of the operation
     Status recv(int source, int tag) const;
 
     /// Send a message to a remote process without blocking
+    ///
+    /// @tparam T C++ type of the data
+    /// @param dest Destination rank
+    /// @param tag Message tag
+    /// @param value Value to send
+    /// @return Communication `Request`
     template <typename T>
     Request isend(int dest, int tag, const T & value) const;
+
+    /// Send a message to a remote process without blocking
+    ///
+    /// @tparam T C++ type of the data
+    /// @param dest Destination rank
+    /// @param tag Message tag
+    /// @param values Values to send
+    /// @param n Number of values to send
+    /// @return Communication `Request`
     template <typename T>
     Request isend(int dest, int tag, const T * values, int n) const;
 
+    /// Receive a message from a remote process without blocking
+    ///
+    /// @tparam T C++ type of the data
+    /// @param source Source rank
+    /// @param tag Message tag
+    /// @param value Variable to recieve the data
+    /// @return Communication `Request`
     template <typename T>
     Request irecv(int source, int tag, T & value) const;
+
+    /// Receive a message from a remote process without blocking
+    ///
+    /// @tparam T C++ type of the data
+    /// @param source Source rank
+    /// @param tag Message tag
+    /// @param values Variable to recieve the data
+    /// @param n Number of values to receive
     template <typename T>
     Request irecv(int source, int tag, T * values, int n) const;
 
@@ -65,51 +149,169 @@ public:
     void barrier() const;
 
     /// Broadcast a value from a root process to all other processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @param value Value to send
+    /// @param root Rank of the sending process
     template <typename T>
     void broadcast(T & value, int root) const;
+
+    /// Broadcast a value from a root process to all other processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @param values Values to send
+    /// @param n Number of values to send
+    /// @param root Rank of the sending process
     template <typename T>
     void broadcast(T * values, int n, int root) const;
 
-    /// Gather
+    /// Gather together values from a group of processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_value Value to send
+    /// @param out_values Receiving variable
+    /// @param root Rank of receiving process
     template <typename T>
     void gather(const T & in_value, T * out_values, int root) const;
+
+    /// Gather together values from a group of processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_value Value to send
+    /// @param out_values Receiving variable
+    /// @param root Rank of receiving process
     template <typename T>
     void gather(const T & in_value, std::vector<T> & out_values, int root) const;
+
+    /// Gather together values from a group of processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_values Values to send
+    /// @param n Number of values to send
+    /// @param out_values Receiving variable
+    /// @param root Rank of receiving process
     template <typename T>
     void gather(const T * in_values, int n, T * out_values, int root) const;
+
+    /// Gather together values from a group of processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_values Values to send
+    /// @param n Number of values to send
+    /// @param out_values Receiving variable
+    /// @param root Rank of receiving process
     template <typename T>
     void gather(const T * in_values, int n, std::vector<T> & out_values, int root) const;
 
-    /// Scatter
+    /// Send data from one process to all other processes in a communicator
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_values Values to send
+    /// @param out_value Receiving variable
+    /// @param root Rank of the sending process
     template <typename T>
     void scatter(const T * in_values, T & out_value, int root) const;
+
+    /// Send data from one process to all other processes in a communicator
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_values Values to send
+    /// @param out_value Receiving variable
+    /// @param root Rank of the sending process
     template <typename T>
     void scatter(const std::vector<T> & in_values, T & out_value, int root) const;
+
+    /// Send data from one process to all other processes in a communicator
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_values Values to send
+    /// @param out_values Receiving variable
+    /// @param n Number of values to send
+    /// @param root Rank of the sending process
     template <typename T>
     void scatter(const T * in_values, T * out_values, int n, int root) const;
+
+    /// Send data from one process to all other processes in a communicator
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_values Values to send
+    /// @param out_values Receiving variable
+    /// @param n Number of values to send
+    /// @param root Rank of the sending process
     template <typename T>
     void scatter(const std::vector<T> & in_values, T * out_values, int n, int root) const;
 
-    /// Reduce
+    /// Reduce values on all processes to a single value
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param in_values Values to send
+    /// @param n Number of values to send
+    /// @param out_values Receiving variable
+    /// @param op Reduce operation
+    /// @param root Rank of root process
     template <typename T, typename Op>
     void reduce(const T * in_values, int n, T * out_values, Op op, int root) const;
+
+    /// Reduce values on all processes to a single value
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param in_values Values to send
+    /// @param out_values Receiving variable
+    /// @param op Reduce operation
+    /// @param root Rank of root process
     template <typename T, typename Op>
     void
     reduce(std::vector<T> const & in_values, std::vector<T> & out_values, Op op, int root) const;
+
+    /// Reduce values on all processes to a single value
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param in_value Values to send
+    /// @param out_value Receiving variable
+    /// @param op Reduce operation
+    /// @param root Rank of root process
     template <typename T, typename Op>
     void reduce(const T & in_value, T & out_value, Op op, int root) const;
 
-    /// All reduce
+    /// Combine values from all processes and distributes the result back to all processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param in_values Values to send
+    /// @param n Number of values to send
+    /// @param out_values Receiving variable
+    /// @param op Reduce operation
     template <typename T, typename Op>
     void all_reduce(const T * in_values, int n, T * out_values, Op op) const;
+
+    /// Combine values from all processes and distributes the result back to all processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param in_value Values to send
+    /// @param out_value Receiving variable
+    /// @param op Reduce operation
     template <typename T, typename Op>
     void all_reduce(const T & in_value, T & out_value, Op op) const;
+
+    /// Combine values from all processes and distributes the result back to all processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param value Send/receive variable
+    /// @param op Reduce operation
     template <typename T, typename Op>
     void all_reduce(T & value, Op op) const;
 
-    /// Abort all tasks in the group of this communicator.
+    /// Abort all tasks in the group of this communicator
+    ///
+    /// @param errcode Error code to return to invoking environment
     void abort(int errcode) const;
 
+    /// Cast operator so we can pass this directly in MPI API
     operator MPI_Comm() const;
 
 private:
@@ -368,12 +570,12 @@ Communicator::reduce(const T * in_values, int n, T * out_values, Op, int root) c
 {
     MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
     MPI_CHECK_SELF(MPI_Reduce(const_cast<T *>(in_values),
-                         out_values,
-                         n,
-                         mpicpp_lite::get_mpi_datatype<T>(),
-                         op,
-                         root,
-                         this->comm));
+                              out_values,
+                              n,
+                              mpicpp_lite::get_mpi_datatype<T>(),
+                              op,
+                              root,
+                              this->comm));
 }
 
 template <typename T, typename Op>

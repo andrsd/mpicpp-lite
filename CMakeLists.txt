@@ -63,3 +63,5 @@ if (MPICPP_LITE_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+add_subdirectory(docs)
