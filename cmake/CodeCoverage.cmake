@@ -89,7 +89,7 @@ if(MPICPP_LITE_CODE_COVERAGE)
         )
 
         set(EXCLUDE_REGEX
-            --exclude=*/include/mpi*
+            --exclude=*/include/mpi/*
             --exclude=/usr/include/*
             --exclude=*/tests/*
         )
