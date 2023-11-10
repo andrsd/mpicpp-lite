@@ -2,6 +2,7 @@
 #include "mpicpp-lite/mpicpp-lite.h"
 
 using namespace mpicpp_lite;
+using namespace testing;
 
 TEST(MPITest, error)
 {
@@ -230,6 +231,41 @@ TEST(MPITest, all_gather_1)
     EXPECT_EQ(all_values.size(), comm.size());
     for (int i = 0; i < comm.size(); i++)
         EXPECT_EQ(all_values[i], i * 5);
+}
+
+TEST(MPITest, all_gather_vec_1_proc)
+{
+    Communicator comm;
+    if (comm.size() != 1)
+        return;
+
+    std::vector<int> vals = { 3, 2, 6};
+    std::vector<int> all_vals;
+    comm.all_gather(vals, all_vals);
+    EXPECT_EQ(all_vals.size(), 3);
+    EXPECT_THAT(all_vals, ElementsAre(3, 2, 6));
+}
+
+TEST(MPITest, all_gather_vec_4_procs)
+{
+    Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    std::vector<int> vals;
+    if (comm.rank() == 0)
+        vals = { 1, 3 };
+    else if (comm.rank() == 1)
+        vals = { 0, 2, 4 };
+    else if (comm.rank() == 2)
+        vals = { 5 };
+    else if (comm.rank() == 3)
+        vals = {};
+
+    std::vector<int> all_vals;
+    comm.all_gather(vals, all_vals);
+    EXPECT_EQ(all_vals.size(), 6);
+    EXPECT_THAT(all_vals, ElementsAre(1, 3, 0, 2, 4, 5));
 }
 
 TEST(MPITest, scatter)
