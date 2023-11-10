@@ -216,6 +216,22 @@ TEST(MPITest, gather_n)
     }
 }
 
+TEST(MPITest, all_gather_1)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int val = comm.rank() * 5;
+
+    std::vector<int> all_values;
+    comm.all_gather(val, all_values);
+
+    EXPECT_EQ(all_values.size(), comm.size());
+    for (int i = 0; i < comm.size(); i++)
+        EXPECT_EQ(all_values[i], i * 5);
+}
+
 TEST(MPITest, scatter)
 {
     Communicator comm;
