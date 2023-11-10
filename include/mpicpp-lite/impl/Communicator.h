@@ -493,6 +493,27 @@ Communicator::broadcast(T * values, int n, int root) const
     MPI_CHECK_SELF(MPI_Bcast(values, n, get_mpi_datatype<T>(), root, this->comm));
 }
 
+template <>
+inline void
+Communicator::broadcast(std::string & value, int root) const
+{
+    if (size() < 2)
+        return;
+
+    int tag = 0;
+    if (rank() == root) {
+        for (int i = 0; i < size(); ++i) {
+            if (i != root)
+                send(i, tag, value.data(), value.size());
+        }
+    }
+    else {
+        std::vector<char> str;
+        recv(root, tag, str);
+        value.assign(str.begin(), str.end());
+    }
+}
+
 // Gather
 
 template <typename T>
