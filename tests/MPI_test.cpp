@@ -169,6 +169,21 @@ TEST(MPITest, broadcast_arr)
     }
 }
 
+TEST(MPITest, broadcast_str)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    std::string str;
+    if (comm.rank() == 0) {
+        str = "text to bcast";
+    }
+    comm.broadcast(str, 0);
+    if (comm.rank() != 0)
+        EXPECT_EQ(str, "text to bcast");
+}
+
 TEST(MPITest, gather)
 {
     Communicator comm;
