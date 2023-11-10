@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request &mdash; mpicpp-lite  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Status" href="status.html" />
+    <link rel="prev" title="Operation" href="operation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> mpicpp-lite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started/install.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developers</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="communicator.html">Communicator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datatype.html">Datatype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Request</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wait.html">Wait</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">mpicpp-lite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Request</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="request">
+<h1>Request<a class="headerlink" href="#request" title="Permalink to this heading"></a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite7RequestE">
+<span id="_CPPv3N11mpicpp_lite7RequestE"></span><span id="_CPPv2N11mpicpp_lite7RequestE"></span><span id="mpicpp_lite::Request"></span><span class="target" id="classmpicpp__lite_1_1_request"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Request</span></span></span><a class="headerlink" href="#_CPPv4N11mpicpp_lite7RequestE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Wrapper around MPI_Request. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite7Request7RequestEv">
+<span id="_CPPv3N11mpicpp_lite7Request7RequestEv"></span><span id="_CPPv2N11mpicpp_lite7Request7RequestEv"></span><span id="mpicpp_lite::Request::Request"></span><span class="target" id="classmpicpp__lite_1_1_request_1acab7a3229b06259598c84e92502ff4ba"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Request</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite7Request7RequestEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create empty request. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite7Request7RequestERK11MPI_Request">
+<span id="_CPPv3N11mpicpp_lite7Request7RequestERK11MPI_Request"></span><span id="_CPPv2N11mpicpp_lite7Request7RequestERK11MPI_Request"></span><span id="mpicpp_lite::Request::Request__MPI_RequestCR"></span><span class="target" id="classmpicpp__lite_1_1_request_1abe70b768baeb0411df42aff414720c64"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Request</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">MPI_Request</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">r</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite7Request7RequestERK11MPI_Request" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create request from an <code class="docutils literal notranslate"><span class="pre">MPI_Request</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – <code class="docutils literal notranslate"><span class="pre">MPI_Request</span></code> used to initiliaze this object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite7RequestcvP11MPI_RequestEv">
+<span id="_CPPv3N11mpicpp_lite7RequestcvP11MPI_RequestEv"></span><span id="_CPPv2N11mpicpp_lite7RequestcvP11MPI_RequestEv"></span><span id="mpicpp_lite::Request::castto-MPI_RequestP-operator"></span><span class="target" id="classmpicpp__lite_1_1_request_1a70b3bb4f13132cd55663d79b88d08e74"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="w"> </span><span class="n"><span class="pre">MPI_Request</span></span><span class="p"><span class="pre">*</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite7RequestcvP11MPI_RequestEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Type cast operator so we can pass this class directly into MPI calls. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite7RequestcvRK11MPI_RequestEv">
+<span id="_CPPv3NK11mpicpp_lite7RequestcvRK11MPI_RequestEv"></span><span id="_CPPv2NK11mpicpp_lite7RequestcvRK11MPI_RequestEv"></span><span id="mpicpp_lite::Request::castto-MPI_RequestCR-operatorC"></span><span class="target" id="classmpicpp__lite_1_1_request_1ad014ae88cebcc6d3b48fb97680983fda"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">MPI_Request</span></span><span class="p"><span class="pre">&amp;</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite7RequestcvRK11MPI_RequestEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Type cast operator so we can pass this class directly into MPI calls. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="operation.html" class="btn btn-neutral float-left" title="Operation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="status.html" class="btn btn-neutral float-right" title="Status" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-present, David Andrs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
