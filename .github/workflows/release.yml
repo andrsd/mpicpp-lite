@@ -1,0 +1,32 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  discussions: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          discussion_category_name: announcements
+
+      - name: Run latest-tag
+        uses: EndBug/latest-tag@latest
