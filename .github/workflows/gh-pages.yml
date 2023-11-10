@@ -1,0 +1,51 @@
+name: github-pages
+
+on:
+  push:
+    branches: ["main"]
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
+    defaults:
+      run:
+        shell: bash -el {0}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Set up miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.9
+          auto-update-conda: false
+          channels: andrsd,defaults
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          conda install \
+            cmake \
+            make \
+            mpich-mpicxx \
+            doxygen \
+            sphinx \
+            sphinx_rtd_theme \
+            breathe==4.35.0 \
+            sphinx-design \
+            fmt==9.1.0
+
+      - name: Build doco
+        run: |
+          cmake -S . -B ${{ github.workspace }}/build
+          cmake --build ${{ github.workspace }}/build --target doc
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ${{ github.workspace }}/build/docs/html

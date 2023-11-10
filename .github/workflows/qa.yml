@@ -34,7 +34,7 @@ jobs:
         run: |
           cmake -S ${{ github.workspace }} -B ${{ github.workspace }}/build \
             -DMPICPP_LITE_BUILD_TESTS=YES \
-            -DMPICPP_LITE_CODE_COVERAGE=YES
+            -DMPICPP_LITE_CODE_COVERAGE=YES \
             -DCMAKE_EXPORT_COMPILE_COMMANDS=on
 
       - uses: cpp-linter/cpp-linter-action@v2
