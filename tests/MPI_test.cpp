@@ -229,7 +229,7 @@ TEST(MPITest, all_gather_vec_1_proc)
     if (comm.size() != 1)
         return;
 
-    std::vector<int> vals = { 3, 2, 6};
+    std::vector<int> vals = { 3, 2, 6 };
     std::vector<int> all_vals;
     comm.all_gather(vals, all_vals);
     EXPECT_EQ(all_vals.size(), 3);
@@ -524,6 +524,65 @@ TEST(MPITest, isend_irecv_waitany)
         int num = comm.rank() * 7;
         auto req = comm.isend(0, tag, num);
         wait(req);
+    }
+}
+
+TEST(MPITest, test_all)
+{
+    Communicator comm;
+    if (comm.size() < 2)
+        return;
+
+    int tag = 1;
+    if (comm.rank() == 0) {
+        int n = comm.size() - 1;
+        std::vector<int> vals(n);
+        std::vector<Request> reqs(n);
+        for (int i = 0; i < n; i++)
+            reqs[i] = comm.irecv(i + 1, tag, vals[i]);
+
+        while (!test_all(reqs))
+            ;
+    }
+    else {
+        int num = comm.rank() * 7;
+        auto req = comm.isend(0, tag, num);
+        while (!test(req))
+            ;
+    }
+}
+
+TEST(MPITest, test_any)
+{
+    Communicator comm;
+    if (comm.size() < 2)
+        return;
+
+    int tag = 1;
+    if (comm.rank() == 0) {
+        int n = comm.size() - 1;
+        std::vector<int> vals(n);
+        std::vector<Request> reqs(n);
+        for (int i = 0; i < n; i++)
+            reqs[i] = comm.irecv(i + 1, tag, vals[i]);
+
+        int timeout = 2;
+        while (timeout > 0) {
+            std::size_t index = 0;
+            if (test_any(reqs, index)) {
+                break;
+            }
+            else {
+                usleep(10000);
+                timeout--;
+            }
+        }
+    }
+    else {
+        int num = comm.rank() * 7;
+        auto req = comm.isend(0, tag, num);
+        while (!test(req))
+            ;
     }
 }
 
