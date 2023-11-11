@@ -537,6 +537,22 @@ TEST(MPITest, isend_irecv_waitany)
     }
 }
 
+TEST(MPITest, all_to_all_1)
+{
+    Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    std::vector<int> in_vals(comm.size());
+    for (int i = 0; i < in_vals.size(); i++)
+        in_vals[i] = (10 * comm.rank()) + i;
+    std::vector<int> out_vals;
+    comm.all_to_all(in_vals, out_vals);
+
+    for (int i = 0; i < out_vals.size(); i++)
+        EXPECT_EQ(out_vals[i], (10 * i) + comm.rank());
+}
+
 //
 
 TEST(MPITest, status)

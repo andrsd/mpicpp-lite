@@ -333,6 +333,24 @@ public:
     template <typename T, typename Op>
     void all_reduce(T & value, Op op) const;
 
+    /// Sends data from all to all processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_values Values to send
+    /// @param n Number valus to send
+    /// @param out_values Receiving variable
+    /// @param m Values to receive
+    template <typename T>
+    void all_to_all(const T * in_values, int n, T * out_values, int m) const;
+
+    /// Sends data from all to all processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_values Values to send
+    /// @param out_values Receiving variable
+    template <typename T>
+    void all_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const;
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -724,6 +742,27 @@ Communicator::all_reduce(T & in_value, Op op) const
     T out_value;
     all_reduce(&in_value, 1, &out_value, op);
     in_value = out_value;
+}
+
+template <typename T>
+void
+Communicator::all_to_all(const T * in_values, int n, T * out_values, int m) const
+{
+    MPI_CHECK_SELF(MPI_Alltoall(in_values,
+                                n,
+                                get_mpi_datatype<T>(),
+                                out_values,
+                                m,
+                                get_mpi_datatype<T>(),
+                                this->comm));
+}
+
+template <typename T>
+void
+Communicator::all_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const
+{
+    out_values.resize(in_values.size());
+    all_to_all(in_values.data(), 1, out_values.data(), 1);
 }
 
 //
