@@ -18,7 +18,7 @@ TEST(GroupTest, include)
     if (rank == 0)
         EXPECT_EQ(sub_group.rank(), 0);
     else if (rank == 1)
-        EXPECT_EQ(sub_group.rank(), Group::UNDEFINED);
+        EXPECT_EQ(sub_group.rank(), UNDEFINED);
     else if (rank == 2)
         EXPECT_EQ(sub_group.rank(), 1);
     else if (rank == 3)
@@ -51,13 +51,13 @@ TEST(GroupTest, exclude)
     auto sub_group = world_group.exclude({ 0, 3 });
     EXPECT_EQ(sub_group.size(), 2);
     if (rank == 0)
-        EXPECT_EQ(sub_group.rank(), Group::UNDEFINED);
+        EXPECT_EQ(sub_group.rank(), UNDEFINED);
     else if (rank == 1)
         EXPECT_EQ(sub_group.rank(), 0);
     else if (rank == 2)
         EXPECT_EQ(sub_group.rank(), 1);
     else if (rank == 3)
-        EXPECT_EQ(sub_group.rank(), Group::UNDEFINED);
+        EXPECT_EQ(sub_group.rank(), UNDEFINED);
 
     auto sub_comm = comm.create(sub_group);
     if (sub_comm.is_valid()) {
@@ -82,11 +82,11 @@ TEST(GroupTest, translate_rank)
     auto sub_group = world_group.include({ 1, 3 });
 
     auto rank0 = world_group.translate_rank(0, sub_group);
-    EXPECT_EQ(rank0, Group::UNDEFINED);
+    EXPECT_EQ(rank0, UNDEFINED);
     auto rank1 = world_group.translate_rank(1, sub_group);
     EXPECT_EQ(rank1, 0);
     auto rank2 = world_group.translate_rank(2, sub_group);
-    EXPECT_EQ(rank2, Group::UNDEFINED);
+    EXPECT_EQ(rank2, UNDEFINED);
     auto rank3 = world_group.translate_rank(3, sub_group);
     EXPECT_EQ(rank3, 1);
 }
@@ -100,7 +100,7 @@ TEST(GroupTest, translate_ranks)
     auto world_group = comm.group();
     auto sub_group = world_group.include({ 1, 3 });
     auto dest_ranks = world_group.translate_ranks({ 1, 2, 3 }, sub_group);
-    EXPECT_THAT(dest_ranks, ElementsAre(0, Group::UNDEFINED, 1));
+    EXPECT_THAT(dest_ranks, ElementsAre(0, UNDEFINED, 1));
 }
 
 TEST(GroupTest, compare)
