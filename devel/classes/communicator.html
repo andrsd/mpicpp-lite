@@ -371,6 +371,41 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator6iprobeEii">
+<span id="_CPPv3NK11mpicpp_lite12Communicator6iprobeEii"></span><span id="_CPPv2NK11mpicpp_lite12Communicator6iprobeEii"></span><span id="mpicpp_lite::Communicator::iprobe__i.iC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1aef75de4c61bf5ba4e3a1e3c3d2445f57"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iprobe</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tag</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator6iprobeEii" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Nonblocking test for a message. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
+<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if a message with the specified source, and tag is available, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator6iprobeEiiR6Status">
+<span id="_CPPv3NK11mpicpp_lite12Communicator6iprobeEiiR6Status"></span><span id="_CPPv2NK11mpicpp_lite12Communicator6iprobeEiiR6Status"></span><span id="mpicpp_lite::Communicator::iprobe__i.i.StatusRC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1aa4feb33fdf108972225ef7fccb5b1482"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iprobe</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tag</span></span>, <a class="reference internal" href="status.html#_CPPv4N11mpicpp_lite6StatusE" title="mpicpp_lite::Status"><span class="n"><span class="pre">Status</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">status</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator6iprobeEiiR6Status" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Nonblocking test for a message. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
+<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+<li><p><strong>status</strong> – <a class="reference internal" href="status.html#classmpicpp__lite_1_1_status"><span class="std std-ref">Status</span></a> object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if a message with the specified source, and tag is available, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator7barrierEv">
 <span id="_CPPv3NK11mpicpp_lite12Communicator7barrierEv"></span><span id="_CPPv2NK11mpicpp_lite12Communicator7barrierEv"></span><span id="mpicpp_lite::Communicator::barrierC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1a74cbcb767b9bdb075bbd9b326a5e389d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">barrier</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator7barrierEv" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Wait for all processes within a communicator to reach the barrier. </p>
