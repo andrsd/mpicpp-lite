@@ -10,8 +10,19 @@ TEST(MPITest, error)
     if (comm.size() > 1)
         return;
 
-    EXPECT_DEATH(mpicpp_lite::internal::check_mpi_error(comm, 1, "myfile.cpp", 123),
-                 "\\[ERROR\\] MPI error 1 at myfile.cpp:123");
+    MPI_Comm_set_errhandler(comm, MPI_ERRORS_RETURN);
+    auto ierr = MPI_Bcast(nullptr, 0, MPI_INT, -1, MPI_COMM_WORLD);
+    EXPECT_DEATH(mpicpp_lite::internal::check_mpi_error(comm, ierr, "myfile.cpp", 123),
+                 "\\[ERROR\\] MPI error [0-9]+ at myfile.cpp:123: Invalid root");
+}
+
+TEST(MPITest, error_message)
+{
+    Communicator comm;
+    MPI_Comm_set_errhandler(comm, MPI_ERRORS_RETURN);
+    auto ierr = MPI_Bcast(nullptr, 0, MPI_INT, -1, MPI_COMM_WORLD);
+    auto msg = error_message(error_class(ierr));
+    EXPECT_THAT(msg, HasSubstr("Invalid root"));
 }
 
 TEST(MPITest, abort)
