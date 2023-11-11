@@ -6,4 +6,5 @@
 #include "impl/Operation.h"
 #include "impl/Request.h"
 #include "impl/Status.h"
+#include "impl/Test.h"
 #include "impl/Wait.h"
