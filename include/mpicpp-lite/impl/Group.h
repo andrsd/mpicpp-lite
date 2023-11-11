@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mpi.h"
+#include "Enums.h"
 #include "Error.h"
 
 namespace mpicpp_lite {
@@ -8,8 +9,6 @@ namespace mpicpp_lite {
 /// Wrapper around `MPI_Group`
 class Group {
 public:
-    enum { UNDEFINED = MPI_UNDEFINED };
-
     enum ComparisonResult { IDENTICAL = MPI_IDENT, SIMILAR = MPI_SIMILAR, UNEQUAL = MPI_UNEQUAL };
 
     /// Create group from an `MPI_Group`
