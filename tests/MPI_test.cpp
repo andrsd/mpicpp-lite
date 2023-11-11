@@ -642,13 +642,15 @@ TEST(MPITest, test_any)
         while (timeout > 0) {
             std::size_t index = 0;
             if (test_any(reqs, index)) {
-                break;
+                SUCCEED();
+                return;
             }
             else {
                 usleep(10000);
                 timeout--;
             }
         }
+        FAIL();
     }
     else {
         int num = comm.rank() * 7;
