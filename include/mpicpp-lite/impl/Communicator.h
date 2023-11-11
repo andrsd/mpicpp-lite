@@ -203,6 +203,33 @@ public:
     template <typename T>
     void gather(const T * in_values, int n, std::vector<T> & out_values, int root) const;
 
+    /// Gathers data from all tasks and distribute the combined data to all tasks
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_value Value to send
+    /// @param n Number of values to send
+    /// @param out_values Receiving variable
+    /// @param m Number of values to receive
+    template <typename T>
+    void all_gather(const T * in_value, int n, T * out_values, int m) const;
+
+    /// Gathers data from all tasks and distribute the combined data to all tasks
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_value Value to send
+    /// @param out_values Receiving variable
+    template <typename T>
+    void all_gather(const T & in_value, std::vector<T> & out_values) const;
+
+    /// Gathers data from all tasks and distribute the combined data to all tasks
+    ///
+    /// @tparam T C++ type of the data
+    /// @param in_value Vector of values to send (the size of this vector can be different on every
+    ///                 process)
+    /// @param out_values Receiving variable
+    template <typename T>
+    void all_gather(const std::vector<T> & in_value, std::vector<T> & out_values) const;
+
     /// Send data from one process to all other processes in a communicator
     ///
     /// @tparam T C++ type of the data
@@ -549,6 +576,56 @@ Communicator::gather(const T * in_values, int n, std::vector<T> & out_values, in
     if (rank() == root)
         out_values.resize(size() * (std::size_t) n);
     gather(in_values, n, out_values.data(), root);
+}
+
+template <typename T>
+void
+Communicator::all_gather(const T * in_value, int n, T * out_values, int m) const
+{
+    MPI_CHECK_SELF(MPI_Allgather(in_value,
+                                 n,
+                                 get_mpi_datatype<T>(),
+                                 out_values,
+                                 m,
+                                 get_mpi_datatype<T>(),
+                                 this->comm));
+}
+
+template <typename T>
+void
+Communicator::all_gather(const T & in_value, std::vector<T> & out_values) const
+{
+    out_values.resize(this->size());
+    all_gather(&in_value, 1, out_values.data(), 1);
+}
+
+template <typename T>
+void
+Communicator::all_gather(const std::vector<T> & in_values, std::vector<T> & out_values) const
+{
+    if (size() < 2)
+        out_values = in_values;
+    else {
+        std::vector<int> n;
+        int sz = in_values.size();
+        all_gather(sz, n);
+        std::vector<int> offsets(size());
+        offsets[0] = 0;
+        for (int i = 0; i < n.size() - 1; i++)
+            offsets[i + 1] = offsets[i] + n[i];
+        int n_out_vals = 0;
+        for (int i = 0; i < n.size(); i++)
+            n_out_vals += n[i];
+        out_values.resize(n_out_vals);
+        MPI_CHECK_SELF(MPI_Allgatherv(in_values.data(),
+                                      in_values.size(),
+                                      get_mpi_datatype<T>(),
+                                      out_values.data(),
+                                      n.data(),
+                                      offsets.data(),
+                                      get_mpi_datatype<T>(),
+                                      this->comm));
+    }
 }
 
 // Scatter
