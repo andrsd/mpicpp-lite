@@ -7,6 +7,7 @@
 #include "Request.h"
 #include "Operation.h"
 #include "Error.h"
+#include "Group.h"
 
 namespace mpicpp_lite {
 
@@ -17,7 +18,7 @@ public:
     Communicator();
 
     /// Create communicator from an `MPI_Comm` one
-    explicit Communicator(const MPI_Comm & comm);
+    Communicator(const MPI_Comm & comm);
 
     /// Copy constructure
     Communicator(const Communicator & comm);
@@ -31,6 +32,17 @@ public:
     ///
     /// @return Number of processes
     int size() const;
+
+    ///
+    Communicator create(const Group & group, int tag = 0) const;
+
+    /// Accesses the group associated with given communicator
+    ///
+    /// @return Group corresponding to communicator
+    Group group() const;
+
+    ///
+    bool is_valid() const;
 
     /// Send data to another process
     ///
@@ -385,6 +397,28 @@ Communicator::size() const
     int sz;
     MPI_Comm_size(this->comm, &sz);
     return sz;
+}
+
+inline Communicator
+Communicator::create(const Group & group, int tag) const
+{
+    MPI_Comm new_comm;
+    MPI_CHECK_SELF(MPI_Comm_create_group(this->comm, group, tag, &new_comm));
+    return { new_comm };
+}
+
+inline Group
+Communicator::group() const
+{
+    MPI_Group g;
+    MPI_CHECK_SELF(MPI_Comm_group(this->comm, &g));
+    return { g };
+}
+
+inline bool
+Communicator::is_valid() const
+{
+    return this->comm != MPI_COMM_NULL;
 }
 
 // Send
