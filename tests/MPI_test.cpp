@@ -140,22 +140,17 @@ TEST(MPITest, send_recv_arr_int)
 TEST(MPITest, broadcast)
 {
     Communicator comm;
-    if (comm.size() == 1)
-        return;
 
     int number = 0;
     if (comm.rank() == 0)
         number = 1234;
     comm.broadcast(number, 0);
-    if (comm.rank() != 0)
-        EXPECT_EQ(number, 1234);
+    EXPECT_EQ(number, 1234);
 }
 
 TEST(MPITest, broadcast_arr)
 {
     Communicator comm;
-    if (comm.size() == 1)
-        return;
 
     std::vector<int> nums;
     nums.resize(10);
@@ -164,25 +159,20 @@ TEST(MPITest, broadcast_arr)
             nums[i] = 3 * i;
     }
     comm.broadcast(nums.data(), 10, 0);
-    if (comm.rank() != 0) {
-        for (std::size_t i = 0; i < 10; i++)
-            EXPECT_EQ(nums[i], 3 * i);
-    }
+    for (std::size_t i = 0; i < 10; i++)
+        EXPECT_EQ(nums[i], 3 * i);
 }
 
 TEST(MPITest, broadcast_str)
 {
     Communicator comm;
-    if (comm.size() == 1)
-        return;
 
     std::string str;
     if (comm.rank() == 0) {
         str = "text to bcast";
     }
     comm.broadcast(str, 0);
-    if (comm.rank() != 0)
-        EXPECT_EQ(str, "text to bcast");
+    EXPECT_EQ(str, "text to bcast");
 }
 
 TEST(MPITest, gather)
