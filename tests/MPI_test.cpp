@@ -433,6 +433,67 @@ TEST(MPITest, reduce_all_max)
     EXPECT_EQ(glob, gold);
 }
 
+TEST(MPITest, iprobe)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int tag = 1;
+    if (comm.rank() == 0) {
+        for (int i = 1; i < comm.size(); i++) {
+            int num = i * 5;
+            comm.send(i, tag, num);
+        }
+    }
+    else {
+        int timeout = 3;
+        while (timeout > 0) {
+            if (comm.iprobe(0, tag)) {
+                int val;
+                comm.recv(0, tag, val);
+                EXPECT_EQ(val, comm.rank() * 5);
+                SUCCEED();
+                return;
+            }
+            else
+                usleep(10000);
+        }
+        FAIL();
+    }
+}
+
+TEST(MPITest, iprobe_w_status)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int tag = 1;
+    if (comm.rank() == 0) {
+        for (int i = 1; i < comm.size(); i++) {
+            int num = i * 5;
+            comm.send(i, tag, num);
+        }
+    }
+    else {
+        int timeout = 3;
+        while (timeout > 0) {
+            Status status;
+            if (comm.iprobe(0, tag, status)) {
+                EXPECT_EQ(status.source(), 0);
+                int val;
+                comm.recv(0, tag, val);
+                EXPECT_EQ(val, comm.rank() * 5);
+                return;
+            }
+            else
+                usleep(10000);
+        }
+        FAIL();
+    }
+}
+
 TEST(MPITest, isend_irecv_wait)
 {
     Communicator comm;

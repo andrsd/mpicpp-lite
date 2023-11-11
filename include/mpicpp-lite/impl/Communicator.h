@@ -157,6 +157,23 @@ public:
     template <typename T>
     Request irecv(int source, int tag, T * values, int n) const;
 
+    /// Nonblocking test for a message
+    ///
+    /// @param source Rank of source or `ANY_SOURCE`
+    /// @param tag Message tag or `ANY_TAG`
+    /// @return `true` if a message with the specified source, and tag is available, `false`
+    ///          otherwise
+    bool iprobe(int source, int tag) const;
+
+    /// Nonblocking test for a message
+    ///
+    /// @param source Rank of source or `ANY_SOURCE`
+    /// @param tag Message tag or `ANY_TAG`
+    /// @param status Status object
+    /// @return `true` if a message with the specified source, and tag is available, `false`
+    ///          otherwise
+    bool iprobe(int source, int tag, Status & status) const;
+
     /// Wait for all processes within a communicator to reach the barrier.
     void barrier() const;
 
@@ -546,6 +563,22 @@ Communicator::irecv(int source, int tag, T * values, int n) const
                              this->comm,
                              &request));
     return { request };
+}
+
+inline bool
+Communicator::iprobe(int source, int tag) const
+{
+    int flag;
+    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm, &flag, MPI_STATUS_IGNORE));
+    return flag != 0;
+}
+
+inline bool
+Communicator::iprobe(int source, int tag, Status & status) const
+{
+    int flag;
+    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm, &flag, status));
+    return flag != 0;
 }
 
 // Barrier
