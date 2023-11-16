@@ -2,6 +2,7 @@
 
 #include "mpi.h"
 #include <vector>
+#include <cassert>
 #include "Datatype.h"
 #include "Status.h"
 #include "Request.h"
