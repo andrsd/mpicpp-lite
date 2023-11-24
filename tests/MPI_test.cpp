@@ -461,6 +461,34 @@ TEST(MPITest, reduce_all_logical_and)
     EXPECT_FALSE(glob);
 }
 
+TEST(MPITest, reduce_all_logical_or)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    bool loc = false;
+    bool glob;
+
+    comm.all_reduce(loc, glob, op::logical_or<bool>());
+    comm.all_reduce(loc, op::logical_or<bool>());
+    EXPECT_FALSE(loc);
+    EXPECT_FALSE(glob);
+
+    loc = true;
+    comm.all_reduce(loc, glob, op::logical_or<bool>());
+    comm.all_reduce(loc, op::logical_or<bool>());
+    EXPECT_TRUE(loc);
+    EXPECT_TRUE(glob);
+
+    if (comm.rank() != 0)
+        loc = false;
+    comm.all_reduce(loc, glob, op::logical_or<bool>());
+    comm.all_reduce(loc, op::logical_or<bool>());
+    EXPECT_TRUE(loc);
+    EXPECT_TRUE(glob);
+}
+
 TEST(MPITest, iprobe)
 {
     Communicator comm;

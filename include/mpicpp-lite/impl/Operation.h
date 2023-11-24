@@ -184,6 +184,41 @@ struct Operation<logical_and<T>, T> {
     }
 };
 
+// Logical OR
+
+/// Template for logical OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T>
+struct logical_or {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return `x` OR `y`
+    const T &
+    operator()(const T & x, const T & y) const
+    {
+        return x || y;
+    }
+};
+
+/// Template for logical OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T>
+struct Operation<logical_or<T>, T> {
+    /// Call operator
+    ///
+    /// @return MPI operation for logical OR
+    static MPI_Op
+    op()
+    {
+        return MPI_LOR;
+    }
+};
+
+
 } // namespace op
 
 } // namespace mpicpp_lite
