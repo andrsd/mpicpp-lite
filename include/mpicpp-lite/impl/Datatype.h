@@ -15,17 +15,6 @@ build_mpi_datatype()
     return MPI_DATATYPE_NULL;
 }
 
-/// Build a `MPI_Datatype` for `bool`
-template <>
-inline MPI_Datatype
-build_mpi_datatype<bool>()
-{
-    MPI_Datatype type;
-    MPI_Type_contiguous(sizeof(bool), MPI_BYTE, &type);
-    MPI_Type_commit(&type);
-    return type;
-}
-
 /// General template to obtain an MPI_Datatype from a C++ type
 ///
 /// @tparam T C++ data type
@@ -132,8 +121,7 @@ template <>
 inline MPI_Datatype
 get_mpi_datatype<bool>()
 {
-    static MPI_Datatype type = build_mpi_datatype<bool>();
-    return type;
+    return MPI_CXX_BOOL;
 }
 
 } // namespace mpi
