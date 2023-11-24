@@ -127,6 +127,16 @@ public:
     template <typename T>
     Request isend(int dest, int tag, const T & value) const;
 
+    /// Send a std::vector of values to a remote process without blocking
+    ///
+    /// @tparam T C++ type of the data
+    /// @param dest Destination rank
+    /// @param tag Message tag
+    /// @param value Values to send
+    /// @return Communication `Request`
+    template <typename T, typename A>
+    Request isend(int dest, int tag, const std::vector<T, A> & values) const;
+
     /// Send a message to a remote process without blocking
     ///
     /// @tparam T C++ type of the data
@@ -536,6 +546,13 @@ Request
 Communicator::isend(int dest, int tag, const T & value) const
 {
     return isend(dest, tag, &value, 1);
+}
+
+template <typename T, typename A>
+Request
+Communicator::isend(int dest, int tag, const std::vector<T, A> & values) const
+{
+    return isend(dest, tag, values.data(), values.size());
 }
 
 template <typename T>
