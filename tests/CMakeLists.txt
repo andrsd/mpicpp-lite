@@ -12,6 +12,10 @@ add_executable(${PROJECT_NAME}
     main.cpp
 )
 
+if (${fmt_FOUND})
+    target_compile_definitions(${PROJECT_NAME} PUBLIC MPICPP_LITE_WITH_FMT)
+endif()
+
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
