@@ -752,12 +752,11 @@ template <typename T, typename Op>
 void
 Communicator::reduce(const T * in_values, int n, T * out_values, Op, int root) const
 {
-    MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
     MPI_CHECK_SELF(MPI_Reduce(const_cast<T *>(in_values),
                               out_values,
                               n,
                               mpicpp_lite::get_mpi_datatype<T>(),
-                              op,
+                              mpicpp_lite::op::Operation<Op, T>::op(),
                               root,
                               this->comm));
 }
@@ -787,12 +786,11 @@ template <typename T, typename Op>
 void
 Communicator::all_reduce(const T * in_values, int n, T * out_values, Op) const
 {
-    MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
     MPI_CHECK_SELF(MPI_Allreduce(const_cast<T *>(in_values),
                                  out_values,
                                  n,
                                  mpicpp_lite::get_mpi_datatype<T>(),
-                                 op,
+                                 mpicpp_lite::op::Operation<Op, T>::op(),
                                  this->comm));
 }
 
