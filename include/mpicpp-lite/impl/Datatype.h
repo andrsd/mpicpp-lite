@@ -124,4 +124,15 @@ get_mpi_datatype<bool>()
     return MPI_CXX_BOOL;
 }
 
+#if __cplusplus >= 201703L
+
+template <>
+inline MPI_Datatype
+get_mpi_datatype<std::byte>()
+{
+    return MPI_BYTE;
+}
+
+#endif
+
 } // namespace mpi
