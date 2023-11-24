@@ -186,6 +186,14 @@ public:
     template <typename T>
     void broadcast(T & value, int root) const;
 
+    /// Broadcast a std::vector of values from a root process to all other processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @param value Value to send
+    /// @param root Rank of the sending process
+    template <typename T>
+    void broadcast(std::vector<T> & value, int root) const;
+
     /// Broadcast a value from a root process to all other processes
     ///
     /// @tparam T C++ type of the data
@@ -597,6 +605,24 @@ void
 Communicator::broadcast(T & value, int root) const
 {
     broadcast(&value, 1, root);
+}
+
+template <typename T>
+void
+Communicator::broadcast(std::vector<T> & value, int root) const
+{
+    if (size() < 2)
+        return;
+
+    int tag = 0;
+    if (rank() == root) {
+        for (int i = 0; i < size(); ++i) {
+            if (i != root)
+                send(i, tag, value.data(), value.size());
+        }
+    }
+    else
+        recv(root, tag, value);
 }
 
 template <typename T>

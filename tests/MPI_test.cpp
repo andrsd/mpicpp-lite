@@ -174,6 +174,21 @@ TEST(MPITest, broadcast_arr)
         EXPECT_EQ(nums[i], 3 * i);
 }
 
+TEST(MPITest, broadcast_std_vector)
+{
+    Communicator comm;
+
+    std::vector<int> nums;
+    if (comm.rank() == 0) {
+        nums.resize(10);
+        for (int i = 0; i < 10; i++)
+            nums[i] = 3 * i;
+    }
+    comm.broadcast(nums, 0);
+    for (std::size_t i = 0; i < 10; i++)
+        EXPECT_EQ(nums[i], 3 * i);
+}
+
 TEST(MPITest, broadcast_str)
 {
     Communicator comm;
