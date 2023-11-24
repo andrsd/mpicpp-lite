@@ -11,6 +11,9 @@ class Group {
 public:
     enum ComparisonResult { IDENTICAL = MPI_IDENT, SIMILAR = MPI_SIMILAR, UNEQUAL = MPI_UNEQUAL };
 
+    /// Create an empty group
+    Group();
+
     /// Create group from an `MPI_Group`
     ///
     /// @param group `MPI_Group` used to initialize this object
@@ -93,6 +96,8 @@ public:
 private:
     MPI_Group group;
 };
+
+inline Group::Group() {}
 
 inline Group::Group(const MPI_Group & group) : group(group) {}
 
