@@ -150,6 +150,40 @@ struct Operation<min<T>, T> {
     }
 };
 
+// Logical AND
+
+/// Template for logical AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename T>
+struct logical_and {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return `x` AND `y`
+    const T &
+    operator()(const T & x, const T & y) const
+    {
+        return x && y;
+    }
+};
+
+/// Template for logical AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename T>
+struct Operation<logical_and<T>, T> {
+    /// Call operator
+    ///
+    /// @return MPI operation logical AND
+    static MPI_Op
+    op()
+    {
+        return MPI_LAND;
+    }
+};
+
 } // namespace op
 
 } // namespace mpicpp_lite
