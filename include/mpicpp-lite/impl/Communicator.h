@@ -389,6 +389,11 @@ public:
     template <typename T>
     void all_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const;
 
+    /// Sends data from all to all processes
+    template <typename T>
+    void all_to_all(const std::vector<std::vector<T>> & in_values,
+                    std::vector<T> & out_values) const;
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -857,6 +862,52 @@ Communicator::all_to_all(const std::vector<T> & in_values, std::vector<T> & out_
 {
     out_values.resize(in_values.size());
     all_to_all(in_values.data(), 1, out_values.data(), 1);
+}
+
+template <typename T>
+void
+Communicator::all_to_all(const std::vector<std::vector<T>> & in_values,
+                         std::vector<T> & out_values) const
+{
+    std::vector<int> in_count(size(), 0);
+    for (std::size_t i = 0; i < in_values.size(); i++)
+        in_count[i] = in_values[i].size();
+    std::vector<int> out_count(size(), 0);
+    all_to_all(in_count, out_count);
+    // --
+    std::vector<int> in_offsets(size());
+    in_offsets[0] = 0;
+    for (std::size_t i = 0; i < in_count.size() - 1; i++)
+        in_offsets[i + 1] = in_offsets[i] + in_count[i];
+    std::size_t n_send_vals = 0;
+    for (std::size_t i = 0; i < in_count.size(); i++)
+        n_send_vals += in_count[i];
+
+    std::vector<int> out_offsets(size());
+    out_offsets[0] = 0;
+    for (std::size_t i = 0; i < out_count.size() - 1; i++)
+        out_offsets[i + 1] = out_offsets[i] + out_count[i];
+    int n_receive_vals = 0;
+    for (std::size_t i = 0; i < out_count.size(); i++)
+        n_receive_vals += out_count[i];
+
+    std::vector<T> in_buffer;
+    in_buffer.reserve(n_send_vals);
+    for (auto & vec : in_values)
+        for (auto & v : vec)
+            in_buffer.push_back(v);
+
+    out_values.resize(n_receive_vals, 0);
+
+    MPI_CHECK_SELF(MPI_Alltoallv(in_buffer.data(),
+                                 in_count.data(),
+                                 in_offsets.data(),
+                                 get_mpi_datatype<T>(),
+                                 out_values.data(),
+                                 out_count.data(),
+                                 out_offsets.data(),
+                                 get_mpi_datatype<T>(),
+                                 this->comm));
 }
 
 //

@@ -527,7 +527,6 @@ TEST(MPITest, reduce_all_logical_xor)
         EXPECT_TRUE(loc);
         EXPECT_TRUE(glob);
     }
-
 }
 
 TEST(MPITest, iprobe)
@@ -771,6 +770,35 @@ TEST(MPITest, all_to_all_1)
 
     for (int i = 0; i < out_vals.size(); i++)
         EXPECT_EQ(out_vals[i], (10 * i) + comm.rank());
+}
+
+TEST(MPITest, all_to_all_vec)
+{
+    Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    std::vector<std::vector<int>> in_vals(comm.size());
+    if (comm.rank() == 0)
+        in_vals = { { 1, 2 }, {2}, {-10, -11}, {} };
+    else if (comm.rank() == 1)
+        in_vals = { { 3 }, {4}, {-12, -13, -14}, {100} };
+    else if (comm.rank() == 2)
+        in_vals = { { 4, 5, 6 }, {6}, {-15}, {} };
+    else if (comm.rank() == 3)
+        in_vals = { { 7, 8, 9, 10 }, {8}, {-16, -17}, {200} };
+
+    std::vector<int> out;
+    comm.all_to_all(in_vals, out);
+
+    if (comm.rank() == 0)
+        EXPECT_THAT(out, ElementsAre(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    else if (comm.rank() == 1)
+        EXPECT_THAT(out, ElementsAre(2, 4, 6, 8));
+    else if (comm.rank() == 2)
+        EXPECT_THAT(out, ElementsAre(-10, -11, -12, -13, -14, -15, -16, -17));
+    else if (comm.rank() == 3)
+        EXPECT_THAT(out, ElementsAre(100, 200));
 }
 
 //
