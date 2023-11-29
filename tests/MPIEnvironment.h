@@ -1,24 +1,24 @@
 #pragma once
 
-#include "mpi.h"
+#include "mpicpp-lite/mpicpp-lite.h"
+
+namespace mpi = mpicpp_lite;
 
 class MPIEnvironment : public ::testing::Environment {
 public:
-  void
-  SetUp() override
-  {
-    char ** argv;
-    int argc = 0;
-    int err = MPI_Init(&argc, &argv);
-    ASSERT_FALSE(err);
-  }
+    void
+    SetUp() override
+    {
+        this->env = new mpi::Environment();
+    }
 
-  void
-  TearDown() override
-  {
-    int err = MPI_Finalize();
-    ASSERT_FALSE(err);
-  }
+    void
+    TearDown() override
+    {
+        delete this->env;
+        this->env = nullptr;
+    }
 
-  ~MPIEnvironment() override {}
+private:
+    mpi::Environment * env = nullptr;
 };
