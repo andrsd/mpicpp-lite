@@ -788,10 +788,6 @@ Communicator::all_gather(const std::vector<T> & in_values, std::vector<T> & out_
         offsets[0] = 0;
         for (int i = 0; i < n.size() - 1; i++)
             offsets[i + 1] = offsets[i] + n[i];
-        int n_out_vals = 0;
-        for (int i = 0; i < n.size(); i++)
-            n_out_vals += n[i];
-        out_values.resize(n_out_vals);
         all_gather(in_values, out_values, n, offsets);
     }
 }
@@ -805,6 +801,10 @@ Communicator::all_gather(const std::vector<T> & in_values,
 {
     assert(out_counts.size() == size());
     assert(out_offsets.size() == size());
+    int n_out_vals = 0;
+    for (std::size_t i = 0; i < out_counts.size(); i++)
+        n_out_vals += out_counts[i];
+    out_values.resize(n_out_vals);
     MPI_CHECK_SELF(MPI_Allgatherv(in_values.data(),
                                   in_values.size(),
                                   get_mpi_datatype<T>(),
@@ -958,17 +958,12 @@ Communicator::all_to_all(const std::vector<std::vector<T>> & in_values,
     out_offsets[0] = 0;
     for (std::size_t i = 0; i < out_count.size() - 1; i++)
         out_offsets[i + 1] = out_offsets[i] + out_count[i];
-    int n_receive_vals = 0;
-    for (std::size_t i = 0; i < out_count.size(); i++)
-        n_receive_vals += out_count[i];
 
     std::vector<T> in_buffer;
     in_buffer.reserve(n_send_vals);
     for (auto & vec : in_values)
         for (auto & v : vec)
             in_buffer.push_back(v);
-
-    out_values.resize(n_receive_vals, 0);
 
     all_to_all(in_buffer, in_count, in_offsets, out_values, out_count, out_offsets);
 }
@@ -986,6 +981,10 @@ Communicator::all_to_all(const std::vector<T> & in_values,
     assert(in_offsets.size() == size());
     assert(out_counts.size() == size());
     assert(out_offsets.size() == size());
+    int n_receive_vals = 0;
+    for (std::size_t i = 0; i < out_counts.size(); i++)
+        n_receive_vals += out_counts[i];
+    out_values.resize(n_receive_vals);
     MPI_CHECK_SELF(MPI_Alltoallv(in_values.data(),
                                  in_counts.data(),
                                  in_offsets.data(),
