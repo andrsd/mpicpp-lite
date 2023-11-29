@@ -900,7 +900,8 @@ template <typename T>
 void
 Communicator::all_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const
 {
-    out_values.resize(in_values.size());
+    assert(in_values.size() == size());
+    out_values.resize(size());
     all_to_all(in_values.data(), 1, out_values.data(), 1);
 }
 
