@@ -404,6 +404,29 @@ public:
     void all_to_all(const std::vector<std::vector<T>> & in_values,
                     std::vector<T> & out_values) const;
 
+    /// Sends data from all to all processes; each process may send a different amount of data and
+    /// provide displacements for the input and output data.
+    ///
+    /// @tparam T C++ datatype
+    /// @param in_values[in] Values to send
+    /// @param in_counts[in] Integer array equal to the group size specifying the number of elements
+    ///        to send to each processor
+    /// @param in_offsets[in] integer array (of length group size). Entry `j` specifies the
+    ///        displacement relative to sendbuf from which to take the outgoing data destined for
+    ///        process `j`
+    /// @param out_values[out] Buffer that will receive the data
+    /// @param out_counts[in] Integer array equal to the group size specifying the maximum number of
+    ///        elements that can be received from each processor
+    /// @param out_offsets[in] Integer array (of length group size). Entry `i` specifies the
+    ///        displacement relative to recvbuf at which to place the incoming data from process `i`
+    template <typename T>
+    void all_to_all(const std::vector<T> & in_values,
+                    const std::vector<int> & in_counts,
+                    const std::vector<int> & in_offsets,
+                    std::vector<T> & out_values,
+                    const std::vector<int> & out_counts,
+                    const std::vector<int> & out_offsets) const;
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -877,7 +900,8 @@ template <typename T>
 void
 Communicator::all_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const
 {
-    out_values.resize(in_values.size());
+    assert(in_values.size() == size());
+    out_values.resize(size());
     all_to_all(in_values.data(), 1, out_values.data(), 1);
 }
 
@@ -891,7 +915,7 @@ Communicator::all_to_all(const std::vector<std::vector<T>> & in_values,
         in_count[i] = in_values[i].size();
     std::vector<int> out_count(size(), 0);
     all_to_all(in_count, out_count);
-    // --
+
     std::vector<int> in_offsets(size());
     in_offsets[0] = 0;
     for (std::size_t i = 0; i < in_count.size() - 1; i++)
@@ -916,12 +940,28 @@ Communicator::all_to_all(const std::vector<std::vector<T>> & in_values,
 
     out_values.resize(n_receive_vals, 0);
 
-    MPI_CHECK_SELF(MPI_Alltoallv(in_buffer.data(),
-                                 in_count.data(),
+    all_to_all(in_buffer, in_count, in_offsets, out_values, out_count, out_offsets);
+}
+
+template <typename T>
+void
+Communicator::all_to_all(const std::vector<T> & in_values,
+                         const std::vector<int> & in_counts,
+                         const std::vector<int> & in_offsets,
+                         std::vector<T> & out_values,
+                         const std::vector<int> & out_counts,
+                         const std::vector<int> & out_offsets) const
+{
+    assert(in_counts.size() == size());
+    assert(in_offsets.size() == size());
+    assert(out_counts.size() == size());
+    assert(out_offsets.size() == size());
+    MPI_CHECK_SELF(MPI_Alltoallv(in_values.data(),
+                                 in_counts.data(),
                                  in_offsets.data(),
                                  get_mpi_datatype<T>(),
                                  out_values.data(),
-                                 out_count.data(),
+                                 out_counts.data(),
                                  out_offsets.data(),
                                  get_mpi_datatype<T>(),
                                  this->comm));
