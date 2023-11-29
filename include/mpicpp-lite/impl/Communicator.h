@@ -21,7 +21,7 @@ public:
     /// Create communicator from an `MPI_Comm` one
     Communicator(const MPI_Comm & comm);
 
-    /// Copy constructure
+    /// Copy constructor
     Communicator(const Communicator & comm);
 
     /// Determine the rank of the executing process in a communicator
@@ -450,6 +450,8 @@ public:
 
     /// Cast operator so we can pass this directly in MPI API
     operator MPI_Comm() const;
+
+    void set_error_handler();
 
 private:
     MPI_Comm comm;
@@ -1006,6 +1008,16 @@ Communicator::abort(int errcode) const
 inline Communicator::operator MPI_Comm() const
 {
     return this->comm;
+}
+
+inline void
+Communicator::set_error_handler()
+{
+#if (MPI_VERSION >= 2)
+    MPI_Comm_set_errhandler(this->comm, MPI_ERRORS_RETURN);
+#else
+    MPI_Errhandler_set(this->comm, MPI_ERRORS_RETURN);
+#endif
 }
 
 } // namespace mpicpp_lite
