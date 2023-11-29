@@ -278,6 +278,22 @@ public:
     template <typename T>
     void all_gather(const std::vector<T> & in_value, std::vector<T> & out_values) const;
 
+    /// Gathers data from all tasks and deliver the combined data to all tasks
+    ///
+    /// @tparam T C++ datatype
+    /// @param in_values[in] Values to send
+    /// @param out_values[out] Buffer to receive the data
+    /// @param out_counts[in] Integer array (of length group size) containing the number of elements
+    ///        that are to be received from each process
+    /// @param out_offsets[in] Integer array (of length group size). Entry `i` specifies the
+    ///        displacement (relative to out_values) at which to place the incoming data from
+    ///        process `i`
+    template <typename T>
+    void all_gather(const std::vector<T> & in_values,
+                    std::vector<T> & out_values,
+                    const std::vector<int> & out_counts,
+                    const std::vector<int> & out_offsets) const;
+
     /// Send data from one process to all other processes in a communicator
     ///
     /// @tparam T C++ type of the data
@@ -774,15 +790,27 @@ Communicator::all_gather(const std::vector<T> & in_values, std::vector<T> & out_
         for (int i = 0; i < n.size(); i++)
             n_out_vals += n[i];
         out_values.resize(n_out_vals);
-        MPI_CHECK_SELF(MPI_Allgatherv(in_values.data(),
-                                      in_values.size(),
-                                      get_mpi_datatype<T>(),
-                                      out_values.data(),
-                                      n.data(),
-                                      offsets.data(),
-                                      get_mpi_datatype<T>(),
-                                      this->comm));
+        all_gather(in_values, out_values, n, offsets);
     }
+}
+
+template <typename T>
+void
+Communicator::all_gather(const std::vector<T> & in_values,
+                         std::vector<T> & out_values,
+                         const std::vector<int> & out_counts,
+                         const std::vector<int> & out_offsets) const
+{
+    assert(out_counts.size() == size());
+    assert(out_offsets.size() == size());
+    MPI_CHECK_SELF(MPI_Allgatherv(in_values.data(),
+                                  in_values.size(),
+                                  get_mpi_datatype<T>(),
+                                  out_values.data(),
+                                  out_counts.data(),
+                                  out_offsets.data(),
+                                  get_mpi_datatype<T>(),
+                                  this->comm));
 }
 
 // Scatter
