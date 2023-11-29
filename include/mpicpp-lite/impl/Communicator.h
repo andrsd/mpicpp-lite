@@ -788,10 +788,6 @@ Communicator::all_gather(const std::vector<T> & in_values, std::vector<T> & out_
         offsets[0] = 0;
         for (int i = 0; i < n.size() - 1; i++)
             offsets[i + 1] = offsets[i] + n[i];
-        int n_out_vals = 0;
-        for (int i = 0; i < n.size(); i++)
-            n_out_vals += n[i];
-        out_values.resize(n_out_vals);
         all_gather(in_values, out_values, n, offsets);
     }
 }
@@ -805,6 +801,10 @@ Communicator::all_gather(const std::vector<T> & in_values,
 {
     assert(out_counts.size() == size());
     assert(out_offsets.size() == size());
+    int n_out_vals = 0;
+    for (std::size_t i = 0; i < out_counts.size(); i++)
+        n_out_vals += out_counts[i];
+    out_values.resize(n_out_vals);
     MPI_CHECK_SELF(MPI_Allgatherv(in_values.data(),
                                   in_values.size(),
                                   get_mpi_datatype<T>(),
