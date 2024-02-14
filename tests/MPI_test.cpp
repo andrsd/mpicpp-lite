@@ -210,6 +210,24 @@ TEST(MPITest, broadcast_std_vector)
         EXPECT_EQ(nums[i], 3 * i);
 }
 
+TEST(MPITest, broadcast_std_map)
+{
+    Communicator comm;
+
+    std::map<int, std::string> map;
+    if (comm.rank() == 0) {
+        map[1] = "apple";
+        map[12] = "orange";
+        map[30] = "pineapple";
+    }
+    comm.broadcast(map, 0);
+
+    EXPECT_EQ(map.size(), 3);
+    EXPECT_EQ(map[1], "apple");
+    EXPECT_EQ(map[12], "orange");
+    EXPECT_EQ(map[30], "pineapple");
+}
+
 TEST(MPITest, broadcast_str)
 {
     Communicator comm;

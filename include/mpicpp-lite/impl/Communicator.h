@@ -2,6 +2,7 @@
 
 #include "mpi.h"
 #include <vector>
+#include <map>
 #include <cassert>
 #include "Datatype.h"
 #include "Status.h"
@@ -212,6 +213,15 @@ public:
     /// @param root Rank of the sending process
     template <typename T>
     void broadcast(T * values, int n, int root) const;
+
+    /// Broadcast a map from a root process to all other processes
+    ///
+    /// @tparam KEY Key in the map
+    /// @tparam VALUE Value in the map
+    /// @param map map to send
+    /// @param root Rank of the sending process
+    template <typename KEY, typename VALUE>
+    void broadcast(std::map<KEY, VALUE> & map, int root) const;
 
     /// Gather together values from a group of processes
     ///
@@ -712,6 +722,34 @@ void
 Communicator::broadcast(T * values, int n, int root) const
 {
     MPI_CHECK_SELF(MPI_Bcast(values, n, get_mpi_datatype<T>(), root, this->comm));
+}
+
+template <typename KEY, typename VALUE>
+inline void
+Communicator::broadcast(std::map<KEY, VALUE> & map, int root) const
+{
+    auto n = map.size();
+    broadcast(n, root);
+    int tag = 0;
+    if (rank() == root) {
+        for (const auto & [key, value] : map) {
+            for (int i = 0; i < size(); ++i) {
+                if (i != root) {
+                    send(i, tag, key);
+                    send(i, tag, value);
+                }
+            }
+        }
+    }
+    else {
+        for (std::size_t i = 0; i < n; i++) {
+            KEY key;
+            recv(root, tag, key);
+            VALUE value;
+            recv(root, tag, value);
+            map[key] = value;
+        }
+    }
 }
 
 template <>
