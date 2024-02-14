@@ -535,6 +535,15 @@ Communicator::send(int dest, int tag) const
     MPI_CHECK_SELF(MPI_Send(MPI_BOTTOM, 0, MPI_PACKED, dest, tag, this->comm));
 }
 
+template <>
+inline void
+Communicator::send(int dest, int tag, const std::string & value) const
+{
+    if (size() < 2)
+        return;
+    send(dest, tag, value.data(), value.size());
+}
+
 // Recv
 
 template <typename T>
@@ -578,6 +587,16 @@ Communicator::recv(int source, int tag) const
     MPI_Status status = { 0 };
     MPI_CHECK_SELF(MPI_Recv(MPI_BOTTOM, 0, MPI_PACKED, source, tag, this->comm, &status));
     return { status };
+}
+
+template <>
+inline Status
+Communicator::recv(int source, int tag, std::string & value) const
+{
+    std::vector<char> str;
+    auto status = recv(source, tag, str);
+    value.assign(str.begin(), str.end());
+    return status;
 }
 
 // Isend

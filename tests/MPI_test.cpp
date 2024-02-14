@@ -148,6 +148,27 @@ TEST(MPITest, send_recv_arr_int)
     }
 }
 
+TEST(MPITest, send_recv_std_str)
+{
+    Communicator comm;
+    int n_mpis = comm.size();
+    if (n_mpis == 1)
+        return;
+
+    int tag = 101;
+    std::string str;
+    if (comm.rank() == 0) {
+        str = "ahoi";
+        for (int i = 0; i < comm.size(); i++)
+            if (i != 0)
+                comm.send(i, tag, str);
+    }
+    else {
+        comm.recv(0, tag, str);
+    }
+    EXPECT_EQ(str, "ahoi");
+}
+
 TEST(MPITest, broadcast)
 {
     Communicator comm;
