@@ -516,14 +516,14 @@ Communicator::is_valid() const
 // Send
 
 template <typename T>
-void
+inline void
 Communicator::send(int dest, int tag, const T & value) const
 {
     send(dest, tag, &value, 1);
 }
 
 template <typename T>
-void
+inline void
 Communicator::send(int dest, int tag, const T * values, int n) const
 {
     assert(values != nullptr);
@@ -532,7 +532,7 @@ Communicator::send(int dest, int tag, const T * values, int n) const
 }
 
 template <typename T, typename A>
-void
+inline void
 Communicator::send(int dest, int tag, const std::vector<T, A> & value) const
 {
     typename std::vector<T, A>::size_type size = value.size();
@@ -557,14 +557,14 @@ Communicator::send(int dest, int tag, const std::string & value) const
 // Recv
 
 template <typename T>
-Status
+inline Status
 Communicator::recv(int source, int tag, T & value) const
 {
     return recv(source, tag, &value, 1);
 }
 
 template <typename T>
-Status
+inline Status
 Communicator::recv(int source, int tag, T * values, int n) const
 {
     assert(values != nullptr);
@@ -580,7 +580,7 @@ Communicator::recv(int source, int tag, T * values, int n) const
 }
 
 template <typename T, typename A>
-Status
+inline Status
 Communicator::recv(int source, int tag, std::vector<T, A> & values) const
 {
     MPI_Status status = { 0 };
@@ -612,21 +612,21 @@ Communicator::recv(int source, int tag, std::string & value) const
 // Isend
 
 template <typename T>
-Request
+inline Request
 Communicator::isend(int dest, int tag, const T & value) const
 {
     return isend(dest, tag, &value, 1);
 }
 
 template <typename T, typename A>
-Request
+inline Request
 Communicator::isend(int dest, int tag, const std::vector<T, A> & values) const
 {
     return isend(dest, tag, values.data(), values.size());
 }
 
 template <typename T>
-Request
+inline Request
 Communicator::isend(int dest, int tag, const T * values, int n) const
 {
     assert(values != nullptr);
@@ -644,14 +644,14 @@ Communicator::isend(int dest, int tag, const T * values, int n) const
 // Irecv
 
 template <typename T>
-Request
+inline Request
 Communicator::irecv(int source, int tag, T & value) const
 {
     return irecv(source, tag, &value, 1);
 }
 
 template <typename T>
-Request
+inline Request
 Communicator::irecv(int source, int tag, T * values, int n) const
 {
     assert(values != nullptr);
@@ -693,14 +693,14 @@ Communicator::barrier() const
 // Broadcast
 
 template <typename T>
-void
+inline void
 Communicator::broadcast(T & value, int root) const
 {
     broadcast(&value, 1, root);
 }
 
 template <typename T>
-void
+inline void
 Communicator::broadcast(std::vector<T> & value, int root) const
 {
     if (size() < 2)
@@ -718,7 +718,7 @@ Communicator::broadcast(std::vector<T> & value, int root) const
 }
 
 template <typename T>
-void
+inline void
 Communicator::broadcast(T * values, int n, int root) const
 {
     MPI_CHECK_SELF(MPI_Bcast(values, n, get_mpi_datatype<T>(), root, this->comm));
@@ -776,7 +776,7 @@ Communicator::broadcast(std::string & value, int root) const
 // Gather
 
 template <typename T>
-void
+inline void
 Communicator::gather(const T & in_value, T * out_values, int root) const
 {
     assert(out_values || (rank() != root));
@@ -784,7 +784,7 @@ Communicator::gather(const T & in_value, T * out_values, int root) const
 }
 
 template <typename T>
-void
+inline void
 Communicator::gather(const T & in_value, std::vector<T> & out_values, int root) const
 {
     if (rank() == root)
@@ -793,7 +793,7 @@ Communicator::gather(const T & in_value, std::vector<T> & out_values, int root) 
 }
 
 template <typename T>
-void
+inline void
 Communicator::gather(const T * in_values, int n, T * out_values, int root) const
 {
     auto type = get_mpi_datatype<T>();
@@ -802,7 +802,7 @@ Communicator::gather(const T * in_values, int n, T * out_values, int root) const
 }
 
 template <typename T>
-void
+inline void
 Communicator::gather(const T * in_values, int n, std::vector<T> & out_values, int root) const
 {
     if (rank() == root)
@@ -811,7 +811,7 @@ Communicator::gather(const T * in_values, int n, std::vector<T> & out_values, in
 }
 
 template <typename T>
-void
+inline void
 Communicator::all_gather(const T * in_value, int n, T * out_values, int m) const
 {
     MPI_CHECK_SELF(MPI_Allgather(in_value,
@@ -824,7 +824,7 @@ Communicator::all_gather(const T * in_value, int n, T * out_values, int m) const
 }
 
 template <typename T>
-void
+inline void
 Communicator::all_gather(const T & in_value, std::vector<T> & out_values) const
 {
     out_values.resize(this->size());
@@ -832,7 +832,7 @@ Communicator::all_gather(const T & in_value, std::vector<T> & out_values) const
 }
 
 template <typename T>
-void
+inline void
 Communicator::all_gather(const std::vector<T> & in_values, std::vector<T> & out_values) const
 {
     if (size() < 2)
@@ -850,7 +850,7 @@ Communicator::all_gather(const std::vector<T> & in_values, std::vector<T> & out_
 }
 
 template <typename T>
-void
+inline void
 Communicator::all_gather(const std::vector<T> & in_values,
                          std::vector<T> & out_values,
                          const std::vector<int> & out_counts,
@@ -875,21 +875,21 @@ Communicator::all_gather(const std::vector<T> & in_values,
 // Scatter
 
 template <typename T>
-void
+inline void
 Communicator::scatter(const T * in_values, T & out_value, int root) const
 {
     scatter(in_values, &out_value, 1, root);
 }
 
 template <typename T>
-void
+inline void
 Communicator::scatter(const std::vector<T> & in_values, T & out_value, int root) const
 {
     scatter(in_values.data(), &out_value, 1, root);
 }
 
 template <typename T>
-void
+inline void
 Communicator::scatter(const T * in_values, T * out_values, int n, int root) const
 {
     auto type = get_mpi_datatype<T>();
@@ -898,7 +898,7 @@ Communicator::scatter(const T * in_values, T * out_values, int n, int root) cons
 }
 
 template <typename T>
-void
+inline void
 Communicator::scatter(const std::vector<T> & in_values, T * out_values, int n, int root) const
 {
     scatter(in_values.data(), out_values, n, root);
@@ -907,7 +907,7 @@ Communicator::scatter(const std::vector<T> & in_values, T * out_values, int n, i
 // Reduce
 
 template <typename T, typename Op>
-void
+inline void
 Communicator::reduce(const T * in_values, int n, T * out_values, Op, int root) const
 {
     MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
@@ -921,7 +921,7 @@ Communicator::reduce(const T * in_values, int n, T * out_values, Op, int root) c
 }
 
 template <typename T, typename Op>
-void
+inline void
 Communicator::reduce(std::vector<T> const & in_values,
                      std::vector<T> & out_values,
                      Op op,
@@ -933,7 +933,7 @@ Communicator::reduce(std::vector<T> const & in_values,
 }
 
 template <typename T, typename Op>
-void
+inline void
 Communicator::reduce(const T & in_value, T & out_value, Op op, int root) const
 {
     reduce(&in_value, 1, &out_value, op, root);
@@ -942,7 +942,7 @@ Communicator::reduce(const T & in_value, T & out_value, Op op, int root) const
 // All reduce
 
 template <typename T, typename Op>
-void
+inline void
 Communicator::all_reduce(const T * in_values, int n, T * out_values, Op) const
 {
     MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
@@ -955,14 +955,14 @@ Communicator::all_reduce(const T * in_values, int n, T * out_values, Op) const
 }
 
 template <typename T, typename Op>
-void
+inline void
 Communicator::all_reduce(const T & in_value, T & out_value, Op op) const
 {
     all_reduce(&in_value, 1, &out_value, op);
 }
 
 template <typename T, typename Op>
-void
+inline void
 Communicator::all_reduce(T & in_value, Op op) const
 {
     T out_value;
@@ -971,7 +971,7 @@ Communicator::all_reduce(T & in_value, Op op) const
 }
 
 template <typename T>
-void
+inline void
 Communicator::all_to_all(const T * in_values, int n, T * out_values, int m) const
 {
     MPI_CHECK_SELF(MPI_Alltoall(in_values,
@@ -984,7 +984,7 @@ Communicator::all_to_all(const T * in_values, int n, T * out_values, int m) cons
 }
 
 template <typename T>
-void
+inline void
 Communicator::all_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const
 {
     assert(in_values.size() == size());
@@ -993,7 +993,7 @@ Communicator::all_to_all(const std::vector<T> & in_values, std::vector<T> & out_
 }
 
 template <typename T>
-void
+inline void
 Communicator::all_to_all(const std::vector<std::vector<T>> & in_values,
                          std::vector<T> & out_values) const
 {
@@ -1026,7 +1026,7 @@ Communicator::all_to_all(const std::vector<std::vector<T>> & in_values,
 }
 
 template <typename T>
-void
+inline void
 Communicator::all_to_all(const std::vector<T> & in_values,
                          const std::vector<int> & in_counts,
                          const std::vector<int> & in_offsets,

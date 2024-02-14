@@ -20,7 +20,7 @@ build_mpi_datatype()
 /// @tparam T C++ data type
 /// @return `MPI_Datatype` that is used in the MPI API
 template <typename T>
-MPI_Datatype
+inline MPI_Datatype
 get_mpi_datatype()
 {
     return MPI_DATATYPE_NULL;
