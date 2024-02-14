@@ -10,7 +10,7 @@ public:
 #if (MPI_VERSION >= 2)
     Environment();
 #endif
-    Environment(int& argc, char** &argv);
+    Environment(int & argc, char **& argv);
     ~Environment();
 
     /// Indicates whether MPI was initialized
@@ -28,8 +28,7 @@ private:
     bool initialized;
 };
 
-inline
-Environment::Environment() : initialized(false)
+inline Environment::Environment() : initialized(false)
 {
     if (!is_initialized()) {
         MPI_CHECK(MPI_Init(nullptr, nullptr));
@@ -37,8 +36,7 @@ Environment::Environment() : initialized(false)
     }
 }
 
-inline
-Environment::Environment(int& argc, char** &argv) : initialized(false)
+inline Environment::Environment(int & argc, char **& argv) : initialized(false)
 {
     if (!is_initialized()) {
         MPI_CHECK(MPI_Init(&argc, &argv));
@@ -46,8 +44,7 @@ Environment::Environment(int& argc, char** &argv) : initialized(false)
     }
 }
 
-inline
-Environment::~Environment()
+inline Environment::~Environment()
 {
     if (this->initialized) {
         if (!is_finalized())

@@ -135,4 +135,4 @@ get_mpi_datatype<std::byte>()
 
 #endif
 
-} // namespace mpi
+} // namespace mpicpp_lite
