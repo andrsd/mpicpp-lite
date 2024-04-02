@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: "${{ matrix.os }}"
+    name: "${{ matrix.os }}-${{ matrix.mpi }}"
     defaults:
       run:
         shell: bash -el {0}
@@ -19,6 +19,10 @@ jobs:
       matrix:
         include:
           - os: ubuntu-22.04
+            mpi: mpich
+          - os: ubuntu-22.04
+            mpi: openmpi
+
     runs-on: ${{ matrix.os }}
     steps:
       - name: Set up miniconda
@@ -36,7 +40,7 @@ jobs:
           conda install \
             cmake \
             make \
-            mpich-mpicxx \
+            ${{ matrix.mpi }}-mpicxx \
             fmt==9.1.0 \
             lcov
 
