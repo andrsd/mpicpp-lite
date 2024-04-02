@@ -38,7 +38,7 @@ target_sanitization(${PROJECT_NAME})
 
 add_test(
     NAME mpicpp-lite-test-4
-    COMMAND mpirun -np 4 $<TARGET_FILE:mpicpp-lite-test>
+    COMMAND mpirun -np 4 --host localhost:4 $<TARGET_FILE:mpicpp-lite-test>
 )
 set_property(TEST mpicpp-lite-test-4 PROPERTY PROCESSORS 4)
 set_property(TEST mpicpp-lite-test-4 PROPERTY PROCESSOR_AFFINITY TRUE)
