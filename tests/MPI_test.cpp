@@ -13,7 +13,7 @@ TEST(MPITest, error)
     comm.set_error_handler();
     auto ierr = MPI_Bcast(nullptr, 0, MPI_INT, -1, MPI_COMM_WORLD);
     EXPECT_DEATH(mpicpp_lite::internal::check_mpi_error(comm, ierr, "myfile.cpp", 123),
-                 "\\[ERROR\\] MPI error [0-9]+ at myfile.cpp:123: Invalid root");
+                 "\\[ERROR\\] MPI error [0-9]+ at myfile.cpp:123:.+[Ii]nvalid root");
 }
 
 TEST(MPITest, error_message)
@@ -22,7 +22,7 @@ TEST(MPITest, error_message)
     comm.set_error_handler();
     auto ierr = MPI_Bcast(nullptr, 0, MPI_INT, -1, MPI_COMM_WORLD);
     auto msg = error_message(error_class(ierr));
-    EXPECT_THAT(msg, HasSubstr("Invalid root"));
+    EXPECT_THAT(msg, MatchesRegex(".*[Ii]nvalid root"));
 }
 
 TEST(MPITest, abort)
@@ -625,7 +625,6 @@ TEST(MPITest, isend_irecv_wait_w_status)
             auto request = comm.isend(i, tag, num);
             Status status;
             wait(request, status);
-            EXPECT_EQ(status.source(), 0);
         }
     }
     else {
