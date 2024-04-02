@@ -12,10 +12,6 @@ add_executable(${PROJECT_NAME}
     main.cpp
 )
 
-if (${fmt_FOUND})
-    target_compile_definitions(${PROJECT_NAME} PUBLIC MPICPP_LITE_WITH_FMT)
-endif()
-
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
@@ -29,8 +25,12 @@ target_link_libraries(
     gtest_main
     gmock_main
     MPI::MPI_CXX
-    fmt::fmt
 )
+
+if (${fmt_FOUND})
+    target_compile_definitions(${PROJECT_NAME} PUBLIC MPICPP_LITE_WITH_FMT)
+    target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt)
+endif()
 
 target_code_coverage(${PROJECT_NAME})
 
