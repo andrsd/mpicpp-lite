@@ -779,13 +779,13 @@ TEST(MPITest, all_to_all_vec)
 
     std::vector<std::vector<int>> in_vals(comm.size());
     if (comm.rank() == 0)
-        in_vals = { { 1, 2 }, {2}, {-10, -11}, {} };
+        in_vals = { { 1, 2 }, { 2 }, { -10, -11 }, {} };
     else if (comm.rank() == 1)
-        in_vals = { { 3 }, {4}, {-12, -13, -14}, {100} };
+        in_vals = { { 3 }, { 4 }, { -12, -13, -14 }, { 100 } };
     else if (comm.rank() == 2)
-        in_vals = { { 4, 5, 6 }, {6}, {-15}, {} };
+        in_vals = { { 4, 5, 6 }, { 6 }, { -15 }, {} };
     else if (comm.rank() == 3)
-        in_vals = { { 7, 8, 9, 10 }, {8}, {-16, -17}, {200} };
+        in_vals = { { 7, 8, 9, 10 }, { 8 }, { -16, -17 }, { 200 } };
 
     std::vector<int> out;
     comm.all_to_all(in_vals, out);
