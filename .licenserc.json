@@ -1,0 +1,6 @@
+{
+    "include/**/*.h": [
+        "// SPDX-FileCopyrightText:",
+        "// SPDX-License-Identifier:"
+    ]
+}
