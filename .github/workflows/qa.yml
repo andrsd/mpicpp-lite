@@ -46,3 +46,14 @@ jobs:
           ignore: 'contrib'
           step-summary: true
           database: build
+
+  check-spdx-tags:
+    name: check spdx tags
+    defaults:
+      run:
+        shell: bash -el {0}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: kt3k/license_checker@v1.0.6
