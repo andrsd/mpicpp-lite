@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: "${{ matrix.os }}-${{ matrix.mpi }}"
+    name: "${{ matrix.os }}-${{ matrix.mpi }}-${{ matrix.build }}"
     defaults:
       run:
         shell: bash -el {0}
@@ -20,8 +20,16 @@ jobs:
         include:
           - os: ubuntu-22.04
             mpi: mpich
+            build: Release
           - os: ubuntu-22.04
             mpi: openmpi
+            build: Release
+          - os: ubuntu-22.04
+            mpi: mpich
+            build: Debug
+          - os: ubuntu-22.04
+            mpi: openmpi
+            build: Debug
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -47,6 +55,7 @@ jobs:
       - name: Configure
         run: |
           cmake -S ${{ github.workspace }} -B ${{ github.workspace }}/build \
+            -DCMAKE_BUILD_TYPE={{ matrix.build }} \
             -DMPICPP_LITE_BUILD_TESTS=YES \
             -DMPICPP_LITE_CODE_COVERAGE=YES
 
@@ -62,7 +71,7 @@ jobs:
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-${{ matrix.os }}
+          name: coverage-${{ matrix.os }}-${{ matrix.mpi }}-${{ matrix.build }}
           path: ${{ github.workspace }}/build/coverage.info
 
   upload-to-codecov:
