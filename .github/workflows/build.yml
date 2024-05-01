@@ -71,7 +71,7 @@ jobs:
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-${{ matrix.os }}
+          name: coverage-${{ matrix.os }}-${{ matrix.mpi }}-${{ matrix.build }}
           path: ${{ github.workspace }}/build/coverage.info
 
   upload-to-codecov:
