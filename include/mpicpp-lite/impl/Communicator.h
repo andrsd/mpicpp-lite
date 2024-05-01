@@ -529,7 +529,6 @@ template <typename T>
 inline void
 Communicator::send(int dest, int tag, const T * values, int n) const
 {
-    assert(values != nullptr);
     MPI_CHECK_SELF(
         MPI_Send(const_cast<T *>(values), n, get_mpi_datatype<T>(), dest, tag, this->comm));
 }
@@ -570,7 +569,6 @@ template <typename T>
 inline Status
 Communicator::recv(int source, int tag, T * values, int n) const
 {
-    assert(values != nullptr);
     MPI_Status status = { 0 };
     MPI_CHECK_SELF(MPI_Recv(const_cast<T *>(values),
                             n,
