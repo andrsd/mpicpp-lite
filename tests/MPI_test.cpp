@@ -148,6 +148,29 @@ TEST(MPITest, send_recv_arr_int)
     }
 }
 
+TEST(MPITest, send_recv_empty_std_vector)
+{
+    Communicator comm;
+    int n_mpis = comm.size();
+    if (n_mpis == 1)
+        return;
+
+    int tag = 1234;
+    if (comm.rank() == 0) {
+        for (int i = 1; i < n_mpis; i++) {
+            std::vector<int> arr;
+            auto status = comm.recv(i, tag, arr);
+            EXPECT_EQ(status.tag(), tag);
+            EXPECT_EQ(status.source(), i);
+            EXPECT_EQ(status.error(), 0);
+        }
+    }
+    else {
+        std::vector<int> arr;
+        comm.send(0, tag, arr);
+    }
+}
+
 TEST(MPITest, send_recv_std_str)
 {
     Communicator comm;
