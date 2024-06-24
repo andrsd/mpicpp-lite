@@ -295,6 +295,33 @@ TEST(MPITest, gather_n)
     }
 }
 
+TEST(MPITest, gather_std_vec)
+{
+    Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    std::vector<double> vals;
+    if (comm.rank() == 0)
+        vals = { 1, 3 };
+    else if (comm.rank() == 1)
+        vals = { 0, 2, 4 };
+    else if (comm.rank() == 2)
+        vals = { 5 };
+    else if (comm.rank() == 3)
+        vals = {};
+
+    std::vector<double> out_vals(6);
+    std::vector<int> out_counts = { 2, 3, 1, 0 };
+    std::vector<int> out_offsets = { 0, 2, 5, 6 };
+    comm.gather(vals, out_vals, out_counts, out_offsets, 0);
+
+    if (comm.rank() == 0) {
+        EXPECT_EQ(out_vals.size(), 6);
+        EXPECT_THAT(out_vals, ElementsAre(1, 3, 0, 2, 4, 5));
+    }
+}
+
 TEST(MPITest, all_gather_1)
 {
     Communicator comm;
