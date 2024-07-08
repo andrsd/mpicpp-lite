@@ -15,8 +15,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(FetchContent)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
-include(CodeCoverage.cmake)
-include(Sanitization.cmake)
+include(CodeCoverage)
+include(Sanitization)
 
 option(MPICPP_LITE_BUILD_TESTS "Build tests" NO)
 
