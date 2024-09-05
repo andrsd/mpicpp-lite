@@ -12,19 +12,13 @@ add_executable(${PROJECT_NAME}
     main.cpp
 )
 
-target_include_directories(
-    ${PROJECT_NAME}
-    PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include/mpicpp-lite>
-)
-
 target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC
-    gtest_main
-    gmock_main
-    MPI::MPI_CXX
+        gtest_main
+        gmock_main
+        MPI::MPI_CXX
+        mpicpp-lite
 )
 
 if (${fmt_FOUND})

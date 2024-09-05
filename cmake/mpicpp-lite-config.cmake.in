@@ -1,0 +1,22 @@
+set(MPICPP_LITE_VERSION @PROJECT_VERSION@)
+
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/mpicpp-lite-targets.cmake")
+include(FindPackageHandleStandardArgs)
+include(CMakeFindDependencyMacro)
+
+find_dependency(fmt)
+
+find_path(MPICPP_LITE_INCLUDE_DIR mpicpp-lite.h HINTS ${PACKAGE_PREFIX_DIR}/include/mpicpp-lite)
+
+find_package_handle_standard_args(
+    mpicpp-lite
+    REQUIRED_VARS MPICPP_LITE_INCLUDE_DIR
+    VERSION_VAR MPICPP_LITE_VERSION
+)
+
+mark_as_advanced(
+    MPICPP_LITE_INCLUDE_DIR
+    MPICPP_LITE_VERSION
+)
