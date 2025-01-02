@@ -4,9 +4,7 @@ option(MPICPP_LITE_CODE_COVERAGE "Builds targets with code coverage instrumentat
 if(MPICPP_LITE_CODE_COVERAGE)
 
     set(COVERAGE_INFO ${PROJECT_BINARY_DIR}/coverage.info)
-    mark_as_advanced(FORCE
-        COVERAGE_INFO
-    )
+    mark_as_advanced(FORCE COVERAGE_INFO)
     set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES "${COVERAGE_INFO}")
 
     if(CMAKE_C_COMPILER_ID MATCHES "(Apple)?[Cc]lang" OR CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?[Cc]lang")
@@ -29,42 +27,37 @@ if(MPICPP_LITE_CODE_COVERAGE)
 
         add_custom_command(
             OUTPUT
-            ${COVERAGE_INFO}
+                ${COVERAGE_INFO}
             COMMAND
-            ${LLVM_COV_PATH} export
-            ${CODE_COVERAGE_BINS}
-            -instr-profile=${MERGED_PROFDATA}
-            -format="lcov" ${EXCLUDE_REGEX}
-            > ${COVERAGE_INFO}
+                ${LLVM_COV_PATH} export
+                ${CODE_COVERAGE_BINS}
+                -instr-profile=${MERGED_PROFDATA}
+                -format="lcov" ${EXCLUDE_REGEX}
+                > ${COVERAGE_INFO}
             DEPENDS
-            ${MERGED_PROFDATA}
+                ${MERGED_PROFDATA}
         )
 
         add_custom_command(
             OUTPUT
-            ${MERGED_PROFDATA}
+                ${MERGED_PROFDATA}
             COMMAND
-            ${LLVM_PROFDATA_PATH} merge -sparse ${CMAKE_BINARY_DIR}/tests/mpicpp-lite-test*.profraw -o ${MERGED_PROFDATA}
+                ${LLVM_PROFDATA_PATH} merge -sparse ${CMAKE_BINARY_DIR}/tests/mpicpp-lite-test*.profraw -o ${MERGED_PROFDATA}
         )
 
-        add_custom_target(htmlcov DEPENDS ${PROJECT_BINARY_DIR}/htmlcov/index.html)
+        add_custom_target(htmlcov
+            DEPENDS ${PROJECT_BINARY_DIR}/htmlcov/index.html
+            COMMENT "Open ${PROJECT_BINARY_DIR}/htmlcov/index.html in your browser to view the coverage report."
+        )
         add_custom_command(
             OUTPUT
-            ${PROJECT_BINARY_DIR}/htmlcov/index.html
+                ${PROJECT_BINARY_DIR}/htmlcov/index.html
             COMMAND
-            ${LLVM_COV_PATH} show ${CODE_COVERAGE_BINS} -instr-profile=${MERGED_PROFDATA}
-            -show-line-counts-or-regions -output-dir=${CMAKE_BINARY_DIR}/htmlcov
-            -format="html" ${EXCLUDE_REGEX}
+                ${LLVM_COV_PATH} show ${CODE_COVERAGE_BINS} -instr-profile=${MERGED_PROFDATA}
+                -show-line-counts-or-regions -output-dir=${CMAKE_BINARY_DIR}/htmlcov
+                -format="html" ${EXCLUDE_REGEX}
             DEPENDS
-            ${COVERAGE_INFO}
-        )
-
-        add_custom_command(
-            TARGET htmlcov
-            POST_BUILD
-            COMMAND ;
-            COMMENT
-            "Open ${PROJECT_BINARY_DIR}/htmlcov/index.html in your browser to view the coverage report."
+                ${COVERAGE_INFO}
         )
 
         function(target_code_coverage TARGET_NAME)
@@ -98,28 +91,23 @@ if(MPICPP_LITE_CODE_COVERAGE)
 
         add_custom_command(
             OUTPUT
-            ${COVERAGE_INFO}
+                ${COVERAGE_INFO}
             COMMAND
-            ${LCOV_PATH} --capture --directory ${PROJECT_BINARY_DIR}
-            --output-file ${COVERAGE_INFO} ${EXCLUDE_REGEX}
+                ${LCOV_PATH} --capture --directory ${PROJECT_BINARY_DIR}
+                --output-file ${COVERAGE_INFO} ${EXCLUDE_REGEX}
         )
 
-        add_custom_target(htmlcov DEPENDS ${PROJECT_BINARY_DIR}/htmlcov/index.html)
+        add_custom_target(htmlcov
+            DEPENDS ${PROJECT_BINARY_DIR}/htmlcov/index.html
+            COMMENT "Open ${PROJECT_BINARY_DIR}/htmlcov/index.html in your browser to view the coverage report."
+        )
         add_custom_command(
             OUTPUT
-            ${PROJECT_BINARY_DIR}/htmlcov/index.html
+                ${PROJECT_BINARY_DIR}/htmlcov/index.html
             COMMAND
-            ${GENHTML_PATH} --output-directory=${CMAKE_BINARY_DIR}/htmlcov ${COVERAGE_INFO}
+                ${GENHTML_PATH} --output-directory=${CMAKE_BINARY_DIR}/htmlcov ${COVERAGE_INFO}
             DEPENDS
-            ${COVERAGE_INFO}
-        )
-
-        add_custom_command(
-            TARGET htmlcov
-            POST_BUILD
-            COMMAND ;
-            COMMENT
-            "Open ${PROJECT_BINARY_DIR}/htmlcov/index.html in your browser to view the coverage report."
+                ${COVERAGE_INFO}
         )
 
         function(target_code_coverage TARGET_NAME)
