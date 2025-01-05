@@ -906,6 +906,35 @@ TEST(MPITest, all_to_all_vec)
         EXPECT_THAT(out, ElementsAre(100, 200));
 }
 
+TEST(MPITest, split)
+{
+    Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    auto world_rank = comm.rank();
+    int color = comm.rank() % 2;
+    auto new_comm = comm.split(color, comm.rank());
+
+    EXPECT_EQ(new_comm.size(), 2);
+    if (world_rank == 0) {
+        EXPECT_EQ(new_comm.size(), 2);
+        EXPECT_EQ(new_comm.rank(), 0);
+    }
+    else if (world_rank == 1) {
+        EXPECT_EQ(new_comm.size(), 2);
+        EXPECT_EQ(new_comm.rank(), 0);
+    }
+    else if (world_rank == 2) {
+        EXPECT_EQ(new_comm.size(), 2);
+        EXPECT_EQ(new_comm.rank(), 1);
+    }
+    else if (world_rank == 3) {
+        EXPECT_EQ(new_comm.size(), 2);
+        EXPECT_EQ(new_comm.rank(), 1);
+    }
+}
+
 //
 
 TEST(MPITest, status)

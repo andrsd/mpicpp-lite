@@ -484,6 +484,14 @@ public:
                     const std::vector<int> & out_counts,
                     const std::vector<int> & out_offsets) const;
 
+    /// Split a communicator
+    ///
+    /// @param color Control of subset assignment. Processes with the same color are in the same
+    ///              new communicator
+    /// @param key Control of rank assignment. This is the rank of the calling process in the new
+    ///            communicator
+    Communicator split(int color, int key) const;
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -1113,6 +1121,14 @@ Communicator::all_to_all(const std::vector<T> & in_values,
                                  out_offsets.data(),
                                  get_mpi_datatype<T>(),
                                  this->comm));
+}
+
+inline Communicator
+Communicator::split(int color, int key) const
+{
+    MPI_Comm new_comm;
+    MPI_CHECK_SELF(MPI_Comm_split(this->comm, color, key, &new_comm));
+    return { new_comm };
 }
 
 //
