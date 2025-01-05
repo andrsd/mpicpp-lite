@@ -104,6 +104,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvRKNSt6vectorI1TEERNSt6vectorI1TEE"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvRKNSt6vectorINSt6vectorI1TEEEERNSt6vectorI1TEE"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvRKNSt6vectorI1TEERKNSt6vectorIiEERKNSt6vectorIiEERNSt6vectorI1TEERKNSt6vectorIiEERKNSt6vectorIiEE"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator5splitEii"><code class="docutils literal notranslate"><span class="pre">Communicator::split()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator5abortEi"><code class="docutils literal notranslate"><span class="pre">Communicator::abort()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicatorcv8MPI_CommEv"><code class="docutils literal notranslate"><span class="pre">Communicator::operator</span> <span class="pre">MPI_Comm()</span></code></a></li>
 </ul>
@@ -1016,6 +1017,20 @@
 <li><p><strong>out_values[out]</strong> – Buffer that will receive the data </p></li>
 <li><p><strong>out_counts[in]</strong> – Integer array equal to the group size specifying the maximum number of elements that can be received from each processor </p></li>
 <li><p><strong>out_offsets[in]</strong> – Integer array (of length group size). Entry <code class="docutils literal notranslate"><span class="pre">i</span></code> specifies the displacement relative to recvbuf at which to place the incoming data from process <code class="docutils literal notranslate"><span class="pre">i</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator5splitEii">
+<span id="_CPPv3NK11mpicpp_lite12Communicator5splitEii"></span><span id="_CPPv2NK11mpicpp_lite12Communicator5splitEii"></span><span id="mpicpp_lite::Communicator::split__i.iC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1ac1fc3786a3a3741e8a0ad79b0d21935e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11mpicpp_lite12CommunicatorE" title="mpicpp_lite::Communicator"><span class="n"><span class="pre">Communicator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">split</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">color</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">key</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator5splitEii" title="Link to this definition"></a><br /></dt>
+<dd><p>Split a communicator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color</strong> – Control of subset assignment. Processes with the same color are in the same new communicator </p></li>
+<li><p><strong>key</strong> – Control of rank assignment. This is the rank of the calling process in the new communicator </p></li>
 </ul>
 </dd>
 </dl>
