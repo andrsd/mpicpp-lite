@@ -935,6 +935,56 @@ TEST(MPITest, split)
     }
 }
 
+TEST(MPITest, exscan_single)
+{
+    Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    auto rank = comm.rank();
+    std::vector<int> size = { 2, 3, 6, 4 };
+    int offset = 0;
+    comm.exscan(size[rank], offset, op::sum<int>());
+    if (rank == 0)
+        EXPECT_EQ(offset, 0);
+    else if (rank == 1)
+        EXPECT_EQ(offset, 2);
+    else if (rank == 2)
+        EXPECT_EQ(offset, 5);
+    else if (rank == 3)
+        EXPECT_EQ(offset, 11);
+}
+
+TEST(MPITest, exscan_array)
+{
+    Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    auto rank = comm.rank();
+    std::vector<int> vals;
+    if (rank == 0)
+        vals = { 2, 3 };
+    else if (rank == 1)
+        vals = { 1, 5 };
+    else if (rank == 2)
+        vals = { 6, 9 };
+    else if (rank == 3)
+        vals = { 4, 7 };
+
+    std::vector<int> sum(2, 0);
+    comm.exscan(vals, sum, op::sum<int>());
+
+    if (rank == 0)
+        EXPECT_THAT(sum, testing::ElementsAre(0, 0));
+    else if (rank == 1)
+        EXPECT_THAT(sum, testing::ElementsAre(2, 3));
+    else if (rank == 2)
+        EXPECT_THAT(sum, testing::ElementsAre(3, 8));
+    else if (rank == 3)
+        EXPECT_THAT(sum, testing::ElementsAre(9, 17));
+}
+
 //
 
 TEST(MPITest, status)
