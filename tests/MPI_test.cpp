@@ -4,6 +4,13 @@
 using namespace mpicpp_lite;
 using namespace testing;
 
+TEST(MPITest, get_version)
+{
+    auto [major, minor] = mpicpp_lite::get_mpi_version();
+    EXPECT_GE(major, 1);
+    EXPECT_GE(minor, 0);
+}
+
 TEST(MPITest, error)
 {
     Communicator comm;

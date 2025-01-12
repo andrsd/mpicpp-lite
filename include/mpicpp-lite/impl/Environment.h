@@ -71,4 +71,17 @@ Environment::is_finalized()
     return flag != 0;
 }
 
+//
+
+/// Return the version number of MPI
+///
+/// @return Tuple with the version and subversion of MPI
+inline std::tuple<int, int>
+get_mpi_version()
+{
+    int version, subversion;
+    MPI_CHECK(MPI_Get_version(&version, &subversion));
+    return std::make_tuple(version, subversion);
+}
+
 } // namespace mpicpp_lite
