@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(${PROJECT_NAME}
+    CartesianCommunicator_test.cpp
     Datatype_test.cpp
     Group_test.cpp
     MPI_test.cpp
@@ -40,6 +41,21 @@ set_property(TEST mpicpp-lite-test-4 PROPERTY PROCESSOR_AFFINITY TRUE)
 if(MPICPP_LITE_CODE_COVERAGE)
     set_tests_properties(
         mpicpp-lite-test-4
+        PROPERTIES
+        ENVIRONMENT LLVM_PROFILE_FILE=mpicpp-lite-test-%4m.profraw
+    )
+endif()
+
+add_test(
+    NAME mpicpp-lite-test-6
+    COMMAND mpirun -np 6 --host localhost:6 $<TARGET_FILE:mpicpp-lite-test>
+)
+set_property(TEST mpicpp-lite-test-6 PROPERTY PROCESSORS 6)
+set_property(TEST mpicpp-lite-test-6 PROPERTY PROCESSOR_AFFINITY TRUE)
+
+if(MPICPP_LITE_CODE_COVERAGE)
+    set_tests_properties(
+        mpicpp-lite-test-6
         PROPERTIES
         ENVIRONMENT LLVM_PROFILE_FILE=mpicpp-lite-test-%4m.profraw
     )

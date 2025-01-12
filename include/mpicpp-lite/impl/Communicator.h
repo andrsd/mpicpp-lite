@@ -16,6 +16,8 @@
 
 namespace mpicpp_lite {
 
+class CartesianCommunicator;
+
 /// Wrapper around `MPI_Comm`
 class Communicator {
 public:
@@ -40,6 +42,13 @@ public:
 
     ///
     Communicator create(const Group & group, int tag = 0) const;
+
+    /// Makes a new communicator to which topology information has been attached
+    ///
+    /// @param dims Number of processes in each dimension
+    /// @param reorder Allow the function to reorder the processes
+    CartesianCommunicator create_cartesian(const std::vector<int> & dims,
+                                           bool reorder = false) const;
 
     /// Accesses the group associated with given communicator
     ///
@@ -564,8 +573,47 @@ public:
 
     void set_error_handler();
 
-private:
+protected:
     MPI_Comm comm;
+};
+
+//
+
+/// Cartesian communicator
+class CartesianCommunicator : public Communicator {
+    template <bool...>
+    struct bool_pack {};
+
+    template <class... U>
+    using conjunction = std::is_same<bool_pack<true, U::value...>, bool_pack<U::value..., true>>;
+
+    template <typename... U>
+    using all_integral = typename conjunction<std::is_integral<U>...>::type;
+
+public:
+    /// Retrieves Cartesian topology information associated with a communicator
+    ///
+    /// @return Number of dimensions of the Cartesian structure
+    int dimensions() const;
+
+    /// Determines process rank in communicator given Cartesian location
+    ///
+    /// @tparam ARGS Integral types
+    /// @param args Cartesian coordinates
+    /// @return Rank of the process
+    template <typename... ARGS>
+    int rank(ARGS... args) const;
+
+    /// Determines process coords in cartesian topology given rank in group
+    ///
+    /// @param rank Rank of the process
+    /// @return Cartesian coordinates
+    std::vector<int> coords(int rank) const;
+
+private:
+    CartesianCommunicator(MPI_Comm comm);
+
+    friend class Communicator;
 };
 
 //
@@ -598,6 +646,16 @@ Communicator::create(const Group & group, int tag) const
     MPI_Comm new_comm;
     MPI_CHECK_SELF(MPI_Comm_create_group(this->comm, group, tag, &new_comm));
     return { new_comm };
+}
+
+inline CartesianCommunicator
+Communicator::create_cartesian(const std::vector<int> & dims, bool reorder) const
+{
+    MPI_Comm new_comm;
+    std::vector<int> periods(dims.size(), 0);
+    MPI_CHECK_SELF(
+        MPI_Cart_create(this->comm, dims.size(), dims.data(), periods.data(), reorder, &new_comm));
+    return CartesianCommunicator(new_comm);
 }
 
 inline Group
@@ -1270,6 +1328,39 @@ Communicator::set_error_handler()
 #else
     MPI_Errhandler_set(this->comm, MPI_ERRORS_RETURN);
 #endif
+}
+
+//
+
+inline CartesianCommunicator::CartesianCommunicator(MPI_Comm comm) : Communicator(comm) {}
+
+inline int
+CartesianCommunicator::dimensions() const
+{
+    int dims;
+    MPI_CHECK_SELF(MPI_Cartdim_get(this->comm, &dims));
+    return dims;
+}
+
+template <typename... ARGS>
+inline int
+CartesianCommunicator::rank(ARGS... args) const
+{
+    static_assert(all_integral<ARGS...>::value,
+                  "CartesianCommunicator::rank: All parameters must be of integral type");
+    int coords[] = { static_cast<int>(args)... };
+    int rank;
+    MPI_CHECK_SELF(MPI_Cart_rank(this->comm, coords, &rank));
+    return rank;
+}
+
+inline std::vector<int>
+CartesianCommunicator::coords(int rank) const
+{
+    auto dims = dimensions();
+    std::vector<int> coords(dims);
+    MPI_CHECK_SELF(MPI_Cart_coords(this->comm, rank, dims, coords.data()));
+    return coords;
 }
 
 } // namespace mpicpp_lite
