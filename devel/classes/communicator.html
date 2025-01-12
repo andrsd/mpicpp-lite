@@ -59,6 +59,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11mpicpp_lite12Communicator12CommunicatorERK12Communicator"><code class="docutils literal notranslate"><span class="pre">Communicator::Communicator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator4rankEv"><code class="docutils literal notranslate"><span class="pre">Communicator::rank()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator4sizeEv"><code class="docutils literal notranslate"><span class="pre">Communicator::size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator16create_cartesianERKNSt6vectorIiEEb"><code class="docutils literal notranslate"><span class="pre">Communicator::create_cartesian()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator5groupEv"><code class="docutils literal notranslate"><span class="pre">Communicator::group()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator4sendEviiRK1T"><code class="docutils literal notranslate"><span class="pre">Communicator::send()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator4sendEviiPK1Ti"><code class="docutils literal notranslate"><span class="pre">Communicator::send()</span></code></a></li>
@@ -154,6 +155,7 @@
 <dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite12CommunicatorE">
 <span id="_CPPv3N11mpicpp_lite12CommunicatorE"></span><span id="_CPPv2N11mpicpp_lite12CommunicatorE"></span><span id="mpicpp_lite::Communicator"></span><span class="target" id="classmpicpp__lite_1_1_communicator"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Communicator</span></span></span><a class="headerlink" href="#_CPPv4N11mpicpp_lite12CommunicatorE" title="Link to this definition"></a><br /></dt>
 <dd><p>Wrapper around <code class="docutils literal notranslate"><span class="pre">MPI_Comm</span></code></p>
+<p>Subclassed by mpicpp_lite::CartesianCommunicator</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
@@ -192,6 +194,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Number of processes </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator16create_cartesianERKNSt6vectorIiEEb">
+<span id="_CPPv3NK11mpicpp_lite12Communicator16create_cartesianERKNSt6vectorIiEEb"></span><span id="_CPPv2NK11mpicpp_lite12Communicator16create_cartesianERKNSt6vectorIiEEb"></span><span id="mpicpp_lite::Communicator::create_cartesian__std::vector:i:CR.bC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1a0fe801220595731d57e8cfc3bfbc9b99"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">CartesianCommunicator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create_cartesian</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">dims</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reorder</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator16create_cartesianERKNSt6vectorIiEEb" title="Link to this definition"></a><br /></dt>
+<dd><p>Makes a new communicator to which topology information has been attached. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dims</strong> – Number of processes in each dimension </p></li>
+<li><p><strong>reorder</strong> – Allow the function to reorder the processes </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
