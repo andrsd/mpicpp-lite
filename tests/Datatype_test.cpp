@@ -79,3 +79,10 @@ TEST(DatatypeTest, custom_struct)
     EXPECT_TRUE(data.b);
     EXPECT_STREQ(data.name, "hello");
 }
+
+TEST(DatatypeTest, type_size)
+{
+    mpi::Communicator comm;
+    EXPECT_EQ(mpi::type_size<long>(), 8);
+    EXPECT_EQ(mpi::type_size<CustomData>(), 33);
+}
