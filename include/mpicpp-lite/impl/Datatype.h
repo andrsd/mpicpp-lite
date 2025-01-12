@@ -170,4 +170,18 @@ type_create_struct(const std::vector<MPI_Datatype> & types,
     return dt;
 }
 
+/// Return the number of bytes occupied by entries in the datatype
+///
+/// @tparam T Datatype
+/// @return Number of bytes
+template <typename T>
+inline int
+type_size()
+{
+    auto dt = get_mpi_datatype<T>();
+    int size;
+    MPI_CHECK(MPI_Type_size(dt, &size));
+    return size;
+}
+
 } // namespace mpicpp_lite
