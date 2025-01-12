@@ -13,7 +13,7 @@ namespace mpicpp_lite {
 /// @return New `MPI_Datatype`
 template <typename T>
 inline MPI_Datatype
-build_mpi_datatype()
+create_mpi_datatype()
 {
     return MPI_DATATYPE_NULL;
 }
@@ -137,5 +137,37 @@ get_mpi_datatype<std::byte>()
 }
 
 #endif
+
+/// Register a new datatype for MPI communication
+///
+/// @tparam T Datatype to register
+/// @return New MPI datatype
+template <typename T>
+MPI_Datatype
+register_mpi_datatype()
+{
+    auto datatype = create_mpi_datatype<T>();
+    MPI_CHECK(MPI_Type_commit(&datatype));
+    return datatype;
+}
+
+/// Create a new datatype for MPI communication
+///
+/// @param types MPI datatypes
+/// @param blk_lens Number of elements of each type
+/// @param offsets Byte offsets of each element
+/// @return New MPI datatype
+inline MPI_Datatype
+type_create_struct(const std::vector<MPI_Datatype> & types,
+                   const std::vector<int> & blk_lens,
+                   const std::vector<MPI_Aint> & offsets)
+{
+    assert(types.size() == blk_lens.size());
+    assert(types.size() == offsets.size());
+    MPI_Datatype dt;
+    MPI_CHECK(
+        MPI_Type_create_struct(types.size(), blk_lens.data(), offsets.data(), types.data(), &dt));
+    return dt;
+}
 
 } // namespace mpicpp_lite
