@@ -492,6 +492,37 @@ public:
     ///            communicator
     Communicator split(int color, int key) const;
 
+    /// Computes the scan (partial reductions) of data on a collection of processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduction operation
+    /// @param in_values Values to perform the scan on
+    /// @param n Number of values to scan (size of `in_values`)
+    /// @param out_values Receiving variable
+    /// @param op Reduce operation
+    template <typename T, typename Op>
+    void scan(const T * in_values, int n, T * out_values, Op op) const;
+
+    /// Computes the scan (partial reductions) of data on a collection of processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduction operation
+    /// @param in_values Values to perform the scan on
+    /// @param out_values Receiving variable
+    /// @param op Reduce operation
+    template <typename T, typename Op>
+    void scan(const std::vector<T> & in_values, std::vector<T> & out_values, Op op) const;
+
+    /// Computes the scan (partial reductions) of data on a collection of processes
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduction operation
+    /// @param in_value Value to perform the scan on
+    /// @param out_value Receiving variable
+    /// @param op Reduce operation
+    template <typename T, typename Op>
+    void scan(const T & in_value, T & out_value, Op op) const;
+
     /// Computes the exclusive scan (partial reductions) of data on a collection of processes
     ///
     /// @tparam T C++ type of the data
@@ -1160,6 +1191,32 @@ Communicator::split(int color, int key) const
     MPI_Comm new_comm;
     MPI_CHECK_SELF(MPI_Comm_split(this->comm, color, key, &new_comm));
     return { new_comm };
+}
+
+// Scan
+
+template <typename T, typename Op>
+inline void
+Communicator::scan(const T * in_values, int n, T * out_values, Op) const
+{
+    MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
+    MPI_CHECK_SELF(
+        MPI_Scan(const_cast<T *>(in_values), out_values, n, get_mpi_datatype<T>(), op, this->comm));
+}
+
+template <typename T, typename Op>
+inline void
+Communicator::scan(const std::vector<T> & in_values, std::vector<T> & out_values, Op op) const
+{
+    assert(in_values.size() == out_values.size());
+    scan(in_values.data(), in_values.size(), out_values.data(), op);
+}
+
+template <typename T, typename Op>
+inline void
+Communicator::scan(const T & in_value, T & out_value, Op op) const
+{
+    scan(&in_value, 1, &out_value, op);
 }
 
 // Exscan
