@@ -105,6 +105,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvRKNSt6vectorINSt6vectorI1TEEEERNSt6vectorI1TEE"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvRKNSt6vectorI1TEERKNSt6vectorIiEERKNSt6vectorIiEERNSt6vectorI1TEERKNSt6vectorIiEERKNSt6vectorIiEE"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator5splitEii"><code class="docutils literal notranslate"><span class="pre">Communicator::split()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvPK1TiP1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::scan()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::scan()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRK1TR1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::scan()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator6exscanEvPK1TiP1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::exscan()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator6exscanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::exscan()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator6exscanEvRK1TR1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::exscan()</span></code></a></li>
@@ -1034,6 +1037,70 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>color</strong> – Control of subset assignment. Processes with the same color are in the same new communicator </p></li>
 <li><p><strong>key</strong> – Control of rank assignment. This is the rank of the calling process in the new communicator </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvPK1TiP1T2Op">
+<span id="_CPPv3I00ENK11mpicpp_lite12Communicator4scanEPK1TiP1T2Op"></span><span id="_CPPv2I00ENK11mpicpp_lite12Communicator4scanEPK1TiP1T2Op"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Op</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classmpicpp__lite_1_1_communicator_1aceb611562f3165531073d21c64a566fa"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">scan</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvPK1TiP1T2Op" title="mpicpp_lite::Communicator::scan::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">in_values</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvPK1TiP1T2Op" title="mpicpp_lite::Communicator::scan::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">out_values</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvPK1TiP1T2Op" title="mpicpp_lite::Communicator::scan::Op"><span class="n"><span class="pre">Op</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">op</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvPK1TiP1T2Op" title="Link to this definition"></a><br /></dt>
+<dd><p>Computes the scan (partial reductions) of data on a collection of processes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – C++ type of the data </p></li>
+<li><p><strong>Op</strong> – Type of the reduction operation </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_values</strong> – Values to perform the scan on </p></li>
+<li><p><strong>n</strong> – Number of values to scan (size of <code class="docutils literal notranslate"><span class="pre">in_values</span></code>) </p></li>
+<li><p><strong>out_values</strong> – Receiving variable </p></li>
+<li><p><strong>op</strong> – Reduce operation </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op">
+<span id="_CPPv3I00ENK11mpicpp_lite12Communicator4scanERKNSt6vectorI1TEERNSt6vectorI1TEE2Op"></span><span id="_CPPv2I00ENK11mpicpp_lite12Communicator4scanERKNSt6vectorI1TEERNSt6vectorI1TEE2Op"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Op</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classmpicpp__lite_1_1_communicator_1a6905b3e75267ed432e0a95f108c738dd"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">scan</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op" title="mpicpp_lite::Communicator::scan::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">in_values</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op" title="mpicpp_lite::Communicator::scan::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">out_values</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op" title="mpicpp_lite::Communicator::scan::Op"><span class="n"><span class="pre">Op</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">op</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op" title="Link to this definition"></a><br /></dt>
+<dd><p>Computes the scan (partial reductions) of data on a collection of processes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – C++ type of the data </p></li>
+<li><p><strong>Op</strong> – Type of the reduction operation </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_values</strong> – Values to perform the scan on </p></li>
+<li><p><strong>out_values</strong> – Receiving variable </p></li>
+<li><p><strong>op</strong> – Reduce operation </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRK1TR1T2Op">
+<span id="_CPPv3I00ENK11mpicpp_lite12Communicator4scanERK1TR1T2Op"></span><span id="_CPPv2I00ENK11mpicpp_lite12Communicator4scanERK1TR1T2Op"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Op</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classmpicpp__lite_1_1_communicator_1a402038fb1c2b24cbddc232db4ad0b273"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">scan</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRK1TR1T2Op" title="mpicpp_lite::Communicator::scan::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">in_value</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRK1TR1T2Op" title="mpicpp_lite::Communicator::scan::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">out_value</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRK1TR1T2Op" title="mpicpp_lite::Communicator::scan::Op"><span class="n"><span class="pre">Op</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">op</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRK1TR1T2Op" title="Link to this definition"></a><br /></dt>
+<dd><p>Computes the scan (partial reductions) of data on a collection of processes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – C++ type of the data </p></li>
+<li><p><strong>Op</strong> – Type of the reduction operation </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_value</strong> – Value to perform the scan on </p></li>
+<li><p><strong>out_value</strong> – Receiving variable </p></li>
+<li><p><strong>op</strong> – Reduce operation </p></li>
 </ul>
 </dd>
 </dl>
