@@ -571,6 +571,9 @@ public:
     /// Cast operator so we can pass this directly in MPI API
     operator MPI_Comm() const;
 
+    /// Check if communicator
+    operator bool() const;
+
     void set_error_handler();
 
 protected:
@@ -1318,6 +1321,11 @@ Communicator::abort(int errcode) const
 inline Communicator::operator MPI_Comm() const
 {
     return this->comm;
+}
+
+inline Communicator::operator bool() const
+{
+    return is_valid();
 }
 
 inline void
