@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mpi.h"
+#include "Error.h"
 
 namespace mpicpp_lite {
 
@@ -18,6 +19,9 @@ public:
     /// @param r `MPI_Request` used to initiliaze this object
     Request(const MPI_Request & r);
 
+    /// Cancels a communication request
+    void cancel();
+
     /// Type cast operator so we can pass this class directly into MPI calls
     operator MPI_Request *() { return &this->request; }
 
@@ -31,5 +35,11 @@ private:
 inline Request::Request() {}
 
 inline Request::Request(const MPI_Request & r) : request(r) {}
+
+inline void
+Request::cancel()
+{
+    MPI_CHECK(MPI_Cancel(&this->request));
+}
 
 } // namespace mpicpp_lite
