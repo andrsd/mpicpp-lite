@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mpi.h"
+#include "Error.h"
 
 namespace mpicpp_lite {
 
@@ -167,6 +168,19 @@ type_create_struct(const std::vector<MPI_Datatype> & types,
     MPI_Datatype dt;
     MPI_CHECK(
         MPI_Type_create_struct(types.size(), blk_lens.data(), offsets.data(), types.data(), &dt));
+    return dt;
+}
+
+/// Creates a contiguous datatype
+///
+/// @param count Replication count (nonnegative integer)
+/// @param type Datatype (handle)
+/// @return New MPI datatype
+inline MPI_Datatype
+type_contiguous(int count, MPI_Datatype type)
+{
+    MPI_Datatype dt;
+    MPI_CHECK(MPI_Type_contiguous(count, type, &dt));
     return dt;
 }
 
