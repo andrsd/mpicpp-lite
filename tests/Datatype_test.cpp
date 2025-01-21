@@ -1,4 +1,5 @@
 #include "gmock/gmock.h"
+#include "mpicpp-lite/impl/Datatype.h"
 #include "mpicpp-lite/mpicpp-lite.h"
 #include <vector>
 
@@ -30,6 +31,8 @@ struct CustomData {
     char name[20];
 };
 
+enum class CustomEnum : unsigned char { RED, BLUE, GREEN };
+
 } // namespace
 
 namespace mpicpp_lite {
@@ -46,6 +49,21 @@ create_mpi_datatype<CustomData>()
                                       offsetof(CustomData, name) };
     auto dt = type_create_struct(types, blk_lens, offsets);
     return dt;
+}
+
+template <>
+inline MPI_Datatype
+get_mpi_datatype<CustomEnum>()
+{
+    static auto dt = mpi::register_mpi_datatype<CustomEnum>();
+    return dt;
+}
+
+template <>
+inline MPI_Datatype
+create_mpi_datatype<CustomEnum>()
+{
+    return type_contiguous(1, get_mpi_datatype<unsigned char>());
 }
 
 template <>
@@ -80,9 +98,37 @@ TEST(DatatypeTest, custom_struct)
     EXPECT_STREQ(data.name, "hello");
 }
 
+TEST(DatatypeTest, custom_enum)
+{
+    mpi::Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    CustomEnum e;
+    if (comm.rank() == 0)
+        e = CustomEnum::GREEN;
+    else if (comm.rank() == 1)
+        e = CustomEnum::BLUE;
+    else if (comm.rank() == 2)
+        e = CustomEnum::RED;
+    else
+        e = CustomEnum::GREEN;
+
+    std::vector<CustomEnum> colors;
+    comm.gather(e, colors, 0);
+    if (comm.rank() == 0) {
+        EXPECT_THAT(colors,
+                    testing::ElementsAre(CustomEnum::GREEN,
+                                         CustomEnum::BLUE,
+                                         CustomEnum::RED,
+                                         CustomEnum::GREEN));
+    }
+}
+
 TEST(DatatypeTest, type_size)
 {
     mpi::Communicator comm;
     EXPECT_EQ(mpi::type_size<long>(), 8);
     EXPECT_EQ(mpi::type_size<CustomData>(), 33);
+    EXPECT_EQ(mpi::type_size<CustomEnum>(), 1);
 }
