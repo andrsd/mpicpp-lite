@@ -5,7 +5,6 @@
 
 #include "mpi.h"
 #include "Error.h"
-#include "Environment.h"
 #include <type_traits>
 
 namespace mpicpp_lite {
