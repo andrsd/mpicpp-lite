@@ -1,5 +1,4 @@
 #include "gmock/gmock.h"
-#include "mpicpp-lite/impl/Datatype.h"
 #include "mpicpp-lite/mpicpp-lite.h"
 #include <vector>
 
@@ -37,6 +36,8 @@ enum class CustomEnum : unsigned char { RED, BLUE, GREEN };
 
 namespace mpicpp_lite {
 
+// CustomData structure
+
 template <>
 inline MPI_Datatype
 create_mpi_datatype<CustomData>()
@@ -53,11 +54,27 @@ create_mpi_datatype<CustomData>()
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<CustomEnum>()
+get_mpi_datatype<CustomData>()
 {
-    static auto dt = mpi::register_mpi_datatype<CustomEnum>();
+    static auto dt = mpi::register_mpi_datatype<CustomData>();
     return dt;
 }
+
+namespace op {
+
+template <>
+struct sum<CustomData> : public UserOp<sum<CustomData>, CustomData> {
+public:
+    CustomData
+    operator()(const CustomData & x, const CustomData & y) const
+    {
+        return { 0, x.value + y.value, true, "empty" };
+    }
+};
+
+} // namespace op
+
+// Custom enum
 
 template <>
 inline MPI_Datatype
@@ -68,11 +85,38 @@ create_mpi_datatype<CustomEnum>()
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<CustomData>()
+get_mpi_datatype<CustomEnum>()
 {
-    static auto dt = mpi::register_mpi_datatype<CustomData>();
+    static auto dt = mpi::register_mpi_datatype<CustomEnum>();
     return dt;
 }
+
+namespace op {
+
+template <>
+struct IsCommutative<logical_and<CustomEnum>, CustomEnum> : public std::true_type {};
+
+template <>
+struct logical_and<CustomEnum> : public UserOp<logical_and<CustomEnum>, CustomEnum> {
+public:
+    CustomEnum
+    operator()(const CustomEnum & x, const CustomEnum & y) const
+    {
+        return CustomEnum::RED;
+    }
+};
+
+template <>
+struct logical_or<CustomEnum> : public UserOp<logical_or<CustomEnum>, CustomEnum> {
+public:
+    CustomEnum
+    operator()(const CustomEnum & x, const CustomEnum & y) const
+    {
+        return CustomEnum::BLUE;
+    }
+};
+
+} // namespace op
 
 } // namespace mpicpp_lite
 
@@ -122,6 +166,120 @@ TEST(DatatypeTest, custom_enum)
                                          CustomEnum::BLUE,
                                          CustomEnum::RED,
                                          CustomEnum::GREEN));
+    }
+}
+
+TEST(DatatypeTest, custom_op_reduce)
+{
+    mpi::Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    CustomEnum e;
+    if (comm.rank() == 0)
+        e = CustomEnum::GREEN;
+    else if (comm.rank() == 1)
+        e = CustomEnum::BLUE;
+    else if (comm.rank() == 2)
+        e = CustomEnum::RED;
+    else
+        e = CustomEnum::GREEN;
+
+    CustomEnum f = CustomEnum::GREEN;
+    comm.reduce(e, f, mpi::op::logical_and<CustomEnum>(), 0);
+    if (comm.rank() == 0)
+        EXPECT_EQ(f, CustomEnum::RED);
+}
+
+TEST(DatatypeTest, custom_op_all_reduce)
+{
+    mpi::Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    CustomEnum e;
+    if (comm.rank() == 0)
+        e = CustomEnum::GREEN;
+    else if (comm.rank() == 1)
+        e = CustomEnum::BLUE;
+    else if (comm.rank() == 2)
+        e = CustomEnum::RED;
+    else
+        e = CustomEnum::GREEN;
+
+    CustomEnum f = CustomEnum::GREEN;
+    comm.all_reduce(e, f, mpi::op::logical_or<CustomEnum>());
+    EXPECT_EQ(f, CustomEnum::BLUE);
+}
+
+TEST(DatatypeTest, custom_op_scan)
+{
+    mpi::Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    CustomData d = { comm.rank(), (comm.rank() + 1) * 2., false, "text" };
+    CustomData e = { 1234, 5678., true, "A" };
+    comm.scan(d, e, mpi::op::sum<CustomData>());
+    if (comm.rank() == 0) {
+        EXPECT_EQ(e.id, 0);
+        EXPECT_NEAR(e.value, 2., 1e-10);
+        EXPECT_FALSE(e.b);
+        EXPECT_STREQ(e.name, "text");
+    }
+    else if (comm.rank() == 1) {
+        EXPECT_EQ(e.id, 0);
+        EXPECT_NEAR(e.value, 6., 1e-10);
+        EXPECT_TRUE(e.b);
+        EXPECT_STREQ(e.name, "empty");
+    }
+    else if (comm.rank() == 2) {
+        EXPECT_EQ(e.id, 0);
+        EXPECT_NEAR(e.value, 12., 1e-10);
+        EXPECT_TRUE(e.b);
+        EXPECT_STREQ(e.name, "empty");
+    }
+    else if (comm.rank() == 3) {
+        EXPECT_EQ(e.id, 0);
+        EXPECT_NEAR(e.value, 20., 1e-10);
+        EXPECT_TRUE(e.b);
+        EXPECT_STREQ(e.name, "empty");
+    }
+}
+
+TEST(DatatypeTest, custom_op_exscan)
+{
+    mpi::Communicator comm;
+    if (comm.size() != 4)
+        return;
+
+    CustomData d = { comm.rank(), (comm.rank() + 1) * 2., false, "text" };
+    CustomData e = { 4321, 8765., true, "B" };
+    comm.exscan(d, e, mpi::op::sum<CustomData>());
+
+    if (comm.rank() == 0) {
+        EXPECT_EQ(e.id, 4321);
+        EXPECT_NEAR(e.value, 8765., 1e-10);
+        EXPECT_TRUE(e.b);
+        EXPECT_STREQ(e.name, "B");
+    }
+    else if (comm.rank() == 1) {
+        EXPECT_EQ(e.id, 0);
+        EXPECT_NEAR(e.value, 2., 1e-10);
+        EXPECT_FALSE(e.b);
+        EXPECT_STREQ(e.name, "text");
+    }
+    else if (comm.rank() == 2) {
+        EXPECT_EQ(e.id, 0);
+        EXPECT_NEAR(e.value, 6., 1e-10);
+        EXPECT_TRUE(e.b);
+        EXPECT_STREQ(e.name, "empty");
+    }
+    else if (comm.rank() == 3) {
+        EXPECT_EQ(e.id, 0);
+        EXPECT_NEAR(e.value, 12., 1e-10);
+        EXPECT_TRUE(e.b);
+        EXPECT_STREQ(e.name, "empty");
     }
 }
 
