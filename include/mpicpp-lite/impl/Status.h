@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mpi.h"
+#include "Datatype.h"
 
 namespace mpicpp_lite {
 
@@ -33,12 +34,19 @@ public:
     /// @return Error code
     int error() const;
 
+    template <typename T>
+    [[deprecated("use `count` instead")]] int
+    get_count() const
+    {
+        return count<T>();
+    }
+
     /// Gets the number of "top level" elements
     ///
     /// @tparam T datatype of each receive buffer element
     /// @return The number of "top level" elements
     template <typename T>
-    int get_count() const;
+    int count() const;
 
     /// Type cast operators so we can pass this class directly into the MPI API
     operator MPI_Status *() { return &this->status; }
@@ -71,10 +79,10 @@ Status::error() const
 
 template <typename T>
 inline int
-Status::get_count() const
+Status::count() const
 {
     int n;
-    MPI_Get_count(&this->status, get_mpi_datatype<T>(), &n);
+    MPI_Get_count(&this->status, mpi_datatype<T>(), &n);
     return n;
 }
 

@@ -25,105 +25,105 @@ create_mpi_datatype()
 /// @return `MPI_Datatype` that is used in the MPI API
 template <typename T>
 inline MPI_Datatype
-get_mpi_datatype()
+mpi_datatype()
 {
     return MPI_DATATYPE_NULL;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<char>()
+mpi_datatype<char>()
 {
     return MPI_BYTE;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<short>()
+mpi_datatype<short>()
 {
     return MPI_SHORT;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<int>()
+mpi_datatype<int>()
 {
     return MPI_INT;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<long int>()
+mpi_datatype<long int>()
 {
     return MPI_LONG;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<long long int>()
+mpi_datatype<long long int>()
 {
     return MPI_LONG_LONG;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<unsigned char>()
+mpi_datatype<unsigned char>()
 {
     return MPI_UNSIGNED_CHAR;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<unsigned short>()
+mpi_datatype<unsigned short>()
 {
     return MPI_UNSIGNED_SHORT;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<unsigned int>()
+mpi_datatype<unsigned int>()
 {
     return MPI_UNSIGNED;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<unsigned long int>()
+mpi_datatype<unsigned long int>()
 {
     return MPI_UNSIGNED_LONG;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<unsigned long long int>()
+mpi_datatype<unsigned long long int>()
 {
     return MPI_UNSIGNED_LONG_LONG;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<float>()
+mpi_datatype<float>()
 {
     return MPI_FLOAT;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<double>()
+mpi_datatype<double>()
 {
     return MPI_DOUBLE;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<long double>()
+mpi_datatype<long double>()
 {
     return MPI_LONG_DOUBLE;
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<bool>()
+mpi_datatype<bool>()
 {
     return MPI_CXX_BOOL;
 }
@@ -132,12 +132,19 @@ get_mpi_datatype<bool>()
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<std::byte>()
+mpi_datatype<std::byte>()
 {
     return MPI_BYTE;
 }
 
 #endif
+
+template <typename T>
+[[deprecated("use `mpi_datatype` instead")]] inline MPI_Datatype
+get_mpi_datatype()
+{
+    return mpi_datatype<T>();
+}
 
 /// Register a new datatype for MPI communication
 ///
@@ -192,7 +199,7 @@ template <typename T>
 inline int
 type_size()
 {
-    auto dt = get_mpi_datatype<T>();
+    auto dt = mpi_datatype<T>();
     int size;
     MPI_CHECK(MPI_Type_size(dt, &size));
     return size;

@@ -6,7 +6,7 @@ using namespace testing;
 
 TEST(MPITest, get_version)
 {
-    auto [major, minor] = mpicpp_lite::get_mpi_version();
+    auto [major, minor] = mpicpp_lite::version();
     EXPECT_GE(major, 1);
     EXPECT_GE(minor, 0);
 }

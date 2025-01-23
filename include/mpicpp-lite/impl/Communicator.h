@@ -688,8 +688,7 @@ template <typename T>
 inline void
 Communicator::send(int dest, int tag, const T * values, int n) const
 {
-    MPI_CHECK_SELF(
-        MPI_Send(const_cast<T *>(values), n, get_mpi_datatype<T>(), dest, tag, this->comm));
+    MPI_CHECK_SELF(MPI_Send(const_cast<T *>(values), n, mpi_datatype<T>(), dest, tag, this->comm));
 }
 
 template <typename T, typename A>
@@ -729,13 +728,8 @@ inline Status
 Communicator::recv(int source, int tag, T * values, int n) const
 {
     MPI_Status status = { 0 };
-    MPI_CHECK_SELF(MPI_Recv(const_cast<T *>(values),
-                            n,
-                            get_mpi_datatype<T>(),
-                            source,
-                            tag,
-                            this->comm,
-                            &status));
+    MPI_CHECK_SELF(
+        MPI_Recv(const_cast<T *>(values), n, mpi_datatype<T>(), source, tag, this->comm, &status));
     return { status };
 }
 
@@ -746,7 +740,7 @@ Communicator::recv(int source, int tag, std::vector<T, A> & values) const
     MPI_Status status = { 0 };
     MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm, &status));
     int size = 0;
-    MPI_Get_count(&status, get_mpi_datatype<T>(), &size);
+    MPI_Get_count(&status, mpi_datatype<T>(), &size);
     values.resize(size);
     return recv(source, tag, values.data(), size);
 }
@@ -791,13 +785,8 @@ Communicator::isend(int dest, int tag, const T * values, int n) const
 {
     assert(values != nullptr);
     MPI_Request request;
-    MPI_CHECK_SELF(MPI_Isend(const_cast<T *>(values),
-                             n,
-                             get_mpi_datatype<T>(),
-                             dest,
-                             tag,
-                             this->comm,
-                             &request));
+    MPI_CHECK_SELF(
+        MPI_Isend(const_cast<T *>(values), n, mpi_datatype<T>(), dest, tag, this->comm, &request));
     return { request };
 }
 
@@ -818,7 +807,7 @@ Communicator::irecv(int source, int tag, T * values, int n) const
     MPI_Request request;
     MPI_CHECK_SELF(MPI_Irecv(const_cast<T *>(values),
                              n,
-                             get_mpi_datatype<T>(),
+                             mpi_datatype<T>(),
                              source,
                              tag,
                              this->comm,
@@ -881,7 +870,7 @@ template <typename T>
 inline void
 Communicator::broadcast(T * values, int n, int root) const
 {
-    MPI_CHECK_SELF(MPI_Bcast(values, n, get_mpi_datatype<T>(), root, this->comm));
+    MPI_CHECK_SELF(MPI_Bcast(values, n, mpi_datatype<T>(), root, this->comm));
 }
 
 template <typename KEY, typename VALUE>
@@ -956,7 +945,7 @@ template <typename T>
 inline void
 Communicator::gather(const T * in_values, int n, T * out_values, int root) const
 {
-    auto type = get_mpi_datatype<T>();
+    auto type = mpi_datatype<T>();
     MPI_CHECK_SELF(
         MPI_Gather(const_cast<T *>(in_values), n, type, out_values, n, type, root, this->comm));
 }
@@ -986,11 +975,11 @@ Communicator::gather(const std::vector<T> & in_values,
     out_values.resize(n_out_vals);
     MPI_CHECK_SELF(MPI_Gatherv(in_values.data(),
                                in_values.size(),
-                               get_mpi_datatype<T>(),
+                               mpi_datatype<T>(),
                                out_values.data(),
                                out_counts.data(),
                                out_offsets.data(),
-                               get_mpi_datatype<T>(),
+                               mpi_datatype<T>(),
                                root,
                                this->comm));
 }
@@ -1001,10 +990,10 @@ Communicator::all_gather(const T * in_value, int n, T * out_values, int m) const
 {
     MPI_CHECK_SELF(MPI_Allgather(in_value,
                                  n,
-                                 get_mpi_datatype<T>(),
+                                 mpi_datatype<T>(),
                                  out_values,
                                  m,
-                                 get_mpi_datatype<T>(),
+                                 mpi_datatype<T>(),
                                  this->comm));
 }
 
@@ -1049,11 +1038,11 @@ Communicator::all_gather(const std::vector<T> & in_values,
     out_values.resize(n_out_vals);
     MPI_CHECK_SELF(MPI_Allgatherv(in_values.data(),
                                   in_values.size(),
-                                  get_mpi_datatype<T>(),
+                                  mpi_datatype<T>(),
                                   out_values.data(),
                                   out_counts.data(),
                                   out_offsets.data(),
-                                  get_mpi_datatype<T>(),
+                                  mpi_datatype<T>(),
                                   this->comm));
 }
 
@@ -1077,7 +1066,7 @@ template <typename T>
 inline void
 Communicator::scatter(const T * in_values, T * out_values, int n, int root) const
 {
-    auto type = get_mpi_datatype<T>();
+    auto type = mpi_datatype<T>();
     MPI_CHECK_SELF(
         MPI_Scatter(const_cast<T *>(in_values), n, type, out_values, n, type, root, this->comm));
 }
@@ -1099,7 +1088,7 @@ Communicator::reduce(const T * in_values, int n, T * out_values, Op, int root) c
     MPI_CHECK_SELF(MPI_Reduce(const_cast<T *>(in_values),
                               out_values,
                               n,
-                              get_mpi_datatype<T>(),
+                              mpi_datatype<T>(),
                               mpi_op,
                               root,
                               this->comm));
@@ -1134,7 +1123,7 @@ Communicator::all_reduce(const T * in_values, int n, T * out_values, Op) const
     MPI_CHECK_SELF(MPI_Allreduce(const_cast<T *>(in_values),
                                  out_values,
                                  n,
-                                 get_mpi_datatype<T>(),
+                                 mpi_datatype<T>(),
                                  mpi_op,
                                  this->comm));
 }
@@ -1169,10 +1158,10 @@ Communicator::all_to_all(const T * in_values, int n, T * out_values, int m) cons
 {
     MPI_CHECK_SELF(MPI_Alltoall(in_values,
                                 n,
-                                get_mpi_datatype<T>(),
+                                mpi_datatype<T>(),
                                 out_values,
                                 m,
-                                get_mpi_datatype<T>(),
+                                mpi_datatype<T>(),
                                 this->comm));
 }
 
@@ -1238,11 +1227,11 @@ Communicator::all_to_all(const std::vector<T> & in_values,
     MPI_CHECK_SELF(MPI_Alltoallv(in_values.data(),
                                  in_counts.data(),
                                  in_offsets.data(),
-                                 get_mpi_datatype<T>(),
+                                 mpi_datatype<T>(),
                                  out_values.data(),
                                  out_counts.data(),
                                  out_offsets.data(),
-                                 get_mpi_datatype<T>(),
+                                 mpi_datatype<T>(),
                                  this->comm));
 }
 
@@ -1261,12 +1250,8 @@ inline void
 Communicator::scan(const T * in_values, int n, T * out_values, Op) const
 {
     auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
-    MPI_CHECK_SELF(MPI_Scan(const_cast<T *>(in_values),
-                            out_values,
-                            n,
-                            get_mpi_datatype<T>(),
-                            mpi_op,
-                            this->comm));
+    MPI_CHECK_SELF(
+        MPI_Scan(const_cast<T *>(in_values), out_values, n, mpi_datatype<T>(), mpi_op, this->comm));
 }
 
 template <typename T, typename Op>
@@ -1294,7 +1279,7 @@ Communicator::exscan(const T * in_values, int n, T * out_values, Op) const
     MPI_CHECK_SELF(MPI_Exscan(const_cast<T *>(in_values),
                               out_values,
                               n,
-                              get_mpi_datatype<T>(),
+                              mpi_datatype<T>(),
                               mpi_op,
                               this->comm));
 }
