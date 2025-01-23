@@ -74,7 +74,7 @@ inline int
 Status::get_count() const
 {
     int n;
-    MPI_Get_count(&this->status, get_mpi_datatype<T>(), &n);
+    MPI_Get_count(&this->status, mpi_datatype<T>(), &n);
     return n;
 }
 

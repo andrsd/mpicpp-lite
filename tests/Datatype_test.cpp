@@ -6,19 +6,19 @@ namespace mpi = mpicpp_lite;
 
 TEST(MPITest, std_datatypes)
 {
-    EXPECT_EQ(mpi::get_mpi_datatype<char>(), MPI_BYTE);
-    EXPECT_EQ(mpi::get_mpi_datatype<short>(), MPI_SHORT);
-    EXPECT_EQ(mpi::get_mpi_datatype<int>(), MPI_INT);
-    EXPECT_EQ(mpi::get_mpi_datatype<long int>(), MPI_LONG);
-    EXPECT_EQ(mpi::get_mpi_datatype<long long int>(), MPI_LONG_LONG);
-    EXPECT_EQ(mpi::get_mpi_datatype<unsigned char>(), MPI_UNSIGNED_CHAR);
-    EXPECT_EQ(mpi::get_mpi_datatype<unsigned short>(), MPI_UNSIGNED_SHORT);
-    EXPECT_EQ(mpi::get_mpi_datatype<unsigned int>(), MPI_UNSIGNED);
-    EXPECT_EQ(mpi::get_mpi_datatype<unsigned long int>(), MPI_UNSIGNED_LONG);
-    EXPECT_EQ(mpi::get_mpi_datatype<unsigned long long int>(), MPI_UNSIGNED_LONG_LONG);
-    EXPECT_EQ(mpi::get_mpi_datatype<float>(), MPI_FLOAT);
-    EXPECT_EQ(mpi::get_mpi_datatype<double>(), MPI_DOUBLE);
-    EXPECT_EQ(mpi::get_mpi_datatype<long double>(), MPI_LONG_DOUBLE);
+    EXPECT_EQ(mpi::mpi_datatype<char>(), MPI_BYTE);
+    EXPECT_EQ(mpi::mpi_datatype<short>(), MPI_SHORT);
+    EXPECT_EQ(mpi::mpi_datatype<int>(), MPI_INT);
+    EXPECT_EQ(mpi::mpi_datatype<long int>(), MPI_LONG);
+    EXPECT_EQ(mpi::mpi_datatype<long long int>(), MPI_LONG_LONG);
+    EXPECT_EQ(mpi::mpi_datatype<unsigned char>(), MPI_UNSIGNED_CHAR);
+    EXPECT_EQ(mpi::mpi_datatype<unsigned short>(), MPI_UNSIGNED_SHORT);
+    EXPECT_EQ(mpi::mpi_datatype<unsigned int>(), MPI_UNSIGNED);
+    EXPECT_EQ(mpi::mpi_datatype<unsigned long int>(), MPI_UNSIGNED_LONG);
+    EXPECT_EQ(mpi::mpi_datatype<unsigned long long int>(), MPI_UNSIGNED_LONG_LONG);
+    EXPECT_EQ(mpi::mpi_datatype<float>(), MPI_FLOAT);
+    EXPECT_EQ(mpi::mpi_datatype<double>(), MPI_DOUBLE);
+    EXPECT_EQ(mpi::mpi_datatype<long double>(), MPI_LONG_DOUBLE);
 }
 
 namespace {
@@ -54,7 +54,7 @@ create_mpi_datatype<CustomData>()
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<CustomData>()
+mpi_datatype<CustomData>()
 {
     static auto dt = mpi::register_mpi_datatype<CustomData>();
     return dt;
@@ -80,12 +80,12 @@ template <>
 inline MPI_Datatype
 create_mpi_datatype<CustomEnum>()
 {
-    return type_contiguous(1, get_mpi_datatype<unsigned char>());
+    return type_contiguous(1, mpi_datatype<unsigned char>());
 }
 
 template <>
 inline MPI_Datatype
-get_mpi_datatype<CustomEnum>()
+mpi_datatype<CustomEnum>()
 {
     static auto dt = mpi::register_mpi_datatype<CustomEnum>();
     return dt;
