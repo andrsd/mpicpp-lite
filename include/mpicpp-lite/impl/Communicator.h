@@ -1095,12 +1095,12 @@ template <typename T, typename Op>
 inline void
 Communicator::reduce(const T * in_values, int n, T * out_values, Op, int root) const
 {
-    MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
     MPI_CHECK_SELF(MPI_Reduce(const_cast<T *>(in_values),
                               out_values,
                               n,
-                              mpicpp_lite::get_mpi_datatype<T>(),
-                              op,
+                              get_mpi_datatype<T>(),
+                              mpi_op,
                               root,
                               this->comm));
 }
@@ -1130,12 +1130,12 @@ template <typename T, typename Op>
 inline void
 Communicator::all_reduce(const T * in_values, int n, T * out_values, Op) const
 {
-    MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
     MPI_CHECK_SELF(MPI_Allreduce(const_cast<T *>(in_values),
                                  out_values,
                                  n,
-                                 mpicpp_lite::get_mpi_datatype<T>(),
-                                 op,
+                                 get_mpi_datatype<T>(),
+                                 mpi_op,
                                  this->comm));
 }
 
@@ -1260,9 +1260,13 @@ template <typename T, typename Op>
 inline void
 Communicator::scan(const T * in_values, int n, T * out_values, Op) const
 {
-    MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
-    MPI_CHECK_SELF(
-        MPI_Scan(const_cast<T *>(in_values), out_values, n, get_mpi_datatype<T>(), op, this->comm));
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
+    MPI_CHECK_SELF(MPI_Scan(const_cast<T *>(in_values),
+                            out_values,
+                            n,
+                            get_mpi_datatype<T>(),
+                            mpi_op,
+                            this->comm));
 }
 
 template <typename T, typename Op>
@@ -1286,12 +1290,12 @@ template <typename T, typename Op>
 inline void
 Communicator::exscan(const T * in_values, int n, T * out_values, Op) const
 {
-    MPI_Op op = mpicpp_lite::op::Operation<Op, T>::op();
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
     MPI_CHECK_SELF(MPI_Exscan(const_cast<T *>(in_values),
                               out_values,
                               n,
                               get_mpi_datatype<T>(),
-                              op,
+                              mpi_op,
                               this->comm));
 }
 
