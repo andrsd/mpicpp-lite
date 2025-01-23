@@ -78,11 +78,17 @@ Environment::is_finalized()
 ///
 /// @return Tuple with the version and subversion of MPI
 inline std::tuple<int, int>
-get_mpi_version()
+version()
 {
     int version, subversion;
     MPI_CHECK(MPI_Get_version(&version, &subversion));
     return std::make_tuple(version, subversion);
+}
+
+[[deprecated("use `version` instead")]] inline std::tuple<int, int>
+get_mpi_version()
+{
+    return version();
 }
 
 /// Creates a division of processors in a cartesian grid
