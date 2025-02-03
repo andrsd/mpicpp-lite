@@ -5,6 +5,7 @@
 
 #include "mpi.h"
 #include "Error.h"
+#include <algorithm>
 #include <type_traits>
 
 namespace mpicpp_lite {

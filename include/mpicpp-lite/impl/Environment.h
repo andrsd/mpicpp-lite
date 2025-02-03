@@ -6,6 +6,7 @@
 #include "mpi.h"
 #include "Error.h"
 #include <vector>
+#include <tuple>
 
 namespace mpicpp_lite {
 
