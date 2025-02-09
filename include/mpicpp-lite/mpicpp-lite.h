@@ -13,3 +13,4 @@
 #include "impl/Status.h"
 #include "impl/Test.h"
 #include "impl/Wait.h"
+#include "impl/Window.h"

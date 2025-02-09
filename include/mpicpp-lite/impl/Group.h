@@ -6,6 +6,7 @@
 #include "mpi.h"
 #include "Enums.h"
 #include "Error.h"
+#include <vector>
 
 namespace mpicpp_lite {
 
