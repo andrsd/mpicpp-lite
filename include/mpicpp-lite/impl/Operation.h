@@ -133,6 +133,18 @@ struct logical_xor {
     }
 };
 
+/// Template for replace on a `T` type
+///
+/// @tparam T Datatype
+template <typename T>
+struct replace {
+    T
+    operator()(const T & x, const T & y) const
+    {
+        return x;
+    }
+};
+
 /// Determine if a function object type is commutative.
 ///
 /// This trait determines if an operation `Op` is commutative when applied to values of type `T`.
@@ -284,6 +296,24 @@ struct Operation<logical_xor<T>, T> {
     op()
     {
         return MPI_LXOR;
+    }
+};
+
+/// Template for replace on a `T` type
+///
+/// @tparam T Datatype
+template <typename T>
+struct Operation<replace<T>, T> {
+    using is_native = typename std::
+        conditional<std::is_integral<T>::value, std::true_type, std::false_type>::type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for logical XOR
+    static MPI_Op
+    op()
+    {
+        return MPI_REPLACE;
     }
 };
 
