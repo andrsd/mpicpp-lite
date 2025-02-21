@@ -30,6 +30,9 @@ public:
     /// Copy constructor
     Communicator(const Communicator & comm);
 
+    /// Marks the communicator object for deallocation
+    void free();
+
     /// Determine the rank of the executing process in a communicator
     ///
     /// @return Rank of the executing process
@@ -626,6 +629,13 @@ inline Communicator::Communicator() : comm(MPI_COMM_WORLD) {}
 inline Communicator::Communicator(const MPI_Comm & comm) : comm(comm) {}
 
 inline Communicator::Communicator(const Communicator & comm) : comm(comm.comm) {}
+
+inline void
+Communicator::free()
+{
+    MPI_CHECK_SELF(MPI_Comm_free(&this->comm));
+    this->comm = MPI_COMM_NULL;
+}
 
 inline int
 Communicator::rank() const

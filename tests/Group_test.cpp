@@ -33,10 +33,13 @@ TEST(GroupTest, include)
             EXPECT_EQ(sub_comm.rank(), 1);
         else if (rank == 3)
             EXPECT_EQ(sub_comm.rank(), 2);
+        sub_comm.free();
     }
 
     sub_group.free();
     world_group.free();
+
+    EXPECT_FALSE(sub_comm.is_valid());
 }
 
 TEST(GroupTest, exclude)
