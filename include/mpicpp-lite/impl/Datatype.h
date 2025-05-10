@@ -5,6 +5,7 @@
 
 #include "mpi.h"
 #include "Error.h"
+#include <stdexcept>
 #include <vector>
 #include <cassert>
 
@@ -33,8 +34,9 @@ MPI_Datatype
 register_mpi_datatype()
 {
     auto datatype = DatatypeTraits<T>::get();
-    if (datatype != MPI_DATATYPE_NULL)
-        MPI_CHECK(MPI_Type_commit(&datatype));
+    if (datatype == MPI_DATATYPE_NULL)
+        throw std::runtime_error("Unknown type used in MPI communication");
+    MPI_CHECK(MPI_Type_commit(&datatype));
     return datatype;
 }
 

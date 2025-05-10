@@ -1,5 +1,6 @@
 #include "gmock/gmock.h"
 #include "mpicpp-lite/mpicpp-lite.h"
+#include <stdexcept>
 #include <vector>
 #include <array>
 
@@ -43,6 +44,10 @@ template <typename T, int D>
 struct DVec {
     std::array<T, D> vals;
 };
+
+// UnregisteredEnum
+
+enum class UnregisteredEnum : unsigned char { A, B, C };
 
 } // namespace
 
@@ -306,4 +311,17 @@ TEST(DatatypeTest, custom_templated_type)
 
     EXPECT_EQ(data.vals[0], 42);
     EXPECT_EQ(data.vals[1], 12);
+}
+
+TEST(DatatypeTest, use_unknown_type)
+{
+    mpi::Communicator comm;
+    if (comm.size() > 1)
+        return;
+
+    UnregisteredEnum e;
+    if (comm.rank() == 0)
+        e = UnregisteredEnum::A;
+
+    EXPECT_THROW(comm.broadcast(e, 0), std::runtime_error);
 }
