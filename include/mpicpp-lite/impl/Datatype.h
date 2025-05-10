@@ -5,18 +5,37 @@
 
 #include "mpi.h"
 #include "Error.h"
+#include <vector>
+#include <cassert>
 
 namespace mpicpp_lite {
 
-/// Create a new datatype for MPI communication
-///
-/// @tparam T Datatype
-/// @return New `MPI_Datatype`
+/// Datatype traits for registering new types
 template <typename T>
-inline MPI_Datatype
-create_mpi_datatype()
+struct DatatypeTraits {
+    /// Create a new datatype for MPI communication
+    ///
+    /// @tparam T Datatype
+    /// @return New `MPI_Datatype`
+    static MPI_Datatype
+    get()
+    {
+        return MPI_DATATYPE_NULL;
+    }
+};
+
+/// Register a new datatype for MPI communication
+///
+/// @tparam T Datatype to register
+/// @return New MPI datatype
+template <typename T>
+MPI_Datatype
+register_mpi_datatype()
 {
-    return MPI_DATATYPE_NULL;
+    auto datatype = DatatypeTraits<T>::get();
+    if (datatype != MPI_DATATYPE_NULL)
+        MPI_CHECK(MPI_Type_commit(&datatype));
+    return datatype;
 }
 
 /// General template to obtain an MPI_Datatype from a C++ type
@@ -27,7 +46,8 @@ template <typename T>
 inline MPI_Datatype
 mpi_datatype()
 {
-    return MPI_DATATYPE_NULL;
+    static auto dt = register_mpi_datatype<T>();
+    return dt;
 }
 
 template <>
@@ -144,19 +164,6 @@ template <typename T>
 get_mpi_datatype()
 {
     return mpi_datatype<T>();
-}
-
-/// Register a new datatype for MPI communication
-///
-/// @tparam T Datatype to register
-/// @return New MPI datatype
-template <typename T>
-MPI_Datatype
-register_mpi_datatype()
-{
-    auto datatype = create_mpi_datatype<T>();
-    MPI_CHECK(MPI_Type_commit(&datatype));
-    return datatype;
 }
 
 /// Create a new datatype for MPI communication
