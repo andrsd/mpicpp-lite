@@ -5,6 +5,7 @@
 
 #include "mpi.h"
 #include "Error.h"
+#include "Environment.h"
 #include <stdexcept>
 #include <vector>
 #include <cassert>
@@ -37,6 +38,7 @@ register_mpi_datatype()
     if (datatype == MPI_DATATYPE_NULL)
         throw std::runtime_error("Unknown type used in MPI communication");
     MPI_CHECK(MPI_Type_commit(&datatype));
+    Environment::user_datatypes.push_back(datatype);
     return datatype;
 }
 

@@ -31,6 +31,16 @@ public:
 private:
     /// Indicates if the environment is initialized
     bool initialized;
+
+public:
+    static inline void destroy();
+
+private:
+    /// User-registered datatypes
+    static inline std::vector<MPI_Datatype> user_datatypes;
+
+    template <typename T>
+    friend MPI_Datatype register_mpi_datatype();
 };
 
 inline Environment::Environment() : initialized(false)
@@ -52,8 +62,10 @@ inline Environment::Environment(int & argc, char **& argv) : initialized(false)
 inline Environment::~Environment()
 {
     if (this->initialized) {
-        if (!is_finalized())
+        if (!is_finalized()) {
+            Environment::destroy();
             MPI_CHECK(MPI_Finalize());
+        }
     }
 }
 
@@ -103,6 +115,14 @@ create_dims(int n_nodes, int n_dims)
     std::vector<int> dims(n_dims, 0);
     MPI_CHECK(MPI_Dims_create(n_nodes, n_dims, dims.data()));
     return dims;
+}
+
+void
+Environment::destroy()
+{
+    for (auto & dt : user_datatypes)
+        MPI_CHECK(MPI_Type_free(&dt));
+    user_datatypes.clear();
 }
 
 } // namespace mpicpp_lite
