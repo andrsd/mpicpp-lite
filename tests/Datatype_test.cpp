@@ -1,6 +1,8 @@
 #include "gmock/gmock.h"
 #include "mpicpp-lite/mpicpp-lite.h"
+#include <stdexcept>
 #include <vector>
+#include <array>
 
 namespace mpi = mpicpp_lite;
 
@@ -23,6 +25,8 @@ TEST(MPITest, std_datatypes)
 
 namespace {
 
+// CustomData structure
+
 struct CustomData {
     int id;
     double value;
@@ -30,35 +34,58 @@ struct CustomData {
     char name[20];
 };
 
+// Custom enum
+
 enum class CustomEnum : unsigned char { RED, BLUE, GREEN };
+
+// Templated type
+
+template <typename T, int D>
+struct DVec {
+    std::array<T, D> vals;
+};
+
+// UnregisteredEnum
+
+enum class UnregisteredEnum : unsigned char { A, B, C };
 
 } // namespace
 
 namespace mpicpp_lite {
 
-// CustomData structure
+template <>
+struct DatatypeTraits<CustomData> {
+    static MPI_Datatype
+    get()
+    {
+        std::vector<MPI_Datatype> types = { MPI_INT, MPI_DOUBLE, MPI_CXX_BOOL, MPI_CHAR };
+        std::vector<int> blk_lens = { 1, 1, 1, 20 };
+        std::vector<MPI_Aint> offsets = { offsetof(CustomData, id),
+                                          offsetof(CustomData, value),
+                                          offsetof(CustomData, b),
+                                          offsetof(CustomData, name) };
+        auto dt = type_create_struct(types, blk_lens, offsets);
+        return dt;
+    }
+};
 
 template <>
-inline MPI_Datatype
-create_mpi_datatype<CustomData>()
-{
-    std::vector<MPI_Datatype> types = { MPI_INT, MPI_DOUBLE, MPI_CXX_BOOL, MPI_CHAR };
-    std::vector<int> blk_lens = { 1, 1, 1, 20 };
-    std::vector<MPI_Aint> offsets = { offsetof(CustomData, id),
-                                      offsetof(CustomData, value),
-                                      offsetof(CustomData, b),
-                                      offsetof(CustomData, name) };
-    auto dt = type_create_struct(types, blk_lens, offsets);
-    return dt;
-}
+struct DatatypeTraits<CustomEnum> {
+    static MPI_Datatype
+    get()
+    {
+        return type_contiguous(1, mpi_datatype<unsigned char>());
+    }
+};
 
-template <>
-inline MPI_Datatype
-mpi_datatype<CustomData>()
-{
-    static auto dt = mpi::register_mpi_datatype<CustomData>();
-    return dt;
-}
+template <typename T, int D>
+struct DatatypeTraits<DVec<T, D>> {
+    static MPI_Datatype
+    get()
+    {
+        return type_contiguous(D, mpi::mpi_datatype<T>());
+    }
+};
 
 namespace op {
 
@@ -71,27 +98,6 @@ public:
         return { 0, x.value + y.value, true, "empty" };
     }
 };
-
-} // namespace op
-
-// Custom enum
-
-template <>
-inline MPI_Datatype
-create_mpi_datatype<CustomEnum>()
-{
-    return type_contiguous(1, mpi_datatype<unsigned char>());
-}
-
-template <>
-inline MPI_Datatype
-mpi_datatype<CustomEnum>()
-{
-    static auto dt = mpi::register_mpi_datatype<CustomEnum>();
-    return dt;
-}
-
-namespace op {
 
 template <>
 struct IsCommutative<logical_and<CustomEnum>, CustomEnum> : public std::true_type {};
@@ -127,7 +133,6 @@ TEST(DatatypeTest, custom_struct)
         return;
 
     CustomData data;
-    int tag = 1234;
     if (comm.rank() == 0) {
         data.id = 42;
         data.value = 3.14;
@@ -289,4 +294,34 @@ TEST(DatatypeTest, type_size)
     EXPECT_EQ(mpi::type_size<long>(), 8);
     EXPECT_EQ(mpi::type_size<CustomData>(), 33);
     EXPECT_EQ(mpi::type_size<CustomEnum>(), 1);
+}
+
+TEST(DatatypeTest, custom_templated_type)
+{
+    mpi::Communicator comm;
+    if (comm.size() > 1)
+        return;
+
+    DVec<int, 2> data;
+    if (comm.rank() == 0) {
+        data.vals[0] = 42;
+        data.vals[1] = 12;
+    }
+    comm.broadcast(data, 0);
+
+    EXPECT_EQ(data.vals[0], 42);
+    EXPECT_EQ(data.vals[1], 12);
+}
+
+TEST(DatatypeTest, use_unknown_type)
+{
+    mpi::Communicator comm;
+    if (comm.size() > 1)
+        return;
+
+    UnregisteredEnum e;
+    if (comm.rank() == 0)
+        e = UnregisteredEnum::A;
+
+    EXPECT_THROW(comm.broadcast(e, 0), std::runtime_error);
 }
