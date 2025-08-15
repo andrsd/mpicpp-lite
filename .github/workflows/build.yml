@@ -88,6 +88,14 @@ jobs:
           paths: ${{ github.workspace }}/build/gtest-results-*.xml
           show: "fail, skip"
 
+      - name: Upload test results to codecov.io
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ${{ github.workspace }}/build/gtest-results-1.xml,${{ github.workspace }}/build/gtest-results-4.xml,${{ github.workspace }}/build/gtest-results-6.xml
+          name: ${{ matrix.os }}-${{ matrix.mpi }}-${{ matrix.build }}
+
       - name: Generate code coverage
         run: cmake --build ${{ github.workspace }}/build --target coverage
 
