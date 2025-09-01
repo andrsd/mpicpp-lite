@@ -7,7 +7,7 @@ project(mpicpp-lite
 
 enable_language(C)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -20,7 +20,7 @@ include(Sanitization)
 
 option(MPICPP_LITE_BUILD_TESTS "Build tests" NO)
 
-find_package(fmt 8.0 QUIET)
+find_package(fmt 11 QUIET)
 find_package(MPI REQUIRED)
 
 if (MPICPP_LITE_BUILD_TESTS)

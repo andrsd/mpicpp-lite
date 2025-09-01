@@ -28,7 +28,7 @@ jobs:
             cmake \
             make \
             mpich-mpicxx \
-            fmt==9.1.0
+            fmt=11.*
 
       - name: Configure
         run: |
@@ -40,10 +40,10 @@ jobs:
       - uses: cpp-linter/cpp-linter-action@v2
         with:
           style: file
-          tidy-checks: ''
+          tidy-checks: ""
           version: 14
           lines-changed-only: true
-          ignore: 'contrib'
+          ignore: "contrib"
           step-summary: true
           database: build
 
