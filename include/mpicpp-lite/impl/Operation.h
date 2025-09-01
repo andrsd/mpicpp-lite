@@ -7,8 +7,12 @@
 #include "Error.h"
 #include <algorithm>
 #include <type_traits>
+#include <concepts>
 
 namespace mpicpp_lite {
+
+template <typename T>
+concept Numeric = std::integral<T> || std::floating_point<T>;
 
 namespace op {
 
@@ -168,12 +172,9 @@ struct Operation {
 /// Template for summation operation on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <Numeric T>
 struct Operation<sum<T>, T> {
-    using is_native = typename std::conditional<
-        std::disjunction<std::is_integral<T>, std::is_floating_point<T>>::value,
-        std::true_type,
-        std::false_type>::type;
+    using is_native = std::true_type;
 
     /// Call operator
     ///
@@ -188,12 +189,9 @@ struct Operation<sum<T>, T> {
 /// Template for product operation on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <Numeric T>
 struct Operation<prod<T>, T> {
-    using is_native = typename std::conditional<
-        std::disjunction<std::is_integral<T>, std::is_floating_point<T>>::value,
-        std::true_type,
-        std::false_type>::type;
+    using is_native = std::true_type;
 
     /// Call operator
     ///
@@ -208,12 +206,9 @@ struct Operation<prod<T>, T> {
 /// Template for finding maximum on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <Numeric T>
 struct Operation<max<T>, T> {
-    using is_native = typename std::conditional<
-        std::disjunction<std::is_integral<T>, std::is_floating_point<T>>::value,
-        std::true_type,
-        std::false_type>::type;
+    using is_native = std::true_type;
 
     /// Call operator
     ///
@@ -228,12 +223,9 @@ struct Operation<max<T>, T> {
 /// Template for finding minimum on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <Numeric T>
 struct Operation<min<T>, T> {
-    using is_native = typename std::conditional<
-        std::disjunction<std::is_integral<T>, std::is_floating_point<T>>::value,
-        std::true_type,
-        std::false_type>::type;
+    using is_native = std::true_type;
 
     /// Call operator
     ///
@@ -248,10 +240,9 @@ struct Operation<min<T>, T> {
 /// Template for logical AND on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <Numeric T>
 struct Operation<logical_and<T>, T> {
-    using is_native = typename std::
-        conditional<std::is_integral<T>::value, std::true_type, std::false_type>::type;
+    using is_native = std::true_type;
 
     /// Call operator
     ///
@@ -266,10 +257,9 @@ struct Operation<logical_and<T>, T> {
 /// Template for logical OR on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <Numeric T>
 struct Operation<logical_or<T>, T> {
-    using is_native = typename std::
-        conditional<std::is_integral<T>::value, std::true_type, std::false_type>::type;
+    using is_native = std::true_type;
 
     /// Call operator
     ///
@@ -284,10 +274,9 @@ struct Operation<logical_or<T>, T> {
 /// Template for logical XOR on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <Numeric T>
 struct Operation<logical_xor<T>, T> {
-    using is_native = typename std::
-        conditional<std::is_integral<T>::value, std::true_type, std::false_type>::type;
+    using is_native = std::true_type;
 
     /// Call operator
     ///
@@ -302,10 +291,9 @@ struct Operation<logical_xor<T>, T> {
 /// Template for replace on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <Numeric T>
 struct Operation<replace<T>, T> {
-    using is_native = typename std::
-        conditional<std::is_integral<T>::value, std::true_type, std::false_type>::type;
+    using is_native = std::true_type;
 
     /// Call operator
     ///
