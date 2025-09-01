@@ -20,7 +20,7 @@ include(Sanitization)
 
 option(MPICPP_LITE_BUILD_TESTS "Build tests" NO)
 
-find_package(fmt 8.0 QUIET)
+find_package(fmt 11 QUIET)
 find_package(MPI REQUIRED)
 
 if (MPICPP_LITE_BUILD_TESTS)

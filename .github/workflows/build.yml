@@ -49,7 +49,7 @@ jobs:
             cmake \
             make \
             ${{ matrix.mpi }}-mpicxx \
-            fmt==9.1.0 \
+            fmt=11.* \
             lcov
 
       - name: Configure
