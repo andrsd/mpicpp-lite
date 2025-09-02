@@ -1,5 +1,6 @@
 project(mpicpp-lite-test)
 
+find_package(GTest)
 include(GoogleTest)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -17,8 +18,7 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC
-        gtest_main
-        gmock_main
+        GTest::gmock_main
         MPI::MPI_CXX
         mpicpp-lite
 )
