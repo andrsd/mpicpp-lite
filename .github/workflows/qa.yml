@@ -28,7 +28,8 @@ jobs:
             cmake \
             make \
             mpich-mpicxx \
-            fmt=11.*
+            fmt=11.* \
+            gtest
 
       - name: Configure
         run: |

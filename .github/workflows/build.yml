@@ -50,6 +50,7 @@ jobs:
             make \
             ${{ matrix.mpi }}-mpicxx \
             fmt=11.* \
+            gtest \
             lcov
 
       - name: Configure
