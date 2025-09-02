@@ -1,6 +1,6 @@
 project(mpicpp-lite-test)
 
-find_package(GTest)
+find_package(GTest REQUIRED)
 include(GoogleTest)
 
 set(CMAKE_CXX_STANDARD 20)
