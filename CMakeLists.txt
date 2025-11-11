@@ -7,9 +7,6 @@ project(mpicpp-lite
 
 enable_language(C)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 include(CMakePackageConfigHelpers)
@@ -29,6 +26,10 @@ target_include_directories(mpicpp-lite
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_link_libraries(mpicpp-lite INTERFACE MPI::MPI_C)
+target_compile_features(mpicpp-lite
+    INTERFACE
+        cxx_std_20
+)
 
 # Install
 
