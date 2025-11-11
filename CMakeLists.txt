@@ -7,9 +7,6 @@ project(mpicpp-lite
 
 enable_language(C)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 include(CMakePackageConfigHelpers)
@@ -18,8 +15,11 @@ include(CodeCoverage)
 include(Sanitization)
 
 option(MPICPP_LITE_BUILD_TESTS "Build tests" NO)
+option(MPICPP_LITE_WITH_FMT "Build with fmt support" NO)
 
-find_package(fmt 11 QUIET)
+if (MPICPP_LITE_WITH_FMT)
+    find_package(fmt 11 REQUIRED)
+endif()
 find_package(MPI REQUIRED)
 
 add_library(mpicpp-lite INTERFACE)
@@ -29,6 +29,10 @@ target_include_directories(mpicpp-lite
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_link_libraries(mpicpp-lite INTERFACE MPI::MPI_C)
+target_compile_features(mpicpp-lite
+    INTERFACE
+        cxx_std_20
+)
 
 # Install
 
@@ -41,7 +45,7 @@ configure_package_config_file(
 write_basic_package_version_file(
     mpicpp-lite-config-version.cmake
     VERSION ${PROJECT_VERSION}
-    COMPATIBILITY AnyNewerVersion
+    COMPATIBILITY SameMinorVersion
 )
 
 install(

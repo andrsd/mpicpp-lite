@@ -20,15 +20,19 @@ jobs:
         include:
           - os: ubuntu-22.04
             mpi: mpich
+            mpi-version: 4.3.*
             build: Release
           - os: ubuntu-22.04
             mpi: openmpi
+            mpi-version: 4.1.*
             build: Release
           - os: ubuntu-22.04
             mpi: mpich
+            mpi-version: 4.3.*
             build: Debug
           - os: ubuntu-22.04
             mpi: openmpi
+            mpi-version: 4.1.*
             build: Debug
 
     runs-on: ${{ matrix.os }}
@@ -36,7 +40,7 @@ jobs:
       - name: Set up miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: 3.9
+          python-version: 3.11
           auto-update-conda: false
           channels: andrsd,defaults
 
@@ -46,10 +50,11 @@ jobs:
       - name: Install dependencies
         run: |
           conda install \
-            cmake \
+            cmake=3.31.2 \
+            rhash=1.4.3 \
             make \
-            ${{ matrix.mpi }}-mpicxx \
-            fmt=11.* \
+            ${{ matrix.mpi }}-mpicc=${{ matrix.mpi-version }} \
+            ${{ matrix.mpi }}-mpicxx=${{ matrix.mpi-version }} \
             gtest \
             lcov
 
@@ -57,7 +62,7 @@ jobs:
         run: |
           cmake -S ${{ github.workspace }} -B ${{ github.workspace }}/build \
             -DGCOV_PATH=`which x86_64-conda-linux-gnu-gcov` \
-            -DCMAKE_BUILD_TYPE={{ matrix.build }} \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
             -DMPICPP_LITE_BUILD_TESTS=YES \
             -DMPICPP_LITE_CODE_COVERAGE=YES
 
