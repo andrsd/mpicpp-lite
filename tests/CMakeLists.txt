@@ -23,7 +23,7 @@ target_link_libraries(
         mpicpp-lite
 )
 
-if (${fmt_FOUND})
+if (MPICPP_LITE_WITH_FMT)
     target_compile_definitions(${PROJECT_NAME} PUBLIC MPICPP_LITE_WITH_FMT)
     target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt)
 endif()

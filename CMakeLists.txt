@@ -15,8 +15,11 @@ include(CodeCoverage)
 include(Sanitization)
 
 option(MPICPP_LITE_BUILD_TESTS "Build tests" NO)
+option(MPICPP_LITE_WITH_FMT "Build with fmt support" NO)
 
-find_package(fmt 11 QUIET)
+if (MPICPP_LITE_WITH_FMT)
+    find_package(fmt 11 REQUIRED)
+endif()
 find_package(MPI REQUIRED)
 
 add_library(mpicpp-lite INTERFACE)
