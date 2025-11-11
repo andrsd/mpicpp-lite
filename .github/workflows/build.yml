@@ -20,15 +20,19 @@ jobs:
         include:
           - os: ubuntu-22.04
             mpi: mpich
+            mpi-version: 4.3.*
             build: Release
           - os: ubuntu-22.04
             mpi: openmpi
+            mpi-version: 4.1.*
             build: Release
           - os: ubuntu-22.04
             mpi: mpich
+            mpi-version: 4.3.*
             build: Debug
           - os: ubuntu-22.04
             mpi: openmpi
+            mpi-version: 4.1.*
             build: Debug
 
     runs-on: ${{ matrix.os }}
@@ -50,7 +54,7 @@ jobs:
             rhash=1.4.3 \
             make \
             compilers=1.9.1 \
-            ${{ matrix.mpi }}-mpicxx \
+            ${{ matrix.mpi }}-mpicxx=${{ matrix.mpi-version }} \
             gtest \
             lcov
 
