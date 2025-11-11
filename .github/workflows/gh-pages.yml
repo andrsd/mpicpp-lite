@@ -30,7 +30,8 @@ jobs:
       - name: Install dependencies
         run: |
           conda install \
-            cmake \
+            cmake=3.31.2 \
+            rhash=1.4.3 \
             make \
             compilers=1.9.1 \
             mpich-mpicxx \
