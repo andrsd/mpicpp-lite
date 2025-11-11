@@ -54,6 +54,7 @@ jobs:
             rhash=1.4.3 \
             make \
             compilers=1.9.1 \
+            gxx_linux-64=14.3.* \
             ${{ matrix.mpi }}-mpicxx=${{ matrix.mpi-version }} \
             gtest \
             lcov
