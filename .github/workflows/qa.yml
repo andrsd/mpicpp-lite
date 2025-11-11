@@ -44,7 +44,7 @@ jobs:
         with:
           style: file
           tidy-checks: ""
-          version: 14
+          version: 20
           lines-changed-only: true
           ignore: "contrib"
           step-summary: true
