@@ -28,7 +28,7 @@ jobs:
             cmake=3.31.2 \
             rhash=1.4.3 \
             make \
-            compilers=1.9.1 \
+            mpich-mpicc=4.3.* \
             mpich-mpicxx=4.3.* \
             fmt=11.* \
             gtest
