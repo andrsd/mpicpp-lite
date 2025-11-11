@@ -48,6 +48,7 @@ jobs:
           conda install \
             cmake \
             make \
+            compilers=1.9.1 \
             ${{ matrix.mpi }}-mpicxx \
             gtest \
             lcov

@@ -27,6 +27,7 @@ jobs:
           conda install \
             cmake \
             make \
+            compilers=1.9.1 \
             mpich-mpicxx \
             fmt=11.* \
             gtest
