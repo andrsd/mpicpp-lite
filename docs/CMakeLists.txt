@@ -44,11 +44,13 @@ else()
 
     add_custom_command(
         TARGET doc
+        PRE_BUILD
         COMMAND echo "Unable to generate documentation:"
     )
     if (NOT DOXYGEN_FOUND)
         add_custom_command(
             TARGET doc
+            PRE_BUILD
             COMMAND echo "- 'doxygen' is not installed."
         )
     endif()
@@ -56,6 +58,7 @@ else()
     if (${SPHINX_BUILD} STREQUAL SPHINX_BUILD-NOTFOUND)
         add_custom_command(
             TARGET doc
+            PRE_BUILD
             COMMAND echo "- 'sphinx-build' is not installed."
         )
     endif()
