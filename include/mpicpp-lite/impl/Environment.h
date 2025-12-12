@@ -10,12 +10,25 @@
 
 namespace mpicpp_lite {
 
+enum class ThreadSupport : int {
+    SINGLE = MPI_THREAD_SINGLE,
+    FUNNELED = MPI_THREAD_FUNNELED,
+    SERIALIZED = MPI_THREAD_SERIALIZED,
+    MULTIPLE = MPI_THREAD_MULTIPLE
+};
+
 class Environment {
 public:
 #if (MPI_VERSION >= 2)
     Environment();
 #endif
     Environment(int & argc, char **& argv);
+    /// Construct MPI environment  with threading support
+    ///
+    /// @param argc Pointer to the number of arguments
+    /// @param argv Pointer to the argument vector
+    /// @param support Level of desired thread support
+    Environment(int & argc, char **& argv, ThreadSupport support);
     ~Environment();
 
     /// Indicates whether MPI was initialized
@@ -55,6 +68,20 @@ inline Environment::Environment(int & argc, char **& argv) : initialized(false)
 {
     if (!is_initialized()) {
         MPI_CHECK(MPI_Init(&argc, &argv));
+        this->initialized = true;
+    }
+}
+
+inline Environment::Environment(int & argc, char **& argv, ThreadSupport support) :
+    initialized(false)
+{
+    if (!is_initialized()) {
+        int provided;
+        MPI_CHECK(MPI_Init_thread(&argc, &argv, static_cast<int>(support), &provided));
+        if (provided < static_cast<int>(support)) {
+            throw std::runtime_error(
+                "The MPI implementation does not provide the requested threading level");
+        }
         this->initialized = true;
     }
 }
