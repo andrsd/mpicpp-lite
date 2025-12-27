@@ -24,7 +24,7 @@ jobs:
             build: Release
           - os: ubuntu-22.04
             mpi: openmpi
-            mpi-version: 4.1.*
+            mpi-version: 5.0.*
             build: Release
           - os: ubuntu-22.04
             mpi: mpich
@@ -32,7 +32,7 @@ jobs:
             build: Debug
           - os: ubuntu-22.04
             mpi: openmpi
-            mpi-version: 4.1.*
+            mpi-version: 5.0.*
             build: Debug
 
     runs-on: ${{ matrix.os }}
@@ -78,13 +78,19 @@ jobs:
       - name: "Run tests: mpi-4"
         run: |
           LLVM_PROFILE_FILE=mpicpp-lite-test-%4m.profraw \
-          mpirun -np 4 --host localhost:4 ${{ github.workspace }}/build/tests/mpicpp-lite-test \
+          mpirun -np 4 \
+            --bind-to none \
+            --host localhost:4 \
+            ${{ github.workspace }}/build/tests/mpicpp-lite-test \
             --gtest_output=xml:${{ github.workspace }}/build/gtest-results-4.xml
 
       - name: "Run tests: mpi-6"
         run: |
           LLVM_PROFILE_FILE=mpicpp-lite-test-%4m.profraw \
-          mpirun -np 6 --host localhost:6 ${{ github.workspace }}/build/tests/mpicpp-lite-test \
+          mpirun -np 6 \
+            --bind-to none \
+            --host localhost:6 \
+            ${{ github.workspace }}/build/tests/mpicpp-lite-test \
             --gtest_output=xml:${{ github.workspace }}/build/gtest-results-6.xml
 
       - name: Test summary
