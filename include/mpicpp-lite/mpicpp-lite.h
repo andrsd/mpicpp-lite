@@ -12,5 +12,6 @@
 #include "impl/Request.h"
 #include "impl/Status.h"
 #include "impl/Test.h"
+#include "impl/Time.h"
 #include "impl/Wait.h"
 #include "impl/Window.h"
