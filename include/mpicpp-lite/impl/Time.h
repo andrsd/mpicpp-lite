@@ -16,4 +16,13 @@ wall_time()
     return MPI_Wtime();
 }
 
+/// Returns the resolution of `wall_time`
+///
+/// @return Time in seconds of resolution of `wall_time`
+inline double
+wall_tick()
+{
+    return MPI_Wtick();
+}
+
 } // namespace mpicpp_lite
