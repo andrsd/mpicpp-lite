@@ -17,3 +17,11 @@ TEST(TimeTest, wall_time)
     auto t1 = wall_time();
     EXPECT_GT(t1 - t0, 0.2);
 }
+
+TEST(TimeTest, wall_tick)
+{
+    Communicator comm;
+
+    auto res = wall_tick();
+    EXPECT_GT(res, 0);
+}
