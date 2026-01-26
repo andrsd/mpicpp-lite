@@ -32,6 +32,9 @@ private:
     MPI_Request request;
 };
 
+// If this fails, you most likely changed `Request`, which is not allowed.
+static_assert(sizeof(Request) == sizeof(MPI_Request), "`Request` must match `MPI_request`");
+
 inline Request::Request() {}
 
 inline Request::Request(const MPI_Request & r) : request(r) {}

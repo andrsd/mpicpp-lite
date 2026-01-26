@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mpi.h"
+#include <type_traits>
 #include <vector>
 #include "Request.h"
 #include "Status.h"
@@ -36,12 +37,9 @@ wait(const Request & request, Status & status)
 inline void
 wait_all(const std::vector<Request> & requests)
 {
-    int n = requests.size();
-    std::vector<MPI_Request> reqs;
-    reqs.resize(n);
-    for (int i = 0; i < n; i++)
-        reqs[i] = requests[i];
-    MPI_CHECK(MPI_Waitall(n, reqs.data(), MPI_STATUSES_IGNORE));
+    auto n = static_cast<int>(requests.size());
+    auto * reqs = reinterpret_cast<MPI_Request *>(const_cast<Request *>(requests.data()));
+    MPI_CHECK(MPI_Waitall(n, reqs, MPI_STATUSES_IGNORE));
 }
 
 /// Wait for any specified request to complete
@@ -51,13 +49,10 @@ wait_all(const std::vector<Request> & requests)
 inline std::size_t
 wait_any(const std::vector<Request> & requests)
 {
-    int n = requests.size();
-    std::vector<MPI_Request> reqs;
-    reqs.resize(n);
-    for (int i = 0; i < n; i++)
-        reqs[i] = requests[i];
+    auto n = static_cast<int>(requests.size());
     int idx;
-    MPI_CHECK(MPI_Waitany(n, reqs.data(), &idx, MPI_STATUS_IGNORE));
+    auto * reqs = reinterpret_cast<MPI_Request *>(const_cast<Request *>(requests.data()));
+    MPI_CHECK(MPI_Waitany(n, reqs, &idx, MPI_STATUS_IGNORE));
     return idx;
 }
 
