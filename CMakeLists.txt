@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION VERSION 3.16)
 
 project(mpicpp-lite
-    VERSION 2.2.0
+    VERSION 2.3.0
     LANGUAGES CXX
 )
 
