@@ -15,3 +15,4 @@
 #include "impl/Time.h"
 #include "impl/Wait.h"
 #include "impl/Window.h"
+#include "impl/Exception.h"
