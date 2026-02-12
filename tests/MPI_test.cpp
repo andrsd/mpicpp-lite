@@ -649,6 +649,21 @@ TEST(MPITest, reduce_all_logical_xor)
     }
 }
 
+TEST(MPITest, iall_reduce_min)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int loc = (comm.rank() + 1) * 3;
+    int glob;
+    auto rq1 = comm.iall_reduce(loc, glob, op::min<int>());
+    wait(rq1);
+
+    int gold = 3;
+    EXPECT_EQ(glob, gold);
+}
+
 TEST(MPITest, iprobe)
 {
     Communicator comm;
