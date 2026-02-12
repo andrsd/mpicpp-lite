@@ -4,6 +4,13 @@
 using namespace mpicpp_lite;
 using namespace testing;
 
+TEST(MPITest, duplicate)
+{
+    Communicator comm;
+    auto dup = comm.duplicate();
+    EXPECT_EQ(comm.size(), dup.size());
+}
+
 TEST(MPITest, get_version)
 {
     auto [major, minor] = mpicpp_lite::version();
