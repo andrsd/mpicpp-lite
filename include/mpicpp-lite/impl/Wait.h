@@ -9,6 +9,8 @@
 #include "Request.h"
 #include "Status.h"
 #include "Error.h"
+#include "Time.h"
+#include "Test.h"
 
 namespace mpicpp_lite {
 
@@ -29,6 +31,23 @@ inline void
 wait(const Request & request, Status & status)
 {
     MPI_CHECK(MPI_Wait(const_cast<Request &>(request), status));
+}
+
+/// Wait for a single request with a timeout
+///
+/// @param request MPI request to wait on
+/// @param timeout Timeout in seconds
+/// @return `true` if request completed within given timeout, `false` otherwise
+inline bool
+wait_with_timeout(const Request & request, double timeout)
+{
+    bool completed = false;
+    auto start = wall_time();
+    while (!completed && ((wall_time() - start) < timeout)) {
+        // Busy wait
+        completed = test(request);
+    }
+    return completed;
 }
 
 /// Wait for all requests to complete
