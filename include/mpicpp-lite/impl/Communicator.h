@@ -53,6 +53,11 @@ public:
     CartesianCommunicator create_cartesian(const std::vector<int> & dims,
                                            bool reorder = false) const;
 
+    /// Duplicates an existing communicator with all its cached information
+    ///
+    /// @return A new communicator over the same group as comm but with a new context.
+    Communicator duplicate() const;
+
     /// Accesses the group associated with given communicator
     ///
     /// @return Group corresponding to communicator
@@ -669,6 +674,14 @@ Communicator::create_cartesian(const std::vector<int> & dims, bool reorder) cons
     MPI_CHECK_SELF(
         MPI_Cart_create(this->comm, dims.size(), dims.data(), periods.data(), reorder, &new_comm));
     return CartesianCommunicator(new_comm);
+}
+
+inline Communicator
+Communicator::duplicate() const
+{
+    MPI_Comm new_comm;
+    MPI_CHECK_SELF(MPI_Comm_dup(this->comm, &new_comm));
+    return { new_comm };
 }
 
 inline Group
