@@ -455,6 +455,40 @@ public:
     template <typename T, typename Op>
     void all_reduce(T & value, Op op) const;
 
+    /// Combines values from all processes and distributes the result back to all processes in a
+    /// nonblocking way
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param in_values Values to send
+    /// @param n Number of values to send
+    /// @param out_values Receiving variable
+    /// @param op Reduce operation
+    template <typename T, typename Op>
+    Request iall_reduce(const T * in_values, int n, T * out_values, Op) const;
+
+    /// Combines values from all processes and distributes the result back to all processes in a
+    /// nonblocking way
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param in_values Values to send
+    /// @param out_values Receiving variable
+    /// @param op Reduce operation
+    template <typename T, typename Op>
+    Request iall_reduce(const std::vector<T> & in_values, std::vector<T> & out_values, Op op) const;
+
+    /// Combines values from all processes and distributes the result back to all processes in a
+    /// nonblocking way
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param in_values Values to send
+    /// @param out_values Receiving variable
+    /// @param op Reduce operation
+    template <typename T, typename Op>
+    Request iall_reduce(const T & in_value, T & out_value, Op op) const;
+
     /// Sends data from all to all processes
     ///
     /// @tparam T C++ type of the data
@@ -1173,6 +1207,39 @@ Communicator::all_reduce(T & in_value, Op op) const
     T out_value;
     all_reduce(&in_value, 1, &out_value, op);
     in_value = out_value;
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iall_reduce(const T * in_values, int n, T * out_values, Op) const
+{
+    MPI_Request request;
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
+    MPI_CHECK_SELF(MPI_Iallreduce(const_cast<T *>(in_values),
+                                  out_values,
+                                  n,
+                                  mpi_datatype<T>(),
+                                  mpi_op,
+                                  this->comm,
+                                  &request));
+    return { request };
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iall_reduce(const std::vector<T> & in_values,
+                          std::vector<T> & out_values,
+                          Op op) const
+{
+    assert(in_values.size() == out_values.size());
+    return iall_reduce(in_values.data(), in_values.size(), out_values.data(), op);
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iall_reduce(const T & in_value, T & out_value, Op op) const
+{
+    return iall_reduce(&in_value, 1, &out_value, op);
 }
 
 template <typename T>
