@@ -16,7 +16,7 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script src="_static/js/theme.js"></script>
@@ -109,6 +109,8 @@
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator16create_cartesianERKNSt6vectorIiEEb">mpicpp_lite::Communicator::create_cartesian (C++ function)</a>
 </li>
+      <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator9duplicateEv">mpicpp_lite::Communicator::duplicate (C++ function)</a>
+</li>
       <li><a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator6exscanEvPK1TiP1T2Op">mpicpp_lite::Communicator::exscan (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator6exscanEvRK1TR1T2Op">[1]</a>, <a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator6exscanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op">[2]</a>
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4N11mpicpp_lite12Communicator4freeEv">mpicpp_lite::Communicator::free (C++ function)</a>
@@ -116,6 +118,8 @@
       <li><a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator6gatherEvPK1TiP1Ti">mpicpp_lite::Communicator::gather (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator6gatherEvPK1TiRNSt6vectorI1TEEi">[1]</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator6gatherEvRK1TP1Ti">[2]</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator6gatherEvRK1TRNSt6vectorI1TEEi">[3]</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator6gatherEvRKNSt6vectorI1TEERNSt6vectorI1TEERKNSt6vectorIiEERKNSt6vectorIiEEi">[4]</a>
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator5groupEv">mpicpp_lite::Communicator::group (C++ function)</a>
+</li>
+      <li><a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestPK1TiP1T2Op">mpicpp_lite::Communicator::iall_reduce (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRK1TR1T2Op">[1]</a>, <a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRKNSt6vectorI1TEERNSt6vectorI1TEE2Op">[2]</a>
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator6iprobeEii">mpicpp_lite::Communicator::iprobe (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator6iprobeEiiR6Status">[1]</a>
 </li>
@@ -141,10 +145,10 @@
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator4sizeEv">mpicpp_lite::Communicator::size (C++ function)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator5splitEii">mpicpp_lite::Communicator::split (C++ function)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="devel/classes/datatype.html#_CPPv4I0EN11mpicpp_lite12mpi_datatypeE12MPI_Datatypev">mpicpp_lite::mpi_datatype (C++ function)</a>
 </li>
       <li><a href="devel/classes/operation.html#_CPPv4I0EN11mpicpp_lite2op3maxE">mpicpp_lite::op::max (C++ struct)</a>
@@ -156,6 +160,8 @@
       <li><a href="devel/classes/operation.html#_CPPv4I0EN11mpicpp_lite2op4prodE">mpicpp_lite::op::prod (C++ struct)</a>
 </li>
       <li><a href="devel/classes/operation.html#_CPPv4I0EN11mpicpp_lite2op3sumE">mpicpp_lite::op::sum (C++ struct)</a>
+</li>
+      <li><a href="devel/classes/datatype.html#_CPPv4I0EN11mpicpp_lite21register_mpi_datatypeE12MPI_Datatypev">mpicpp_lite::register_mpi_datatype (C++ function)</a>
 </li>
       <li><a href="devel/classes/request.html#_CPPv4N11mpicpp_lite7RequestE">mpicpp_lite::Request (C++ class)</a>
 </li>
@@ -186,6 +192,12 @@
       <li><a href="devel/classes/test.html#_CPPv4N11mpicpp_lite8test_allERKNSt6vectorI7RequestEE">mpicpp_lite::test_all (C++ function)</a>
 </li>
       <li><a href="devel/classes/test.html#_CPPv4N11mpicpp_lite8test_anyERKNSt6vectorI7RequestEERNSt6size_tE">mpicpp_lite::test_any (C++ function)</a>
+</li>
+      <li><a href="devel/classes/datatype.html#_CPPv4N11mpicpp_lite15type_contiguousEi12MPI_Datatype">mpicpp_lite::type_contiguous (C++ function)</a>
+</li>
+      <li><a href="devel/classes/datatype.html#_CPPv4N11mpicpp_lite18type_create_structERKNSt6vectorI12MPI_DatatypeEERKNSt6vectorIiEERKNSt6vectorI8MPI_AintEE">mpicpp_lite::type_create_struct (C++ function)</a>
+</li>
+      <li><a href="devel/classes/datatype.html#_CPPv4I0EN11mpicpp_lite9type_sizeEiv">mpicpp_lite::type_size (C++ function)</a>
 </li>
       <li><a href="devel/classes/wait.html#_CPPv4N11mpicpp_lite4waitERK7Request">mpicpp_lite::wait (C++ function)</a>, <a href="devel/classes/wait.html#_CPPv4N11mpicpp_lite4waitERK7RequestR6Status">[1]</a>
 </li>

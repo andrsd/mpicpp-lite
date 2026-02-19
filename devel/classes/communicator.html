@@ -17,7 +17,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -61,6 +61,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator4rankEv"><code class="docutils literal notranslate"><span class="pre">Communicator::rank()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator4sizeEv"><code class="docutils literal notranslate"><span class="pre">Communicator::size()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator16create_cartesianERKNSt6vectorIiEEb"><code class="docutils literal notranslate"><span class="pre">Communicator::create_cartesian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator9duplicateEv"><code class="docutils literal notranslate"><span class="pre">Communicator::duplicate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator5groupEv"><code class="docutils literal notranslate"><span class="pre">Communicator::group()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator4sendEviiRK1T"><code class="docutils literal notranslate"><span class="pre">Communicator::send()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator4sendEviiPK1Ti"><code class="docutils literal notranslate"><span class="pre">Communicator::send()</span></code></a></li>
@@ -102,6 +103,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator10all_reduceEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::all_reduce()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator10all_reduceEvRK1TR1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::all_reduce()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator10all_reduceEvR1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::all_reduce()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestPK1TiP1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::iall_reduce()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRKNSt6vectorI1TEERNSt6vectorI1TEE2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::iall_reduce()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRK1TR1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::iall_reduce()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvPK1TiP1Ti"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvRKNSt6vectorI1TEERNSt6vectorI1TEE"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvRKNSt6vectorINSt6vectorI1TEEEERNSt6vectorI1TEE"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
@@ -216,6 +220,17 @@
 <li><p><strong>dims</strong> – Number of processes in each dimension </p></li>
 <li><p><strong>reorder</strong> – Allow the function to reorder the processes </p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator9duplicateEv">
+<span id="_CPPv3NK11mpicpp_lite12Communicator9duplicateEv"></span><span id="_CPPv2NK11mpicpp_lite12Communicator9duplicateEv"></span><span id="mpicpp_lite::Communicator::duplicateC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1ac25539baaf7c2389145ee9637d135135"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11mpicpp_lite12CommunicatorE" title="mpicpp_lite::Communicator"><span class="n"><span class="pre">Communicator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">duplicate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator9duplicateEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Duplicates an existing communicator with all its cached information. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new communicator over the same group as comm but with a new context. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -983,6 +998,70 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>value</strong> – Send/receive variable </p></li>
+<li><p><strong>op</strong> – Reduce operation </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestPK1TiP1T2Op">
+<span id="_CPPv3I00ENK11mpicpp_lite12Communicator11iall_reduceEPK1TiP1T2Op"></span><span id="_CPPv2I00ENK11mpicpp_lite12Communicator11iall_reduceEPK1TiP1T2Op"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Op</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classmpicpp__lite_1_1_communicator_1a2ff2c70b97830878ab5f304f38dbf887"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iall_reduce</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestPK1TiP1T2Op" title="mpicpp_lite::Communicator::iall_reduce::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">in_values</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestPK1TiP1T2Op" title="mpicpp_lite::Communicator::iall_reduce::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">out_values</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestPK1TiP1T2Op" title="mpicpp_lite::Communicator::iall_reduce::Op"><span class="n"><span class="pre">Op</span></span></a><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestPK1TiP1T2Op" title="Link to this definition"></a><br /></dt>
+<dd><p>Combines values from all processes and distributes the result back to all processes in a nonblocking way. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – C++ type of the data </p></li>
+<li><p><strong>Op</strong> – Type of the reduce operation </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_values</strong> – Values to send </p></li>
+<li><p><strong>n</strong> – Number of values to send </p></li>
+<li><p><strong>out_values</strong> – Receiving variable </p></li>
+<li><p><strong>op</strong> – Reduce operation </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRKNSt6vectorI1TEERNSt6vectorI1TEE2Op">
+<span id="_CPPv3I00ENK11mpicpp_lite12Communicator11iall_reduceERKNSt6vectorI1TEERNSt6vectorI1TEE2Op"></span><span id="_CPPv2I00ENK11mpicpp_lite12Communicator11iall_reduceERKNSt6vectorI1TEERNSt6vectorI1TEE2Op"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Op</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classmpicpp__lite_1_1_communicator_1a23366d2e4740c34fd2273c564b4d64ab"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iall_reduce</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRKNSt6vectorI1TEERNSt6vectorI1TEE2Op" title="mpicpp_lite::Communicator::iall_reduce::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">in_values</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRKNSt6vectorI1TEERNSt6vectorI1TEE2Op" title="mpicpp_lite::Communicator::iall_reduce::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">out_values</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRKNSt6vectorI1TEERNSt6vectorI1TEE2Op" title="mpicpp_lite::Communicator::iall_reduce::Op"><span class="n"><span class="pre">Op</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">op</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRKNSt6vectorI1TEERNSt6vectorI1TEE2Op" title="Link to this definition"></a><br /></dt>
+<dd><p>Combines values from all processes and distributes the result back to all processes in a nonblocking way. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – C++ type of the data </p></li>
+<li><p><strong>Op</strong> – Type of the reduce operation </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_values</strong> – Values to send </p></li>
+<li><p><strong>out_values</strong> – Receiving variable </p></li>
+<li><p><strong>op</strong> – Reduce operation </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRK1TR1T2Op">
+<span id="_CPPv3I00ENK11mpicpp_lite12Communicator11iall_reduceERK1TR1T2Op"></span><span id="_CPPv2I00ENK11mpicpp_lite12Communicator11iall_reduceERK1TR1T2Op"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Op</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classmpicpp__lite_1_1_communicator_1aa2ffb56e57a1ce1a23b11cc3abe07b86"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iall_reduce</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRK1TR1T2Op" title="mpicpp_lite::Communicator::iall_reduce::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">in_value</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRK1TR1T2Op" title="mpicpp_lite::Communicator::iall_reduce::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">out_value</span></span>, <a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRK1TR1T2Op" title="mpicpp_lite::Communicator::iall_reduce::Op"><span class="n"><span class="pre">Op</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">op</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4I00ENK11mpicpp_lite12Communicator11iall_reduceE7RequestRK1TR1T2Op" title="Link to this definition"></a><br /></dt>
+<dd><p>Combines values from all processes and distributes the result back to all processes in a nonblocking way. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – C++ type of the data </p></li>
+<li><p><strong>Op</strong> – Type of the reduce operation </p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_values</strong> – Values to send </p></li>
+<li><p><strong>out_values</strong> – Receiving variable </p></li>
 <li><p><strong>op</strong> – Reduce operation </p></li>
 </ul>
 </dd>
