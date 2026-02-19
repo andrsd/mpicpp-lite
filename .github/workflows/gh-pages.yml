@@ -36,7 +36,7 @@ jobs:
             mpich-mpicc=4.3.* \
             mpich-mpicxx=4.3.* \
             doxygen \
-            sphinx \
+            sphinx=7 \
             sphinx_rtd_theme \
             breathe==4.35.0 \
             sphinx-design \
