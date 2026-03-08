@@ -32,9 +32,17 @@ private:
     MPI_Request request;
 };
 
-inline Request::Request() : request(MPI_REQUEST_NULL) {}
+inline Request::Request() : request(MPI_REQUEST_NULL)
+{
+    static_assert(sizeof(Request) == sizeof(MPI_Request),
+                  "Size of `Request` must match `MPI_request`");
+}
 
-inline Request::Request(const MPI_Request & r) : request(r) {}
+inline Request::Request(const MPI_Request & r) : request(r)
+{
+    static_assert(sizeof(Request) == sizeof(MPI_Request),
+                  "Size of `Request` must match `MPI_request`");
+}
 
 inline void
 Request::cancel()
