@@ -16,10 +16,10 @@ namespace mpicpp_lite {
 /// @param request Request to test
 /// @return `true` if operation completed, `false` otherwise
 inline bool
-test(const Request & request)
+test(Request & request)
 {
     int flag;
-    MPI_CHECK(MPI_Test(const_cast<Request &>(request), &flag, MPI_STATUS_IGNORE));
+    MPI_CHECK(MPI_Test(request, &flag, MPI_STATUS_IGNORE));
     return flag != 0;
 }
 
@@ -29,10 +29,10 @@ test(const Request & request)
 /// @param status Status
 /// @return `true` if operation completed, `false` otherwise
 inline bool
-test(const Request & request, Status & status)
+test(Request & request, Status & status)
 {
     int flag;
-    MPI_CHECK(MPI_Test(const_cast<Request &>(request), &flag, status));
+    MPI_CHECK(MPI_Test(request, &flag, status));
     return flag != 0;
 }
 
@@ -41,10 +41,10 @@ test(const Request & request, Status & status)
 /// @param requests Requests to test
 /// @return `true` only if all requests have completed, `false` otherwise
 inline bool
-test_all(const std::vector<Request> & requests)
+test_all(std::vector<Request> & requests)
 {
     auto n = static_cast<int>(requests.size());
-    auto * reqs = reinterpret_cast<MPI_Request *>(const_cast<Request *>(requests.data()));
+    auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
     int flag;
     MPI_CHECK(MPI_Testall(n, reqs, &flag, MPI_STATUSES_IGNORE));
     return flag != 0;
@@ -56,10 +56,10 @@ test_all(const std::vector<Request> & requests)
 /// @param index Index of operation that completed or `UNDEFINED` if none completed
 /// @return `true` if one of the operations is complete
 inline bool
-test_any(const std::vector<Request> & requests, int & index)
+test_any(std::vector<Request> & requests, int & index)
 {
     auto n = static_cast<int>(requests.size());
-    auto * reqs = reinterpret_cast<MPI_Request *>(const_cast<Request *>(requests.data()));
+    auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
     int flag;
     MPI_CHECK(MPI_Testany(n, reqs, &index, &flag, MPI_STATUSES_IGNORE));
     return flag != 0;

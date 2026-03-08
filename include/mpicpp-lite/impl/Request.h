@@ -32,7 +32,7 @@ private:
     MPI_Request request;
 };
 
-inline Request::Request() {}
+inline Request::Request() : request(MPI_REQUEST_NULL) {}
 
 inline Request::Request(const MPI_Request & r) : request(r) {}
 
