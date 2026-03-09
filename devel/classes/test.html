@@ -58,10 +58,8 @@
 <li class="toctree-l1"><a class="reference internal" href="request.html">Request</a></li>
 <li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Test</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite4testERK7Request"><code class="docutils literal notranslate"><span class="pre">test()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite4testERK7RequestR6Status"><code class="docutils literal notranslate"><span class="pre">test()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8test_allERKNSt6vectorI7RequestEE"><code class="docutils literal notranslate"><span class="pre">test_all()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8test_anyERKNSt6vectorI7RequestEERi"><code class="docutils literal notranslate"><span class="pre">test_any()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8test_allERNSt6vectorI7RequestEE"><code class="docutils literal notranslate"><span class="pre">test_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi"><code class="docutils literal notranslate"><span class="pre">test_any()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wait.html">Wait</a></li>
@@ -92,40 +90,29 @@
              
   <section id="test">
 <h1>Test<a class="headerlink" href="#test" title="Link to this heading"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Unable to resolve function “mpicpp_lite::test” with arguments (const Request&amp;) in doxygen xml output for project “mpicpp-lite” from directory: /home/runner/work/mpicpp-lite/mpicpp-lite/build/docs/xml/.
+Potential matches:
+</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">bool</span> <span class="n">test</span><span class="p">(</span><span class="n">Request</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">)</span>
+<span class="o">-</span> <span class="nb">bool</span> <span class="n">test</span><span class="p">(</span><span class="n">Request</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">,</span> <span class="n">Status</span> <span class="o">&amp;</span><span class="n">status</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Unable to resolve function “mpicpp_lite::test” with arguments (const Request&amp;, Status&amp;) in doxygen xml output for project “mpicpp-lite” from directory: /home/runner/work/mpicpp-lite/mpicpp-lite/build/docs/xml/.
+Potential matches:
+</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">bool</span> <span class="n">test</span><span class="p">(</span><span class="n">Request</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">)</span>
+<span class="o">-</span> <span class="nb">bool</span> <span class="n">test</span><span class="p">(</span><span class="n">Request</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">,</span> <span class="n">Status</span> <span class="o">&amp;</span><span class="n">status</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite4testERK7Request">
-<span id="_CPPv3N11mpicpp_lite4testERK7Request"></span><span id="_CPPv2N11mpicpp_lite4testERK7Request"></span><span id="mpicpp_lite::test__RequestCR"></span><span class="target" id="_test_8h_1a29fff1aeafa36dea12e1cfc1232a35a9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">test</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">request</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite4testERK7Request" title="Link to this definition"></a><br /></dt>
-<dd><p>Test for the completion of a request. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>request</strong> – <a class="reference internal" href="request.html#classmpicpp__lite_1_1_request"><span class="std std-ref">Request</span></a> to test </p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if operation completed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite4testERK7RequestR6Status">
-<span id="_CPPv3N11mpicpp_lite4testERK7RequestR6Status"></span><span id="_CPPv2N11mpicpp_lite4testERK7RequestR6Status"></span><span id="mpicpp_lite::test__RequestCR.StatusR"></span><span class="target" id="_test_8h_1a4447e5fe382dfdaf320863c36b6b597a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">test</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">request</span></span>, <a class="reference internal" href="status.html#_CPPv4N11mpicpp_lite6StatusE" title="mpicpp_lite::Status"><span class="n"><span class="pre">Status</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">status</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite4testERK7RequestR6Status" title="Link to this definition"></a><br /></dt>
-<dd><p>Test for the completion of a request with status. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>request</strong> – <a class="reference internal" href="request.html#classmpicpp__lite_1_1_request"><span class="std std-ref">Request</span></a> to wait for </p></li>
-<li><p><strong>status</strong> – <a class="reference internal" href="status.html#classmpicpp__lite_1_1_status"><span class="std std-ref">Status</span></a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if operation completed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8test_allERKNSt6vectorI7RequestEE">
-<span id="_CPPv3N11mpicpp_lite8test_allERKNSt6vectorI7RequestEE"></span><span id="_CPPv2N11mpicpp_lite8test_allERKNSt6vectorI7RequestEE"></span><span id="mpicpp_lite::test_all__std::vector:Request:CR"></span><span class="target" id="_test_8h_1a52dd4074d89a8e3a74fc6da04443e8ad"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">test_all</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8test_allERKNSt6vectorI7RequestEE" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8test_allERNSt6vectorI7RequestEE">
+<span id="_CPPv3N11mpicpp_lite8test_allERNSt6vectorI7RequestEE"></span><span id="_CPPv2N11mpicpp_lite8test_allERNSt6vectorI7RequestEE"></span><span id="mpicpp_lite::test_all__std::vector:Request:R"></span><span class="target" id="_test_8h_1a26ae2587798b74f3f52e4576b2a4663d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">test_all</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8test_allERNSt6vectorI7RequestEE" title="Link to this definition"></a><br /></dt>
 <dd><p>Test for the completion of all previously initiated requests. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -138,8 +125,8 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8test_anyERKNSt6vectorI7RequestEERi">
-<span id="_CPPv3N11mpicpp_lite8test_anyERKNSt6vectorI7RequestEERi"></span><span id="_CPPv2N11mpicpp_lite8test_anyERKNSt6vectorI7RequestEERi"></span><span id="mpicpp_lite::test_any__std::vector:Request:CR.iR"></span><span class="target" id="_test_8h_1a1ecc274ee54f4331103669d275858de4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">test_any</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8test_anyERKNSt6vectorI7RequestEERi" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi">
+<span id="_CPPv3N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi"></span><span id="_CPPv2N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi"></span><span id="mpicpp_lite::test_any__std::vector:Request:R.iR"></span><span class="target" id="_test_8h_1a95494319d7df09c31fe3ded55ec4ab29"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">test_any</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi" title="Link to this definition"></a><br /></dt>
 <dd><p>Test for completion of any previously initiated requests. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

@@ -58,10 +58,8 @@
 <li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test.html">Test</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Wait</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite4waitERK7Request"><code class="docutils literal notranslate"><span class="pre">wait()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite4waitERK7RequestR6Status"><code class="docutils literal notranslate"><span class="pre">wait()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8wait_allERKNSt6vectorI7RequestEE"><code class="docutils literal notranslate"><span class="pre">wait_all()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8wait_anyERKNSt6vectorI7RequestEE"><code class="docutils literal notranslate"><span class="pre">wait_any()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8wait_allERNSt6vectorI7RequestEE"><code class="docutils literal notranslate"><span class="pre">wait_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8wait_anyERNSt6vectorI7RequestEE"><code class="docutils literal notranslate"><span class="pre">wait_any()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -91,34 +89,29 @@
              
   <section id="wait">
 <h1>Wait<a class="headerlink" href="#wait" title="Link to this heading"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Unable to resolve function “mpicpp_lite::wait” with arguments (const Request&amp;) in doxygen xml output for project “mpicpp-lite” from directory: /home/runner/work/mpicpp-lite/mpicpp-lite/build/docs/xml/.
+Potential matches:
+</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">void</span> <span class="n">wait</span><span class="p">(</span><span class="n">Request</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">)</span>
+<span class="o">-</span> <span class="n">void</span> <span class="n">wait</span><span class="p">(</span><span class="n">Request</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">,</span> <span class="n">Status</span> <span class="o">&amp;</span><span class="n">status</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Unable to resolve function “mpicpp_lite::wait” with arguments (const Request&amp;, Status&amp;) in doxygen xml output for project “mpicpp-lite” from directory: /home/runner/work/mpicpp-lite/mpicpp-lite/build/docs/xml/.
+Potential matches:
+</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">void</span> <span class="n">wait</span><span class="p">(</span><span class="n">Request</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">)</span>
+<span class="o">-</span> <span class="n">void</span> <span class="n">wait</span><span class="p">(</span><span class="n">Request</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">,</span> <span class="n">Status</span> <span class="o">&amp;</span><span class="n">status</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite4waitERK7Request">
-<span id="_CPPv3N11mpicpp_lite4waitERK7Request"></span><span id="_CPPv2N11mpicpp_lite4waitERK7Request"></span><span id="mpicpp_lite::wait__RequestCR"></span><span class="target" id="_wait_8h_1a4edc9b5ff687f14b67eb23195d0298ac"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">wait</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">request</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite4waitERK7Request" title="Link to this definition"></a><br /></dt>
-<dd><p>Wait for a single request to complete, ignoring status. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>request</strong> – <a class="reference internal" href="request.html#classmpicpp__lite_1_1_request"><span class="std std-ref">Request</span></a> to wait for </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite4waitERK7RequestR6Status">
-<span id="_CPPv3N11mpicpp_lite4waitERK7RequestR6Status"></span><span id="_CPPv2N11mpicpp_lite4waitERK7RequestR6Status"></span><span id="mpicpp_lite::wait__RequestCR.StatusR"></span><span class="target" id="_wait_8h_1ac8541afaf7129ac5303d8f91bea6340e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">wait</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">request</span></span>, <a class="reference internal" href="status.html#_CPPv4N11mpicpp_lite6StatusE" title="mpicpp_lite::Status"><span class="n"><span class="pre">Status</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">status</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite4waitERK7RequestR6Status" title="Link to this definition"></a><br /></dt>
-<dd><p>Wait for a single request to complete with status. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>request</strong> – <a class="reference internal" href="request.html#classmpicpp__lite_1_1_request"><span class="std std-ref">Request</span></a> to wait for </p></li>
-<li><p><strong>status</strong> – <a class="reference internal" href="status.html#classmpicpp__lite_1_1_status"><span class="std std-ref">Status</span></a></p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8wait_allERKNSt6vectorI7RequestEE">
-<span id="_CPPv3N11mpicpp_lite8wait_allERKNSt6vectorI7RequestEE"></span><span id="_CPPv2N11mpicpp_lite8wait_allERKNSt6vectorI7RequestEE"></span><span id="mpicpp_lite::wait_all__std::vector:Request:CR"></span><span class="target" id="_wait_8h_1a886ad25cf8905bf0d1a4576c6e9bcd2d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">wait_all</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8wait_allERKNSt6vectorI7RequestEE" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8wait_allERNSt6vectorI7RequestEE">
+<span id="_CPPv3N11mpicpp_lite8wait_allERNSt6vectorI7RequestEE"></span><span id="_CPPv2N11mpicpp_lite8wait_allERNSt6vectorI7RequestEE"></span><span id="mpicpp_lite::wait_all__std::vector:Request:R"></span><span class="target" id="_wait_8h_1aa663d3fe3576e6d5774c996361051ffb"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">wait_all</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8wait_allERNSt6vectorI7RequestEE" title="Link to this definition"></a><br /></dt>
 <dd><p>Wait for all requests to complete. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -128,15 +121,15 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8wait_anyERKNSt6vectorI7RequestEE">
-<span id="_CPPv3N11mpicpp_lite8wait_anyERKNSt6vectorI7RequestEE"></span><span id="_CPPv2N11mpicpp_lite8wait_anyERKNSt6vectorI7RequestEE"></span><span id="mpicpp_lite::wait_any__std::vector:Request:CR"></span><span class="target" id="_wait_8h_1a1ab3e6617820051e31083e4e141ecb50"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">wait_any</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8wait_anyERKNSt6vectorI7RequestEE" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8wait_anyERNSt6vectorI7RequestEE">
+<span id="_CPPv3N11mpicpp_lite8wait_anyERNSt6vectorI7RequestEE"></span><span id="_CPPv2N11mpicpp_lite8wait_anyERNSt6vectorI7RequestEE"></span><span id="mpicpp_lite::wait_any__std::vector:Request:R"></span><span class="target" id="_wait_8h_1a242d41a91eeaf13aaa08d20f1828e83c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">wait_any</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8wait_anyERNSt6vectorI7RequestEE" title="Link to this definition"></a><br /></dt>
 <dd><p>Wait for any specified request to complete. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>requests</strong> – Requests to wait for </p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Index of the request that completed </p>
+<dd class="field-even"><p>Index of the request that completed, or <code class="docutils literal notranslate"><span class="pre">UNDEFINED</span></code> if all requests are null requests </p>
 </dd>
 </dl>
 </dd></dl>
