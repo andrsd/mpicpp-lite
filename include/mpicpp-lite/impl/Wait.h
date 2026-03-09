@@ -18,9 +18,9 @@ namespace mpicpp_lite {
 ///
 /// @param request Request to wait for
 inline void
-wait(const Request & request)
+wait(Request & request)
 {
-    MPI_CHECK(MPI_Wait(const_cast<Request &>(request), MPI_STATUS_IGNORE));
+    MPI_CHECK(MPI_Wait(request, MPI_STATUS_IGNORE));
 }
 
 /// Wait for a single request to complete with status
@@ -28,9 +28,9 @@ wait(const Request & request)
 /// @param request Request to wait for
 /// @param status Status
 inline void
-wait(const Request & request, Status & status)
+wait(Request & request, Status & status)
 {
-    MPI_CHECK(MPI_Wait(const_cast<Request &>(request), status));
+    MPI_CHECK(MPI_Wait(request, status));
 }
 
 /// Wait for a single request with a timeout
@@ -39,7 +39,7 @@ wait(const Request & request, Status & status)
 /// @param timeout Timeout in seconds
 /// @return `true` if request completed within given timeout, `false` otherwise
 inline bool
-wait_with_timeout(const Request & request, double timeout)
+wait_with_timeout(Request & request, double timeout)
 {
     bool completed = false;
     auto start = wall_time();
@@ -54,27 +54,23 @@ wait_with_timeout(const Request & request, double timeout)
 ///
 /// @param requests Requests to wait for
 inline void
-wait_all(const std::vector<Request> & requests)
+wait_all(std::vector<Request> & requests)
 {
-    static_assert(sizeof(Request) == sizeof(MPI_Request),
-                  "Size of `Request` must match `MPI_request`");
     auto n = static_cast<int>(requests.size());
-    auto * reqs = reinterpret_cast<MPI_Request *>(const_cast<Request *>(requests.data()));
+    auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
     MPI_CHECK(MPI_Waitall(n, reqs, MPI_STATUSES_IGNORE));
 }
 
 /// Wait for any specified request to complete
 ///
 /// @param requests Requests to wait for
-/// @return Index of the request that completed
-inline std::size_t
-wait_any(const std::vector<Request> & requests)
+/// @return Index of the request that completed, or `UNDEFINED` if all requests are null requests
+inline int
+wait_any(std::vector<Request> & requests)
 {
-    static_assert(sizeof(Request) == sizeof(MPI_Request),
-                  "Size of `Request` must match `MPI_request`");
     auto n = static_cast<int>(requests.size());
     int idx;
-    auto * reqs = reinterpret_cast<MPI_Request *>(const_cast<Request *>(requests.data()));
+    auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
     MPI_CHECK(MPI_Waitany(n, reqs, &idx, MPI_STATUS_IGNORE));
     return idx;
 }
