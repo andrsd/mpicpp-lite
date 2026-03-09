@@ -43,13 +43,10 @@ test(const Request & request, Status & status)
 inline bool
 test_all(const std::vector<Request> & requests)
 {
-    int n = requests.size();
-    std::vector<MPI_Request> reqs;
-    reqs.resize(n);
-    for (int i = 0; i < n; i++)
-        reqs[i] = requests[i];
+    auto n = static_cast<int>(requests.size());
+    auto * reqs = reinterpret_cast<MPI_Request *>(const_cast<Request *>(requests.data()));
     int flag;
-    MPI_CHECK(MPI_Testall(n, reqs.data(), &flag, MPI_STATUSES_IGNORE));
+    MPI_CHECK(MPI_Testall(n, reqs, &flag, MPI_STATUSES_IGNORE));
     return flag != 0;
 }
 
@@ -59,16 +56,12 @@ test_all(const std::vector<Request> & requests)
 /// @param index Index of operation that completed or `UNDEFINED` if none completed
 /// @return `true` if one of the operations is complete
 inline bool
-test_any(const std::vector<Request> & requests, std::size_t & index)
+test_any(const std::vector<Request> & requests, int & index)
 {
-    int n = requests.size();
-    std::vector<MPI_Request> reqs;
-    reqs.resize(n);
-    for (int i = 0; i < n; i++)
-        reqs[i] = requests[i];
-    int idx;
+    auto n = static_cast<int>(requests.size());
+    auto * reqs = reinterpret_cast<MPI_Request *>(const_cast<Request *>(requests.data()));
     int flag;
-    MPI_CHECK(MPI_Testany(n, reqs.data(), &idx, &flag, MPI_STATUS_IGNORE));
+    MPI_CHECK(MPI_Testany(n, reqs, &index, &flag, MPI_STATUSES_IGNORE));
     return flag != 0;
 }
 
