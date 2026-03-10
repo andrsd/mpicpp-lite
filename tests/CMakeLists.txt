@@ -3,9 +3,6 @@ project(mpicpp-lite-test)
 find_package(GTest REQUIRED)
 include(GoogleTest)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
 add_executable(${PROJECT_NAME}
     CartesianCommunicator_test.cpp
     Exception_test.cpp
@@ -24,6 +21,8 @@ target_link_libraries(
         MPI::MPI_CXX
         mpicpp-lite
 )
+
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
 if (MPICPP_LITE_WITH_FMT)
     target_compile_definitions(${PROJECT_NAME} PUBLIC MPICPP_LITE_WITH_FMT)

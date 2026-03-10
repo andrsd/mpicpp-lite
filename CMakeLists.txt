@@ -29,10 +29,7 @@ target_include_directories(mpicpp-lite
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_link_libraries(mpicpp-lite INTERFACE MPI::MPI_C)
-target_compile_features(mpicpp-lite
-    INTERFACE
-        cxx_std_20
-)
+target_compile_features(mpicpp-lite INTERFACE cxx_std_20)
 
 # Install
 
