@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION VERSION 3.16)
+cmake_minimum_required(VERSION 3.16)
 
 project(mpicpp-lite
     VERSION 2.5.0
@@ -22,13 +22,27 @@ if (MPICPP_LITE_WITH_FMT)
 endif()
 find_package(MPI REQUIRED)
 
+file(GLOB_RECURSE HDRS CONFIGURE_DEPENDS include/mpicpp-lite/*.h)
+
 add_library(mpicpp-lite INTERFACE)
-target_include_directories(mpicpp-lite
+
+target_sources(
+    mpicpp-lite
+    PUBLIC
+        FILE_SET HEADERS
+        BASE_DIRS ${CMAKE_SOURCE_DIR}/include
+        FILES ${HDRS}
+)
+
+target_include_directories(
+    mpicpp-lite
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+
 target_link_libraries(mpicpp-lite INTERFACE MPI::MPI_C)
+
 target_compile_features(mpicpp-lite INTERFACE cxx_std_20)
 
 # Install
@@ -39,6 +53,7 @@ configure_package_config_file(
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mpicpp-lite
     NO_SET_AND_CHECK_MACRO
 )
+
 write_basic_package_version_file(
     mpicpp-lite-config-version.cmake
     VERSION ${PROJECT_VERSION}
@@ -47,16 +62,12 @@ write_basic_package_version_file(
 
 install(
     TARGETS mpicpp-lite
-    EXPORT MpiCppLiteTargets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    EXPORT mpicpp-lite-targets
+    FILE_SET HEADERS
 )
 
 install(
-    EXPORT MpiCppLiteTargets
+    EXPORT mpicpp-lite-targets
     FILE mpicpp-lite-targets.cmake
     NAMESPACE mpicpp-lite::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mpicpp-lite
