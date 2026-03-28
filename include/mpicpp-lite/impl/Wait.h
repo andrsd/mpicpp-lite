@@ -30,7 +30,7 @@ wait(Request & request)
 inline void
 wait(Request & request, Status & status)
 {
-    MPI_CHECK(MPI_Wait(request, status));
+    MPI_CHECK(MPI_Wait(request, &status.status));
 }
 
 /// Wait for a single request with a timeout
