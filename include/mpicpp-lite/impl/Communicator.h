@@ -844,7 +844,7 @@ Communicator::isend(int dest, int tag, const T * values, int n) const
     MPI_Request request;
     MPI_CHECK_SELF(
         MPI_Isend(const_cast<T *>(values), n, mpi_datatype<T>(), dest, tag, this->comm, &request));
-    return { request };
+    return Request(request);
 }
 
 // Irecv
@@ -869,7 +869,7 @@ Communicator::irecv(int source, int tag, T * values, int n) const
                              tag,
                              this->comm,
                              &request));
-    return { request };
+    return Request(request);
 }
 
 inline bool
@@ -1222,7 +1222,7 @@ Communicator::iall_reduce(const T * in_values, int n, T * out_values, Op) const
                                   mpi_op,
                                   this->comm,
                                   &request));
-    return { request };
+    return Request(request);
 }
 
 template <typename T, typename Op>
