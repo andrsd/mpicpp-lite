@@ -21,7 +21,7 @@ public:
     /// Create group from an `MPI_Group`
     ///
     /// @param group `MPI_Group` used to initialize this object
-    Group(const MPI_Group & group);
+    explicit Group(MPI_Group group);
 
     /// Returns the rank of this process in the given group
     ///
@@ -66,7 +66,7 @@ public:
                                      const Group & out_group) const;
 
     /// Type cast operator so we can pass this class directly into MPI calls
-    operator const MPI_Group &() const { return this->group; }
+    operator MPI_Group() const { return this->group; }
 
 public:
     /// Compares two groups
@@ -102,16 +102,16 @@ private:
     MPI_Group group;
 };
 
-inline Group::Group() {}
+inline Group::Group() : group(MPI_GROUP_NULL) {}
 
-inline Group::Group(const MPI_Group & group) : group(group) {}
+inline Group::Group(MPI_Group group) : group(group) {}
 
 inline Group
 Group::include(const std::vector<int> & ranks) const
 {
     MPI_Group new_group;
     MPI_CHECK(MPI_Group_incl(this->group, ranks.size(), ranks.data(), &new_group));
-    return { new_group };
+    return Group(new_group);
 }
 
 inline Group
@@ -119,13 +119,14 @@ Group::exclude(const std::vector<int> & ranks) const
 {
     MPI_Group new_group;
     MPI_CHECK(MPI_Group_excl(this->group, ranks.size(), ranks.data(), &new_group));
-    return { new_group };
+    return Group(new_group);
 }
 
 inline void
 Group::free()
 {
     MPI_CHECK(MPI_Group_free(&this->group));
+    this->group = MPI_GROUP_NULL;
 }
 
 inline int
@@ -174,7 +175,7 @@ Group::join(const Group & g1, const Group & g2)
 {
     MPI_Group new_group;
     MPI_CHECK(MPI_Group_union(g1, g2, &new_group));
-    return { new_group };
+    return Group(new_group);
 }
 
 inline Group
@@ -182,7 +183,7 @@ Group::intersection(const Group & g1, const Group & g2)
 {
     MPI_Group new_group;
     MPI_CHECK(MPI_Group_intersection(g1, g2, &new_group));
-    return { new_group };
+    return Group(new_group);
 }
 
 inline Group
@@ -190,7 +191,7 @@ Group::difference(const Group & g1, const Group & g2)
 {
     MPI_Group new_group;
     MPI_CHECK(MPI_Group_difference(g1, g2, &new_group));
-    return { new_group };
+    return Group(new_group);
 }
 
 } // namespace mpicpp_lite
