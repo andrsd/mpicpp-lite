@@ -74,12 +74,6 @@ install(
 )
 
 install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    FILES_MATCHING PATTERN "*.h"
-)
-
-install(
     FILES
         "${CMAKE_CURRENT_BINARY_DIR}/mpicpp-lite-config.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/mpicpp-lite-config-version.cmake"
