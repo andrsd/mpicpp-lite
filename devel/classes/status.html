@@ -59,12 +59,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Status</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite6StatusE"><code class="docutils literal notranslate"><span class="pre">Status</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11mpicpp_lite6Status6StatusEv"><code class="docutils literal notranslate"><span class="pre">Status::Status()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11mpicpp_lite6Status6StatusERK10MPI_Status"><code class="docutils literal notranslate"><span class="pre">Status::Status()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite6Status6sourceEv"><code class="docutils literal notranslate"><span class="pre">Status::source()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite6Status3tagEv"><code class="docutils literal notranslate"><span class="pre">Status::tag()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite6Status5errorEv"><code class="docutils literal notranslate"><span class="pre">Status::error()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite6Status5countEiv"><code class="docutils literal notranslate"><span class="pre">Status::count()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11mpicpp_lite6StatuscvP10MPI_StatusEv"><code class="docutils literal notranslate"><span class="pre">Status::operator</span> <span class="pre">MPI_Status*()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -108,17 +106,6 @@
 <dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite6Status6StatusEv">
 <span id="_CPPv3N11mpicpp_lite6Status6StatusEv"></span><span id="_CPPv2N11mpicpp_lite6Status6StatusEv"></span><span id="mpicpp_lite::Status::Status"></span><span class="target" id="classmpicpp__lite_1_1_status_1a7976427b50072030e99490af1f385777"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Status</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite6Status6StatusEv" title="Link to this definition"></a><br /></dt>
 <dd><p>Construct empty <code class="docutils literal notranslate"><a class="reference internal" href="#classmpicpp__lite_1_1_status"><span class="std std-ref"><span class="pre">Status</span></span></a></code> object. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite6Status6StatusERK10MPI_Status">
-<span id="_CPPv3N11mpicpp_lite6Status6StatusERK10MPI_Status"></span><span id="_CPPv2N11mpicpp_lite6Status6StatusERK10MPI_Status"></span><span id="mpicpp_lite::Status::Status__MPI_StatusCR"></span><span class="target" id="classmpicpp__lite_1_1_status_1a39adf67f3da5d34c89afeb94ce03bd5b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">MPI_Status</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite6Status6StatusERK10MPI_Status" title="Link to this definition"></a><br /></dt>
-<dd><p>Construct <code class="docutils literal notranslate"><a class="reference internal" href="#classmpicpp__lite_1_1_status"><span class="std std-ref"><span class="pre">Status</span></span></a></code> object from <code class="docutils literal notranslate"><span class="pre">MPI_Status</span></code> structure. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>s</strong> – MPI_Status object used to initialize this object </p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="cpp function">
@@ -166,12 +153,6 @@
 <dd class="field-even"><p>The number of “top level” elements </p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite6StatuscvP10MPI_StatusEv">
-<span id="_CPPv3N11mpicpp_lite6StatuscvP10MPI_StatusEv"></span><span id="_CPPv2N11mpicpp_lite6StatuscvP10MPI_StatusEv"></span><span id="mpicpp_lite::Status::castto-MPI_StatusP-operator"></span><span class="target" id="classmpicpp__lite_1_1_status_1a86b7cce92eb24257d9cdd7d4fa839f4c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="w"> </span><span class="n"><span class="pre">MPI_Status</span></span><span class="p"><span class="pre">*</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite6StatuscvP10MPI_StatusEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Type cast operators so we can pass this class directly into the MPI API. </p>
 </dd></dl>
 
 </div>
