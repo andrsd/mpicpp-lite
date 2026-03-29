@@ -870,8 +870,7 @@ TEST(MPITest, test_any)
 
         int timeout = 2;
         while (timeout > 0) {
-            int index = 0;
-            if (test_any(reqs, index)) {
+            if (test_any(reqs)) {
                 SUCCEED();
                 return;
             }

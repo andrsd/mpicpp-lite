@@ -8,6 +8,7 @@
 #include "Request.h"
 #include "Status.h"
 #include "Error.h"
+#include "Enums.h"
 
 namespace mpicpp_lite {
 
@@ -54,19 +55,29 @@ test_all(std::vector<Request> & requests)
     return flag != 0;
 }
 
+struct TestAnyResult {
+    /// Index of operation that completed or `UNDEFINED` if none completed
+    int index = UNDEFINED;
+    /// Status of the operation
+    Status status;
+};
+
 /// Test for completion of any previously initiated requests
 ///
 /// @param requests Requests to test
-/// @param index Index of operation that completed or `UNDEFINED` if none completed
-/// @return `true` if one of the operations is complete
-inline bool
-test_any(std::vector<Request> & requests, int & index)
+/// @return `TestAnyResult` if one of the operations is complete
+inline std::optional<TestAnyResult>
+test_any(std::vector<Request> & requests)
 {
+    TestAnyResult result;
     auto n = static_cast<int>(requests.size());
     auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
     int flag;
-    MPI_CHECK(MPI_Testany(n, reqs, &index, &flag, MPI_STATUSES_IGNORE));
-    return flag != 0;
+    MPI_CHECK(MPI_Testany(n, reqs, &result.index, &flag, &result.status.native()));
+    if (flag != 0)
+        return result;
+    else
+        return std::nullopt;
 }
 
 } // namespace mpicpp_lite
