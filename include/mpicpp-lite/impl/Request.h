@@ -19,17 +19,20 @@ public:
     /// Cancels a communication request
     void cancel();
 
-    /// Type cast operator so we can pass this class directly into MPI calls
-    operator MPI_Request() const { return this->request; }
+    MPI_Request &
+    native()
+    {
+        return this->request;
+    }
+
+    const MPI_Request &
+    native() const
+    {
+        return this->request;
+    }
 
 private:
     MPI_Request request;
-
-    friend class Communicator;
-    friend void wait(Request &);
-    friend void wait(Request &, Status &);
-    friend bool test(Request &);
-    friend bool test(Request &, Status &);
 };
 
 inline Request::Request() : request(MPI_REQUEST_NULL)

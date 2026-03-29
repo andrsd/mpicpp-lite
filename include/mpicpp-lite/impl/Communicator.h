@@ -791,7 +791,7 @@ Communicator::recv(int source, int tag, T * values, int n) const
                             source,
                             tag,
                             this->comm,
-                            &status.status));
+                            &status.native()));
     return status;
 }
 
@@ -800,7 +800,7 @@ inline Status
 Communicator::recv(int source, int tag, std::vector<T, A> & values) const
 {
     Status status;
-    MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm, &status.status));
+    MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm, &status.native()));
     auto size = status.count<T>();
     values.resize(size);
     return recv(source, tag, values.data(), size);
@@ -810,7 +810,7 @@ inline Status
 Communicator::recv(int source, int tag) const
 {
     Status status;
-    MPI_CHECK_SELF(MPI_Recv(MPI_BOTTOM, 0, MPI_PACKED, source, tag, this->comm, &status.status));
+    MPI_CHECK_SELF(MPI_Recv(MPI_BOTTOM, 0, MPI_PACKED, source, tag, this->comm, &status.native()));
     return status;
 }
 
@@ -852,7 +852,7 @@ Communicator::isend(int dest, int tag, const T * values, int n) const
                              dest,
                              tag,
                              this->comm,
-                             &request.request));
+                             &request.native()));
     return request;
 }
 
@@ -877,7 +877,7 @@ Communicator::irecv(int source, int tag, T * values, int n) const
                              source,
                              tag,
                              this->comm,
-                             &request.request));
+                             &request.native()));
     return request;
 }
 
@@ -893,7 +893,7 @@ inline bool
 Communicator::iprobe(int source, int tag, Status & status) const
 {
     int flag;
-    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm, &flag, &status.status));
+    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm, &flag, &status.native()));
     return flag != 0;
 }
 
@@ -1230,7 +1230,7 @@ Communicator::iall_reduce(const T * in_values, int n, T * out_values, Op) const
                                   mpi_datatype<T>(),
                                   mpi_op,
                                   this->comm,
-                                  &request.request));
+                                  &request.native()));
     return request;
 }
 

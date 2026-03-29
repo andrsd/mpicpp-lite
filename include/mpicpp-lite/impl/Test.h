@@ -19,7 +19,7 @@ inline bool
 test(Request & request)
 {
     int flag;
-    MPI_CHECK(MPI_Test(&request.request, &flag, MPI_STATUS_IGNORE));
+    MPI_CHECK(MPI_Test(&request.native(), &flag, MPI_STATUS_IGNORE));
     return flag != 0;
 }
 
@@ -32,7 +32,7 @@ inline bool
 test(Request & request, Status & status)
 {
     int flag;
-    MPI_CHECK(MPI_Test(&request.request, &flag, &status.status));
+    MPI_CHECK(MPI_Test(&request.native(), &flag, &status.native()));
     return flag != 0;
 }
 
