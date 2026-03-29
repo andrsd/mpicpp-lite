@@ -43,37 +43,37 @@ public:
 
 private:
     /// Indicates if the environment is initialized
-    bool initialized;
+    bool initialized_;
 
 public:
     static inline void destroy();
 
 private:
     /// User-registered datatypes
-    static inline std::vector<MPI_Datatype> user_datatypes;
+    static inline std::vector<MPI_Datatype> user_datatypes_;
 
     template <typename T>
     friend MPI_Datatype register_mpi_datatype();
 };
 
-inline Environment::Environment() : initialized(false)
+inline Environment::Environment() : initialized_(false)
 {
     if (!is_initialized()) {
         MPI_CHECK(MPI_Init(nullptr, nullptr));
-        this->initialized = true;
+        this->initialized_ = true;
     }
 }
 
-inline Environment::Environment(int & argc, char **& argv) : initialized(false)
+inline Environment::Environment(int & argc, char **& argv) : initialized_(false)
 {
     if (!is_initialized()) {
         MPI_CHECK(MPI_Init(&argc, &argv));
-        this->initialized = true;
+        this->initialized_ = true;
     }
 }
 
 inline Environment::Environment(int & argc, char **& argv, ThreadSupport support) :
-    initialized(false)
+    initialized_(false)
 {
     if (!is_initialized()) {
         int provided;
@@ -82,13 +82,13 @@ inline Environment::Environment(int & argc, char **& argv, ThreadSupport support
             throw std::runtime_error(
                 "The MPI implementation does not provide the requested threading level");
         }
-        this->initialized = true;
+        this->initialized_ = true;
     }
 }
 
 inline Environment::~Environment()
 {
-    if (this->initialized) {
+    if (this->initialized_) {
         if (!is_finalized()) {
             Environment::destroy();
             MPI_CHECK(MPI_Finalize());
@@ -147,9 +147,9 @@ create_dims(int n_nodes, int n_dims)
 void
 Environment::destroy()
 {
-    for (auto & dt : user_datatypes)
+    for (auto & dt : user_datatypes_)
         MPI_CHECK(MPI_Type_free(&dt));
-    user_datatypes.clear();
+    user_datatypes_.clear();
 }
 
 } // namespace mpicpp_lite

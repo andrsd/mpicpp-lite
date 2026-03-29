@@ -38,7 +38,7 @@ register_mpi_datatype()
     if (datatype == MPI_DATATYPE_NULL)
         throw std::runtime_error("Unknown type used in MPI communication");
     MPI_CHECK(MPI_Type_commit(&datatype));
-    Environment::user_datatypes.push_back(datatype);
+    Environment::user_datatypes_.push_back(datatype);
     return datatype;
 }
 

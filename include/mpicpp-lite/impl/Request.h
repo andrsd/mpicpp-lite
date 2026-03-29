@@ -22,20 +22,20 @@ public:
     MPI_Request &
     native()
     {
-        return this->request;
+        return this->request_;
     }
 
     const MPI_Request &
     native() const
     {
-        return this->request;
+        return this->request_;
     }
 
 private:
-    MPI_Request request;
+    MPI_Request request_;
 };
 
-inline Request::Request() : request(MPI_REQUEST_NULL)
+inline Request::Request() : request_(MPI_REQUEST_NULL)
 {
     static_assert(sizeof(Request) == sizeof(MPI_Request),
                   "Size of `Request` must match `MPI_request`");
@@ -44,7 +44,7 @@ inline Request::Request() : request(MPI_REQUEST_NULL)
 inline void
 Request::cancel()
 {
-    MPI_CHECK(MPI_Cancel(&this->request));
+    MPI_CHECK(MPI_Cancel(&this->request_));
 }
 
 } // namespace mpicpp_lite

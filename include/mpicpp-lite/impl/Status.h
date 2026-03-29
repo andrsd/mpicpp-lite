@@ -48,37 +48,37 @@ public:
     MPI_Status &
     native()
     {
-        return this->status;
+        return this->status_;
     }
 
     const MPI_Status &
     native() const
     {
-        return this->status;
+        return this->status_;
     }
 
 private:
-    MPI_Status status;
+    MPI_Status status_;
 };
 
-inline Status::Status() : status({ 0 }) {}
+inline Status::Status() : status_({ 0 }) {}
 
 inline int
 Status::source() const
 {
-    return this->status.MPI_SOURCE;
+    return this->status_.MPI_SOURCE;
 }
 
 inline int
 Status::tag() const
 {
-    return this->status.MPI_TAG;
+    return this->status_.MPI_TAG;
 }
 
 inline int
 Status::error() const
 {
-    return this->status.MPI_ERROR;
+    return this->status_.MPI_ERROR;
 }
 
 template <typename T>
@@ -86,7 +86,7 @@ inline int
 Status::count() const
 {
     int n;
-    MPI_Get_count(&this->status, mpi_datatype<T>(), &n);
+    MPI_Get_count(&this->status_, mpi_datatype<T>(), &n);
     return n;
 }
 

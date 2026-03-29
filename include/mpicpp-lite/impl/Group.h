@@ -66,7 +66,7 @@ public:
                                      const Group & out_group) const;
 
     /// Type cast operator so we can pass this class directly into MPI calls
-    operator MPI_Group() const { return this->group; }
+    operator MPI_Group() const { return this->group_; }
 
 public:
     /// Compares two groups
@@ -99,18 +99,18 @@ public:
     static Group difference(const Group & g1, const Group & g2);
 
 private:
-    MPI_Group group;
+    MPI_Group group_;
 };
 
-inline Group::Group() : group(MPI_GROUP_NULL) {}
+inline Group::Group() : group_(MPI_GROUP_NULL) {}
 
-inline Group::Group(MPI_Group group) : group(group) {}
+inline Group::Group(MPI_Group group) : group_(group) {}
 
 inline Group
 Group::include(const std::vector<int> & ranks) const
 {
     MPI_Group new_group;
-    MPI_CHECK(MPI_Group_incl(this->group, ranks.size(), ranks.data(), &new_group));
+    MPI_CHECK(MPI_Group_incl(this->group_, ranks.size(), ranks.data(), &new_group));
     return Group(new_group);
 }
 
@@ -118,22 +118,22 @@ inline Group
 Group::exclude(const std::vector<int> & ranks) const
 {
     MPI_Group new_group;
-    MPI_CHECK(MPI_Group_excl(this->group, ranks.size(), ranks.data(), &new_group));
+    MPI_CHECK(MPI_Group_excl(this->group_, ranks.size(), ranks.data(), &new_group));
     return Group(new_group);
 }
 
 inline void
 Group::free()
 {
-    MPI_CHECK(MPI_Group_free(&this->group));
-    this->group = MPI_GROUP_NULL;
+    MPI_CHECK(MPI_Group_free(&this->group_));
+    this->group_ = MPI_GROUP_NULL;
 }
 
 inline int
 Group::rank() const
 {
     int r;
-    MPI_CHECK(MPI_Group_rank(this->group, &r));
+    MPI_CHECK(MPI_Group_rank(this->group_, &r));
     return r;
 }
 
@@ -141,7 +141,7 @@ inline int
 Group::size() const
 {
     int sz;
-    MPI_CHECK(MPI_Group_size(this->group, &sz));
+    MPI_CHECK(MPI_Group_size(this->group_, &sz));
     return sz;
 }
 
@@ -149,7 +149,7 @@ inline int
 Group::translate_rank(int in_rank, const Group & out_group) const
 {
     int out_rank;
-    MPI_CHECK(MPI_Group_translate_ranks(this->group, 1, &in_rank, out_group, &out_rank));
+    MPI_CHECK(MPI_Group_translate_ranks(this->group_, 1, &in_rank, out_group, &out_rank));
     return out_rank;
 }
 
@@ -158,7 +158,8 @@ Group::translate_ranks(const std::vector<int> & in_ranks, const Group & out_grou
 {
     int n = in_ranks.size();
     std::vector<int> ranks2(n);
-    MPI_CHECK(MPI_Group_translate_ranks(this->group, n, in_ranks.data(), out_group, ranks2.data()));
+    MPI_CHECK(
+        MPI_Group_translate_ranks(this->group_, n, in_ranks.data(), out_group, ranks2.data()));
     return ranks2;
 }
 

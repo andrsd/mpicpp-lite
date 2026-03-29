@@ -66,7 +66,7 @@ check_mpi_error(MPI_Comm comm, int ierr, const char * file, int line)
 
 /// Check that MPI call was successful.
 #define MPI_CHECK_SELF(ierr) \
-    mpicpp_lite::internal::check_mpi_error(this->comm, ierr, __FILE__, __LINE__)
+    mpicpp_lite::internal::check_mpi_error(this->comm_, ierr, __FILE__, __LINE__)
 
 #define MPI_CHECK(ierr) \
     mpicpp_lite::internal::check_mpi_error(MPI_COMM_WORLD, ierr, __FILE__, __LINE__)
