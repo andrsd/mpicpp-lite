@@ -18,11 +18,6 @@ public:
     /// Create an empty group
     Group();
 
-    /// Create group from an `MPI_Group`
-    ///
-    /// @param group `MPI_Group` used to initialize this object
-    explicit Group(MPI_Group group);
-
     /// Returns the rank of this process in the given group
     ///
     /// @return Rank of the calling process in group, or MPI_UNDEFINED if the process is not a
@@ -65,9 +60,6 @@ public:
     std::vector<int> translate_ranks(const std::vector<int> & in_ranks,
                                      const Group & out_group) const;
 
-    /// Type cast operator so we can pass this class directly into MPI calls
-    operator MPI_Group() const { return this->group_; }
-
 public:
     /// Compares two groups
     ///
@@ -100,26 +92,27 @@ public:
 
 private:
     MPI_Group group_;
+
+    friend class Communicator;
+    friend class Window;
 };
 
 inline Group::Group() : group_(MPI_GROUP_NULL) {}
 
-inline Group::Group(MPI_Group group) : group_(group) {}
-
 inline Group
 Group::include(const std::vector<int> & ranks) const
 {
-    MPI_Group new_group;
-    MPI_CHECK(MPI_Group_incl(this->group_, ranks.size(), ranks.data(), &new_group));
-    return Group(new_group);
+    Group new_group;
+    MPI_CHECK(MPI_Group_incl(this->group_, ranks.size(), ranks.data(), &new_group.group_));
+    return new_group;
 }
 
 inline Group
 Group::exclude(const std::vector<int> & ranks) const
 {
-    MPI_Group new_group;
-    MPI_CHECK(MPI_Group_excl(this->group_, ranks.size(), ranks.data(), &new_group));
-    return Group(new_group);
+    Group new_group;
+    MPI_CHECK(MPI_Group_excl(this->group_, ranks.size(), ranks.data(), &new_group.group_));
+    return new_group;
 }
 
 inline void
@@ -149,7 +142,7 @@ inline int
 Group::translate_rank(int in_rank, const Group & out_group) const
 {
     int out_rank;
-    MPI_CHECK(MPI_Group_translate_ranks(this->group_, 1, &in_rank, out_group, &out_rank));
+    MPI_CHECK(MPI_Group_translate_ranks(this->group_, 1, &in_rank, out_group.group_, &out_rank));
     return out_rank;
 }
 
@@ -158,8 +151,11 @@ Group::translate_ranks(const std::vector<int> & in_ranks, const Group & out_grou
 {
     int n = in_ranks.size();
     std::vector<int> ranks2(n);
-    MPI_CHECK(
-        MPI_Group_translate_ranks(this->group_, n, in_ranks.data(), out_group, ranks2.data()));
+    MPI_CHECK(MPI_Group_translate_ranks(this->group_,
+                                        n,
+                                        in_ranks.data(),
+                                        out_group.group_,
+                                        ranks2.data()));
     return ranks2;
 }
 
@@ -167,32 +163,32 @@ inline Group::ComparisonResult
 Group::compare(const Group & g1, const Group & g2)
 {
     int result;
-    MPI_CHECK(MPI_Group_compare(g1, g2, &result));
+    MPI_CHECK(MPI_Group_compare(g1.group_, g2.group_, &result));
     return static_cast<ComparisonResult>(result);
 }
 
 inline Group
 Group::join(const Group & g1, const Group & g2)
 {
-    MPI_Group new_group;
-    MPI_CHECK(MPI_Group_union(g1, g2, &new_group));
-    return Group(new_group);
+    Group new_group;
+    MPI_CHECK(MPI_Group_union(g1.group_, g2.group_, &new_group.group_));
+    return new_group;
 }
 
 inline Group
 Group::intersection(const Group & g1, const Group & g2)
 {
-    MPI_Group new_group;
-    MPI_CHECK(MPI_Group_intersection(g1, g2, &new_group));
-    return Group(new_group);
+    Group new_group;
+    MPI_CHECK(MPI_Group_intersection(g1.group_, g2.group_, &new_group.group_));
+    return new_group;
 }
 
 inline Group
 Group::difference(const Group & g1, const Group & g2)
 {
-    MPI_Group new_group;
-    MPI_CHECK(MPI_Group_difference(g1, g2, &new_group));
-    return Group(new_group);
+    Group new_group;
+    MPI_CHECK(MPI_Group_difference(g1.group_, g2.group_, &new_group.group_));
+    return new_group;
 }
 
 } // namespace mpicpp_lite
