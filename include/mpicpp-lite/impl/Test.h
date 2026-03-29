@@ -32,7 +32,7 @@ inline bool
 test(Request & request, Status & status)
 {
     int flag;
-    MPI_CHECK(MPI_Test(request, &flag, status));
+    MPI_CHECK(MPI_Test(request, &flag, &status.status));
     return flag != 0;
 }
 

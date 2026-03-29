@@ -8,16 +8,13 @@
 
 namespace mpicpp_lite {
 
+class Request;
+
 /// Wrapper around MPI_Status
 class Status {
 public:
     /// Construct empty `Status` object
     Status();
-
-    /// Construct `Status` object from `MPI_Status` structure
-    ///
-    /// @param s MPI_Status object used to initialize this object
-    Status(const MPI_Status & s);
 
     /// Get the source of the message
     ///
@@ -48,16 +45,15 @@ public:
     template <typename T>
     int count() const;
 
-    /// Type cast operators so we can pass this class directly into the MPI API
-    operator MPI_Status *() { return &this->status; }
-
 private:
     MPI_Status status;
+
+    friend class Communicator;
+    friend bool test(Request & request, Status & status);
+    friend void wait(Request & request, Status & status);
 };
 
 inline Status::Status() : status({ 0 }) {}
-
-inline Status::Status(const MPI_Status & s) : status(s) {}
 
 inline int
 Status::source() const

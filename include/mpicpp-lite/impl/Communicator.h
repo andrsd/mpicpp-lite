@@ -784,20 +784,24 @@ template <typename T>
 inline Status
 Communicator::recv(int source, int tag, T * values, int n) const
 {
-    MPI_Status status = { 0 };
-    MPI_CHECK_SELF(
-        MPI_Recv(const_cast<T *>(values), n, mpi_datatype<T>(), source, tag, this->comm, &status));
-    return { status };
+    Status status;
+    MPI_CHECK_SELF(MPI_Recv(const_cast<T *>(values),
+                            n,
+                            mpi_datatype<T>(),
+                            source,
+                            tag,
+                            this->comm,
+                            &status.status));
+    return status;
 }
 
 template <typename T, typename A>
 inline Status
 Communicator::recv(int source, int tag, std::vector<T, A> & values) const
 {
-    MPI_Status status = { 0 };
-    MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm, &status));
-    int size = 0;
-    MPI_Get_count(&status, mpi_datatype<T>(), &size);
+    Status status;
+    MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm, &status.status));
+    auto size = status.count<T>();
     values.resize(size);
     return recv(source, tag, values.data(), size);
 }
@@ -805,9 +809,9 @@ Communicator::recv(int source, int tag, std::vector<T, A> & values) const
 inline Status
 Communicator::recv(int source, int tag) const
 {
-    MPI_Status status = { 0 };
-    MPI_CHECK_SELF(MPI_Recv(MPI_BOTTOM, 0, MPI_PACKED, source, tag, this->comm, &status));
-    return { status };
+    Status status;
+    MPI_CHECK_SELF(MPI_Recv(MPI_BOTTOM, 0, MPI_PACKED, source, tag, this->comm, &status.status));
+    return status;
 }
 
 template <>
@@ -884,7 +888,7 @@ inline bool
 Communicator::iprobe(int source, int tag, Status & status) const
 {
     int flag;
-    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm, &flag, status));
+    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm, &flag, &status.status));
     return flag != 0;
 }
 
