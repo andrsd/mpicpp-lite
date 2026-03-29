@@ -79,7 +79,7 @@ public:
     ///
     /// @param group Group of target processes
     /// @param assert Used to optimize this call
-    void start(MPI_Group group, int assert = 0) const;
+    void start(Group group, int assert = 0) const;
 
     /// Set the print name for an MPI RMA window
     ///
@@ -95,7 +95,7 @@ public:
     ///
     /// @param group Group of target processes
     /// @param assert Used to optimize this call
-    void post(MPI_Group group, int assert = 0) const;
+    void post(Group group, int assert = 0) const;
 
     void lock(Lock lock_type, int rank, int assert = 0) const;
 
@@ -285,15 +285,15 @@ Window::flush_local_all() const
 inline Group
 Window::group() const
 {
-    MPI_Group g;
-    MPI_CHECK(MPI_Win_get_group(this->win_, &g));
+    Group g;
+    MPI_CHECK(MPI_Win_get_group(this->win_, &g.group_));
     return Group(g);
 }
 
 inline void
-Window::start(MPI_Group group, int assert) const
+Window::start(Group group, int assert) const
 {
-    MPI_CHECK(MPI_Win_start(group, assert, this->win_));
+    MPI_CHECK(MPI_Win_start(group.group_, assert, this->win_));
 }
 
 inline void
@@ -318,9 +318,9 @@ Window::name() const
 }
 
 inline void
-Window::post(MPI_Group group, int assert) const
+Window::post(Group group, int assert) const
 {
-    MPI_CHECK(MPI_Win_post(group, assert, this->win_));
+    MPI_CHECK(MPI_Win_post(group.group_, assert, this->win_));
 }
 
 inline bool

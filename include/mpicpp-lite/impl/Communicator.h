@@ -695,9 +695,9 @@ Communicator::size() const
 inline Communicator
 Communicator::create(const Group & group, int tag) const
 {
-    MPI_Comm new_comm;
-    MPI_CHECK_SELF(MPI_Comm_create_group(this->comm_, group, tag, &new_comm));
-    return { new_comm };
+    Communicator new_comm;
+    MPI_CHECK_SELF(MPI_Comm_create_group(this->comm_, group.group_, tag, &new_comm.comm_));
+    return new_comm;
 }
 
 inline CartesianCommunicator
@@ -721,9 +721,9 @@ Communicator::duplicate() const
 inline Group
 Communicator::group() const
 {
-    MPI_Group g;
-    MPI_CHECK_SELF(MPI_Comm_group(this->comm_, &g));
-    return Group(g);
+    Group g;
+    MPI_CHECK_SELF(MPI_Comm_group(this->comm_, &g.group_));
+    return g;
 }
 
 inline bool
