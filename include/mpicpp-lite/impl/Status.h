@@ -45,12 +45,20 @@ public:
     template <typename T>
     int count() const;
 
+    MPI_Status &
+    native()
+    {
+        return this->status;
+    }
+
+    const MPI_Status &
+    native() const
+    {
+        return this->status;
+    }
+
 private:
     MPI_Status status;
-
-    friend class Communicator;
-    friend bool test(Request & request, Status & status);
-    friend void wait(Request & request, Status & status);
 };
 
 inline Status::Status() : status({ 0 }) {}
