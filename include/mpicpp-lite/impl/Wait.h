@@ -45,7 +45,7 @@ wait_with_timeout(Request & request, double timeout)
     auto start = wall_time();
     while (!completed && ((wall_time() - start) < timeout)) {
         // Busy wait
-        completed = test(request);
+        completed = test(request).has_value();
     }
     return completed;
 }
