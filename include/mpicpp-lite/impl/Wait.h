@@ -65,14 +65,14 @@ wait_all(std::vector<Request> & requests)
 ///
 /// @param requests Requests to wait for
 /// @return Index of the request that completed, or `UNDEFINED` if all requests are null requests
-inline int
+inline TestAnyResult
 wait_any(std::vector<Request> & requests)
 {
+    TestAnyResult result;
     auto n = static_cast<int>(requests.size());
-    int idx;
     auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
-    MPI_CHECK(MPI_Waitany(n, reqs, &idx, MPI_STATUS_IGNORE));
-    return idx;
+    MPI_CHECK(MPI_Waitany(n, reqs, &result.index, &result.status.native()));
+    return result;
 }
 
 /// Waits for some given requests to complete

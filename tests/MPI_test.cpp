@@ -954,11 +954,11 @@ TEST(MPITest, isend_irecv_waitany)
         for (int i = 0; i < n; i++)
             reqs[i] = comm.irecv(i + 1, tag, vals[i]);
 
-        auto idx = wait_any(reqs);
-        EXPECT_EQ(vals[idx], (idx + 1) * 7);
+        auto res = wait_any(reqs);
+        EXPECT_EQ(vals[res.index], (res.index + 1) * 7);
 
         for (int i = 0; i < n; i++)
-            if (i != idx)
+            if (i != res.index)
                 wait(reqs[i]);
     }
     else {
@@ -1009,8 +1009,7 @@ TEST(MPITest, test_any)
 
         int timeout = 2;
         while (timeout > 0) {
-            int index = 0;
-            if (test_any(reqs, index)) {
+            if (test_any(reqs)) {
                 SUCCEED();
                 return;
             }
