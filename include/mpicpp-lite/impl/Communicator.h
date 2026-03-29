@@ -619,7 +619,7 @@ public:
     void set_error_handler();
 
 protected:
-    MPI_Comm comm;
+    MPI_Comm comm_;
 };
 
 //
@@ -663,24 +663,24 @@ private:
 
 //
 
-inline Communicator::Communicator() : comm(MPI_COMM_WORLD) {}
+inline Communicator::Communicator() : comm_(MPI_COMM_WORLD) {}
 
-inline Communicator::Communicator(const MPI_Comm & comm) : comm(comm) {}
+inline Communicator::Communicator(const MPI_Comm & comm) : comm_(comm) {}
 
-inline Communicator::Communicator(const Communicator & comm) : comm(comm.comm) {}
+inline Communicator::Communicator(const Communicator & comm) : comm_(comm.comm_) {}
 
 inline void
 Communicator::free()
 {
-    MPI_CHECK_SELF(MPI_Comm_free(&this->comm));
-    this->comm = MPI_COMM_NULL;
+    MPI_CHECK_SELF(MPI_Comm_free(&this->comm_));
+    this->comm_ = MPI_COMM_NULL;
 }
 
 inline int
 Communicator::rank() const
 {
     int r;
-    MPI_Comm_rank(this->comm, &r);
+    MPI_Comm_rank(this->comm_, &r);
     return r;
 }
 
@@ -688,7 +688,7 @@ inline int
 Communicator::size() const
 {
     int sz;
-    MPI_Comm_size(this->comm, &sz);
+    MPI_Comm_size(this->comm_, &sz);
     return sz;
 }
 
@@ -696,7 +696,7 @@ inline Communicator
 Communicator::create(const Group & group, int tag) const
 {
     MPI_Comm new_comm;
-    MPI_CHECK_SELF(MPI_Comm_create_group(this->comm, group, tag, &new_comm));
+    MPI_CHECK_SELF(MPI_Comm_create_group(this->comm_, group, tag, &new_comm));
     return { new_comm };
 }
 
@@ -706,7 +706,7 @@ Communicator::create_cartesian(const std::vector<int> & dims, bool reorder) cons
     MPI_Comm new_comm;
     std::vector<int> periods(dims.size(), 0);
     MPI_CHECK_SELF(
-        MPI_Cart_create(this->comm, dims.size(), dims.data(), periods.data(), reorder, &new_comm));
+        MPI_Cart_create(this->comm_, dims.size(), dims.data(), periods.data(), reorder, &new_comm));
     return CartesianCommunicator(new_comm);
 }
 
@@ -714,7 +714,7 @@ inline Communicator
 Communicator::duplicate() const
 {
     MPI_Comm new_comm;
-    MPI_CHECK_SELF(MPI_Comm_dup(this->comm, &new_comm));
+    MPI_CHECK_SELF(MPI_Comm_dup(this->comm_, &new_comm));
     return { new_comm };
 }
 
@@ -722,14 +722,14 @@ inline Group
 Communicator::group() const
 {
     MPI_Group g;
-    MPI_CHECK_SELF(MPI_Comm_group(this->comm, &g));
+    MPI_CHECK_SELF(MPI_Comm_group(this->comm_, &g));
     return Group(g);
 }
 
 inline bool
 Communicator::is_valid() const
 {
-    return this->comm != MPI_COMM_NULL;
+    return this->comm_ != MPI_COMM_NULL;
 }
 
 // Send
@@ -745,7 +745,7 @@ template <typename T>
 inline void
 Communicator::send(int dest, int tag, const T * values, int n) const
 {
-    MPI_CHECK_SELF(MPI_Send(const_cast<T *>(values), n, mpi_datatype<T>(), dest, tag, this->comm));
+    MPI_CHECK_SELF(MPI_Send(const_cast<T *>(values), n, mpi_datatype<T>(), dest, tag, this->comm_));
 }
 
 template <typename T, typename A>
@@ -759,7 +759,7 @@ Communicator::send(int dest, int tag, const std::vector<T, A> & value) const
 inline void
 Communicator::send(int dest, int tag) const
 {
-    MPI_CHECK_SELF(MPI_Send(MPI_BOTTOM, 0, MPI_PACKED, dest, tag, this->comm));
+    MPI_CHECK_SELF(MPI_Send(MPI_BOTTOM, 0, MPI_PACKED, dest, tag, this->comm_));
 }
 
 template <>
@@ -790,7 +790,7 @@ Communicator::recv(int source, int tag, T * values, int n) const
                             mpi_datatype<T>(),
                             source,
                             tag,
-                            this->comm,
+                            this->comm_,
                             &status.native()));
     return status;
 }
@@ -800,7 +800,7 @@ inline Status
 Communicator::recv(int source, int tag, std::vector<T, A> & values) const
 {
     Status status;
-    MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm, &status.native()));
+    MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm_, &status.native()));
     auto size = status.count<T>();
     values.resize(size);
     return recv(source, tag, values.data(), size);
@@ -810,7 +810,7 @@ inline Status
 Communicator::recv(int source, int tag) const
 {
     Status status;
-    MPI_CHECK_SELF(MPI_Recv(MPI_BOTTOM, 0, MPI_PACKED, source, tag, this->comm, &status.native()));
+    MPI_CHECK_SELF(MPI_Recv(MPI_BOTTOM, 0, MPI_PACKED, source, tag, this->comm_, &status.native()));
     return status;
 }
 
@@ -851,7 +851,7 @@ Communicator::isend(int dest, int tag, const T * values, int n) const
                              mpi_datatype<T>(),
                              dest,
                              tag,
-                             this->comm,
+                             this->comm_,
                              &request.native()));
     return request;
 }
@@ -876,7 +876,7 @@ Communicator::irecv(int source, int tag, T * values, int n) const
                              mpi_datatype<T>(),
                              source,
                              tag,
-                             this->comm,
+                             this->comm_,
                              &request.native()));
     return request;
 }
@@ -885,7 +885,7 @@ inline bool
 Communicator::iprobe(int source, int tag) const
 {
     int flag;
-    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm, &flag, MPI_STATUS_IGNORE));
+    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm_, &flag, MPI_STATUS_IGNORE));
     return flag != 0;
 }
 
@@ -893,7 +893,7 @@ inline bool
 Communicator::iprobe(int source, int tag, Status & status) const
 {
     int flag;
-    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm, &flag, &status.native()));
+    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm_, &flag, &status.native()));
     return flag != 0;
 }
 
@@ -902,7 +902,7 @@ Communicator::iprobe(int source, int tag, Status & status) const
 inline void
 Communicator::barrier() const
 {
-    MPI_CHECK_SELF(MPI_Barrier(this->comm));
+    MPI_CHECK_SELF(MPI_Barrier(this->comm_));
 }
 
 // Broadcast
@@ -936,7 +936,7 @@ template <typename T>
 inline void
 Communicator::broadcast(T * values, int n, int root) const
 {
-    MPI_CHECK_SELF(MPI_Bcast(values, n, mpi_datatype<T>(), root, this->comm));
+    MPI_CHECK_SELF(MPI_Bcast(values, n, mpi_datatype<T>(), root, this->comm_));
 }
 
 template <typename KEY, typename VALUE>
@@ -1013,7 +1013,7 @@ Communicator::gather(const T * in_values, int n, T * out_values, int root) const
 {
     auto type = mpi_datatype<T>();
     MPI_CHECK_SELF(
-        MPI_Gather(const_cast<T *>(in_values), n, type, out_values, n, type, root, this->comm));
+        MPI_Gather(const_cast<T *>(in_values), n, type, out_values, n, type, root, this->comm_));
 }
 
 template <typename T>
@@ -1047,7 +1047,7 @@ Communicator::gather(const std::vector<T> & in_values,
                                out_offsets.data(),
                                mpi_datatype<T>(),
                                root,
-                               this->comm));
+                               this->comm_));
 }
 
 template <typename T>
@@ -1060,7 +1060,7 @@ Communicator::all_gather(const T * in_value, int n, T * out_values, int m) const
                                  out_values,
                                  m,
                                  mpi_datatype<T>(),
-                                 this->comm));
+                                 this->comm_));
 }
 
 template <typename T>
@@ -1109,7 +1109,7 @@ Communicator::all_gather(const std::vector<T> & in_values,
                                   out_counts.data(),
                                   out_offsets.data(),
                                   mpi_datatype<T>(),
-                                  this->comm));
+                                  this->comm_));
 }
 
 // Scatter
@@ -1134,7 +1134,7 @@ Communicator::scatter(const T * in_values, T * out_values, int n, int root) cons
 {
     auto type = mpi_datatype<T>();
     MPI_CHECK_SELF(
-        MPI_Scatter(const_cast<T *>(in_values), n, type, out_values, n, type, root, this->comm));
+        MPI_Scatter(const_cast<T *>(in_values), n, type, out_values, n, type, root, this->comm_));
 }
 
 template <typename T>
@@ -1157,7 +1157,7 @@ Communicator::reduce(const T * in_values, int n, T * out_values, Op, int root) c
                               mpi_datatype<T>(),
                               mpi_op,
                               root,
-                              this->comm));
+                              this->comm_));
 }
 
 template <typename T, typename Op>
@@ -1191,7 +1191,7 @@ Communicator::all_reduce(const T * in_values, int n, T * out_values, Op) const
                                  n,
                                  mpi_datatype<T>(),
                                  mpi_op,
-                                 this->comm));
+                                 this->comm_));
 }
 
 template <typename T, typename Op>
@@ -1229,7 +1229,7 @@ Communicator::iall_reduce(const T * in_values, int n, T * out_values, Op) const
                                   n,
                                   mpi_datatype<T>(),
                                   mpi_op,
-                                  this->comm,
+                                  this->comm_,
                                   &request.native()));
     return request;
 }
@@ -1261,7 +1261,7 @@ Communicator::all_to_all(const T * in_values, int n, T * out_values, int m) cons
                                 out_values,
                                 m,
                                 mpi_datatype<T>(),
-                                this->comm));
+                                this->comm_));
 }
 
 template <typename T>
@@ -1331,14 +1331,14 @@ Communicator::all_to_all(const std::vector<T> & in_values,
                                  out_counts.data(),
                                  out_offsets.data(),
                                  mpi_datatype<T>(),
-                                 this->comm));
+                                 this->comm_));
 }
 
 inline Communicator
 Communicator::split(int color, int key) const
 {
     MPI_Comm new_comm;
-    MPI_CHECK_SELF(MPI_Comm_split(this->comm, color, key, &new_comm));
+    MPI_CHECK_SELF(MPI_Comm_split(this->comm_, color, key, &new_comm));
     return { new_comm };
 }
 
@@ -1349,8 +1349,12 @@ inline void
 Communicator::scan(const T * in_values, int n, T * out_values, Op) const
 {
     auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
-    MPI_CHECK_SELF(
-        MPI_Scan(const_cast<T *>(in_values), out_values, n, mpi_datatype<T>(), mpi_op, this->comm));
+    MPI_CHECK_SELF(MPI_Scan(const_cast<T *>(in_values),
+                            out_values,
+                            n,
+                            mpi_datatype<T>(),
+                            mpi_op,
+                            this->comm_));
 }
 
 template <typename T, typename Op>
@@ -1380,7 +1384,7 @@ Communicator::exscan(const T * in_values, int n, T * out_values, Op) const
                               n,
                               mpi_datatype<T>(),
                               mpi_op,
-                              this->comm));
+                              this->comm_));
 }
 
 template <typename T, typename Op>
@@ -1403,12 +1407,12 @@ Communicator::exscan(const T & in_value, T & out_value, Op op) const
 inline void
 Communicator::abort(int errcode) const
 {
-    MPI_Abort(this->comm, errcode);
+    MPI_Abort(this->comm_, errcode);
 }
 
 inline Communicator::operator MPI_Comm() const
 {
-    return this->comm;
+    return this->comm_;
 }
 
 inline Communicator::operator bool() const
@@ -1420,7 +1424,7 @@ inline void
 Communicator::set_error_handler()
 {
 #if (MPI_VERSION >= 2)
-    MPI_Comm_set_errhandler(this->comm, MPI_ERRORS_RETURN);
+    MPI_Comm_set_errhandler(this->comm_, MPI_ERRORS_RETURN);
 #else
     MPI_Errhandler_set(this->comm, MPI_ERRORS_RETURN);
 #endif
@@ -1434,7 +1438,7 @@ inline int
 CartesianCommunicator::dimensions() const
 {
     int dims;
-    MPI_CHECK_SELF(MPI_Cartdim_get(this->comm, &dims));
+    MPI_CHECK_SELF(MPI_Cartdim_get(this->comm_, &dims));
     return dims;
 }
 
@@ -1446,7 +1450,7 @@ CartesianCommunicator::rank(ARGS... args) const
                   "CartesianCommunicator::rank: All parameters must be of integral type");
     int coords[] = { static_cast<int>(args)... };
     int rank;
-    MPI_CHECK_SELF(MPI_Cart_rank(this->comm, coords, &rank));
+    MPI_CHECK_SELF(MPI_Cart_rank(this->comm_, coords, &rank));
     return rank;
 }
 
@@ -1455,7 +1459,7 @@ CartesianCommunicator::coords(int rank) const
 {
     auto dims = dimensions();
     std::vector<int> coords(dims);
-    MPI_CHECK_SELF(MPI_Cart_coords(this->comm, rank, dims, coords.data()));
+    MPI_CHECK_SELF(MPI_Cart_coords(this->comm_, rank, dims, coords.data()));
     return coords;
 }
 
