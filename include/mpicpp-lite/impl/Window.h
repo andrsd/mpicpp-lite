@@ -13,6 +13,7 @@
 namespace mpicpp_lite {
 
 enum class Lock {
+    //
     SHARED = MPI_LOCK_SHARED,
     EXCLUSIVE = MPI_LOCK_EXCLUSIVE
 };
@@ -286,7 +287,7 @@ Window::group() const
 {
     MPI_Group g;
     MPI_CHECK(MPI_Win_get_group(this->win, &g));
-    return { g };
+    return Group(g);
 }
 
 inline void
@@ -405,10 +406,10 @@ Window::get(std::vector<T> & origin, int target_rank) const
 template <typename T>
 inline void
 Window::put(const T * origin_addr,
-         int origin_count,
-         int target_rank,
-         MPI_Aint target_disp,
-         int target_count) const
+            int origin_count,
+            int target_rank,
+            MPI_Aint target_disp,
+            int target_count) const
 {
     MPI_CHECK(MPI_Put(origin_addr,
                       origin_count,

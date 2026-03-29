@@ -723,7 +723,7 @@ Communicator::group() const
 {
     MPI_Group g;
     MPI_CHECK_SELF(MPI_Comm_group(this->comm, &g));
-    return { g };
+    return Group(g);
 }
 
 inline bool
