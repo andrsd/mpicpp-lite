@@ -25,8 +25,8 @@ jobs:
       - name: Install dependencies
         run: |
           conda install \
-            cmake=3.31.2 \
-            rhash=1.4.3 \
+            cmake \
+            rhash \
             make \
             mpich-mpicc=4.3.* \
             mpich-mpicxx=4.3.* \
