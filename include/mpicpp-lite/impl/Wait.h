@@ -20,7 +20,7 @@ namespace mpicpp_lite {
 inline void
 wait(Request & request)
 {
-    MPI_CHECK(MPI_Wait(request, MPI_STATUS_IGNORE));
+    MPI_CHECK(MPI_Wait(&request.request, MPI_STATUS_IGNORE));
 }
 
 /// Wait for a single request to complete with status
@@ -30,7 +30,7 @@ wait(Request & request)
 inline void
 wait(Request & request, Status & status)
 {
-    MPI_CHECK(MPI_Wait(request, &status.status));
+    MPI_CHECK(MPI_Wait(&request.request, &status.status));
 }
 
 /// Wait for a single request with a timeout

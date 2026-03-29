@@ -845,10 +845,15 @@ inline Request
 Communicator::isend(int dest, int tag, const T * values, int n) const
 {
     assert(values != nullptr);
-    MPI_Request request;
-    MPI_CHECK_SELF(
-        MPI_Isend(const_cast<T *>(values), n, mpi_datatype<T>(), dest, tag, this->comm, &request));
-    return Request(request);
+    Request request;
+    MPI_CHECK_SELF(MPI_Isend(const_cast<T *>(values),
+                             n,
+                             mpi_datatype<T>(),
+                             dest,
+                             tag,
+                             this->comm,
+                             &request.request));
+    return request;
 }
 
 // Irecv
@@ -865,15 +870,15 @@ inline Request
 Communicator::irecv(int source, int tag, T * values, int n) const
 {
     assert(values != nullptr);
-    MPI_Request request;
+    Request request;
     MPI_CHECK_SELF(MPI_Irecv(const_cast<T *>(values),
                              n,
                              mpi_datatype<T>(),
                              source,
                              tag,
                              this->comm,
-                             &request));
-    return Request(request);
+                             &request.request));
+    return request;
 }
 
 inline bool
@@ -1217,7 +1222,7 @@ template <typename T, typename Op>
 inline Request
 Communicator::iall_reduce(const T * in_values, int n, T * out_values, Op) const
 {
-    MPI_Request request;
+    Request request;
     auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
     MPI_CHECK_SELF(MPI_Iallreduce(const_cast<T *>(in_values),
                                   out_values,
@@ -1225,8 +1230,8 @@ Communicator::iall_reduce(const T * in_values, int n, T * out_values, Op) const
                                   mpi_datatype<T>(),
                                   mpi_op,
                                   this->comm,
-                                  &request));
-    return Request(request);
+                                  &request.request));
+    return request;
 }
 
 template <typename T, typename Op>

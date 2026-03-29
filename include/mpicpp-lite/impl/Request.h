@@ -8,37 +8,31 @@
 
 namespace mpicpp_lite {
 
+class Status;
+
 /// Wrapper around MPI_Request
 class Request {
 public:
     /// Create empty request
     Request();
 
-    /// Create request from an `MPI_Request`
-    ///
-    /// @param r `MPI_Request` used to initiliaze this object
-    explicit Request(MPI_Request r);
-
     /// Cancels a communication request
     void cancel();
-
-    /// Type cast operator so we can pass this class directly into MPI calls
-    operator MPI_Request *() { return &this->request; }
 
     /// Type cast operator so we can pass this class directly into MPI calls
     operator MPI_Request() const { return this->request; }
 
 private:
     MPI_Request request;
+
+    friend class Communicator;
+    friend void wait(Request &);
+    friend void wait(Request &, Status &);
+    friend bool test(Request &);
+    friend bool test(Request &, Status &);
 };
 
 inline Request::Request() : request(MPI_REQUEST_NULL)
-{
-    static_assert(sizeof(Request) == sizeof(MPI_Request),
-                  "Size of `Request` must match `MPI_request`");
-}
-
-inline Request::Request(MPI_Request r) : request(r)
 {
     static_assert(sizeof(Request) == sizeof(MPI_Request),
                   "Size of `Request` must match `MPI_request`");
