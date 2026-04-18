@@ -72,13 +72,13 @@ TEST(MPITest, send_recv_int)
     if (n_mpis == 1)
         return;
 
-    int tag = 1234;
+    Tag tag(1234);
     if (comm.rank() == 0) {
         for (int i = 1; i < n_mpis; i++) {
             int val;
             auto status = comm.recv(i, tag, val);
             EXPECT_EQ(val, i * 4);
-            EXPECT_EQ(status.tag(), tag);
+            EXPECT_EQ(status.tag(), tag.value());
             EXPECT_EQ(status.source(), i);
             EXPECT_EQ(status.error(), 0);
         }
@@ -96,13 +96,13 @@ TEST(MPITest, send_recv_bool)
     if (n_mpis == 1)
         return;
 
-    int tag = 1234;
+    Tag tag(1234);
     if (comm.rank() == 0) {
         for (int i = 1; i < n_mpis; i++) {
             bool val;
             auto status = comm.recv(i, tag, val);
             EXPECT_EQ(val, i % 2 == 0);
-            EXPECT_EQ(status.tag(), tag);
+            EXPECT_EQ(status.tag(), tag.value());
             EXPECT_EQ(status.source(), i);
             EXPECT_EQ(status.error(), 0);
         }
@@ -120,12 +120,12 @@ TEST(MPITest, send_recv)
     if (n_mpis == 1)
         return;
 
-    int tag = 0;
+    Tag tag;
     if (comm.rank() == 0) {
         for (int i = 1; i < n_mpis; i++) {
             auto status = comm.recv(i, tag);
             EXPECT_EQ(status.source(), i);
-            EXPECT_EQ(status.tag(), tag);
+            EXPECT_EQ(status.tag(), tag.value());
         }
     }
     else
@@ -139,7 +139,7 @@ TEST(MPITest, send_recv_arr_int)
     if (n_mpis == 1)
         return;
 
-    int tag = 0;
+    Tag tag;
     if (comm.rank() == 0) {
         for (int i = 1; i < n_mpis; i++) {
             std::vector<int> arr;
@@ -149,7 +149,7 @@ TEST(MPITest, send_recv_arr_int)
             for (int j = 0; j < sz; j++)
                 EXPECT_EQ(arr[j], 2 * j);
             EXPECT_EQ(status.source(), i);
-            EXPECT_EQ(status.tag(), tag);
+            EXPECT_EQ(status.tag(), tag.value());
         }
     }
     else {
@@ -169,12 +169,12 @@ TEST(MPITest, send_recv_empty_std_vector)
     if (n_mpis == 1)
         return;
 
-    int tag = 1234;
+    Tag tag(1234);
     if (comm.rank() == 0) {
         for (int i = 1; i < n_mpis; i++) {
             std::vector<int> arr;
             auto status = comm.recv(i, tag, arr);
-            EXPECT_EQ(status.tag(), tag);
+            EXPECT_EQ(status.tag(), tag.value());
             EXPECT_EQ(status.source(), i);
             EXPECT_EQ(status.error(), 0);
         }
@@ -192,7 +192,7 @@ TEST(MPITest, send_recv_std_str)
     if (n_mpis == 1)
         return;
 
-    int tag = 101;
+    Tag tag(101);
     std::string str;
     if (comm.rank() == 0) {
         str = "ahoi";
@@ -670,7 +670,7 @@ TEST(MPITest, iprobe)
     if (comm.size() == 1)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         for (int i = 1; i < comm.size(); i++) {
             int num = i * 5;
@@ -700,7 +700,7 @@ TEST(MPITest, iprobe_w_status)
     if (comm.size() == 1)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         for (int i = 1; i < comm.size(); i++) {
             int num = i * 5;
@@ -731,7 +731,7 @@ TEST(MPITest, isend_irecv_wait)
     if (comm.size() == 1)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         for (int i = 1; i < comm.size(); i++) {
             int num = i * 5;
@@ -753,7 +753,7 @@ TEST(MPITest, isend_irecv_wait_w_status)
     if (comm.size() == 1)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         for (int i = 1; i < comm.size(); i++) {
             int num = i * 5;
@@ -769,7 +769,7 @@ TEST(MPITest, isend_irecv_wait_w_status)
         wait(request, status);
         EXPECT_EQ(val, comm.rank() * 5);
         EXPECT_EQ(status.source(), 0);
-        EXPECT_EQ(status.tag(), tag);
+        EXPECT_EQ(status.tag(), tag.value());
     }
 }
 
@@ -779,7 +779,7 @@ TEST(MPITest, isend_irecv_waitall)
     if (comm.size() == 1)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         int n = comm.size() - 1;
         std::vector<int> vals;
@@ -805,7 +805,7 @@ TEST(MPITest, isend_irecv_waitany)
     if (comm.size() == 1)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         int n = comm.size() - 1;
         std::vector<int> vals;
@@ -835,7 +835,7 @@ TEST(MPITest, test_all)
     if (comm.size() < 2)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         int n = comm.size() - 1;
         std::vector<int> vals(n);
@@ -860,7 +860,7 @@ TEST(MPITest, test_any)
     if (comm.size() < 2)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         int n = comm.size() - 1;
         std::vector<int> vals(n);
