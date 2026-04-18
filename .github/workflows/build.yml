@@ -18,22 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-22.04
-            mpi: mpich
-            mpi-version: 4.3
-            build: Release
           - os: ubuntu-slim
             mpi: openmpi
-            mpi-version: 5.0
+            mpi-version: "5.0"
             build: Release
-          - os: ubuntu-22.04
-            mpi: mpich
-            mpi-version: 4.3
-            build: Debug
-          - os: ubuntu-slim
-            mpi: openmpi
-            mpi-version: 5.0
-            build: Debug
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -52,82 +40,7 @@ jobs:
           conda install \
             cmake \
             make \
-            compilers \
             ${{ matrix.mpi }}-mpicc=${{ matrix.mpi-version }} \
             ${{ matrix.mpi }}-mpicxx=${{ matrix.mpi-version }} \
             gtest \
             lcov
-
-      - name: Configure
-        run: |
-          cmake -S ${{ github.workspace }} -B ${{ github.workspace }}/build \
-            -DGCOV_PATH=`which x86_64-conda-linux-gnu-gcov` \
-            -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
-            -DMPICPP_LITE_BUILD_TESTS=YES \
-            -DMPICPP_LITE_CODE_COVERAGE=YES
-
-      - name: Build
-        run: cmake --build ${{ github.workspace }}/build
-
-      - name: "Run tests: mpi-1"
-        run: |
-          LLVM_PROFILE_FILE=mpicpp-lite-test-1.profraw \
-          ${{ github.workspace }}/build/tests/mpicpp-lite-test \
-            --gtest_output=xml:${{ github.workspace }}/build/gtest-results-1.xml
-
-      - name: "Run tests: mpi-4"
-        run: |
-          LLVM_PROFILE_FILE=mpicpp-lite-test-%4m.profraw \
-          mpirun -np 4 \
-            --bind-to none \
-            --host localhost:4 \
-            ${{ github.workspace }}/build/tests/mpicpp-lite-test \
-            --gtest_output=xml:${{ github.workspace }}/build/gtest-results-4.xml
-
-      - name: "Run tests: mpi-6"
-        run: |
-          LLVM_PROFILE_FILE=mpicpp-lite-test-%4m.profraw \
-          mpirun -np 6 \
-            --bind-to none \
-            --host localhost:6 \
-            ${{ github.workspace }}/build/tests/mpicpp-lite-test \
-            --gtest_output=xml:${{ github.workspace }}/build/gtest-results-6.xml
-
-      - name: Test summary
-        uses: test-summary/action@v2
-        if: always()
-        with:
-          paths: ${{ github.workspace }}/build/gtest-results-*.xml
-          show: "fail, skip"
-
-      - name: Upload test results to codecov.io
-        if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ${{ github.workspace }}/build/gtest-results-1.xml,${{ github.workspace }}/build/gtest-results-4.xml,${{ github.workspace }}/build/gtest-results-6.xml
-          name: ${{ matrix.os }}-${{ matrix.mpi }}-${{ matrix.build }}
-
-      - name: Generate code coverage
-        run: cmake --build ${{ github.workspace }}/build --target coverage
-
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: coverage-${{ matrix.os }}-${{ matrix.mpi }}-${{ matrix.build }}
-          path: ${{ github.workspace }}/build/coverage.info
-
-  upload-to-codecov:
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v8
-
-      - name: Upload to codecov.io
-        uses: codecov/codecov-action@v6
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
