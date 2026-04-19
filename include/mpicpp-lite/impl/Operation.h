@@ -5,6 +5,7 @@
 
 #include "mpi.h"
 #include "Error.h"
+#include "Environment.h"
 #include <algorithm>
 #include <type_traits>
 #include <concepts>
@@ -315,6 +316,7 @@ create(MPI_User_function * user_fn, bool commute)
 {
     MPI_Op op;
     MPI_CHECK(MPI_Op_create(user_fn, commute, &op));
+    Environment::user_operations_.push_back(op);
     return op;
 }
 

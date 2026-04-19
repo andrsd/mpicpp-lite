@@ -10,6 +10,10 @@
 
 namespace mpicpp_lite {
 
+namespace op {
+MPI_Op create(MPI_User_function * user_fn, bool commute);
+}
+
 enum class ThreadSupport : int {
     SINGLE = MPI_THREAD_SINGLE,
     FUNNELED = MPI_THREAD_FUNNELED,
@@ -51,9 +55,12 @@ public:
 private:
     /// User-registered datatypes
     static inline std::vector<MPI_Datatype> user_datatypes_;
+    /// user-defined operations
+    static inline std::vector<MPI_Op> user_operations_;
 
     template <typename T>
     friend MPI_Datatype register_mpi_datatype();
+    friend MPI_Op op::create(MPI_User_function * user_fn, bool commute);
 };
 
 inline Environment::Environment() : initialized_(false)
@@ -150,6 +157,10 @@ Environment::destroy()
     for (auto & dt : user_datatypes_)
         MPI_CHECK(MPI_Type_free(&dt));
     user_datatypes_.clear();
+
+    for (auto & op : user_operations_)
+        MPI_CHECK(MPI_Op_free(&op));
+    user_operations_.clear();
 }
 
 } // namespace mpicpp_lite
