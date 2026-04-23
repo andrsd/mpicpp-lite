@@ -12,7 +12,7 @@ include(CMakeFindDependencyMacro)
 if (MPICPP_LITE_WITH_FMT)
     find_dependency(fmt 11)
 endif()
-find_dependency(MPI)
+find_dependency(MPI REQUIRED COMPONENTS C)
 
 find_path(MPICPP_LITE_INCLUDE_DIR mpicpp-lite.h HINTS ${PACKAGE_PREFIX_DIR}/include/mpicpp-lite)
 
