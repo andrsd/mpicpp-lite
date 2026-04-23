@@ -18,7 +18,7 @@ target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC
         GTest::gmock_main
-        MPI::MPI_CXX
+        MPI::MPI_C
         mpicpp-lite
 )
 
