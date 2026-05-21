@@ -725,6 +725,92 @@ TEST(MPITest, iprobe_w_status)
     }
 }
 
+TEST(MPITest, mprobe_recv)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int tag(2);
+    if (comm.rank() == 0) {
+        int val = 125;
+        comm.send(1, tag, val);
+    }
+    else if (comm.rank() == 1) {
+        auto message = comm.mprobe(0, tag);
+        EXPECT_TRUE(message);
+        EXPECT_EQ(message.source(), 0);
+        EXPECT_EQ(message.tag(), tag);
+        EXPECT_EQ(message.count<int>(), 1);
+
+        int val;
+        auto status = message.recv(&val, 1);
+        EXPECT_EQ(val, 125);
+        EXPECT_EQ(status.source(), 0);
+        EXPECT_EQ(status.tag(), tag);
+        EXPECT_FALSE(message);
+    }
+}
+
+TEST(MPITest, mprobe_recv_empty_message)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int tag(3);
+    if (comm.rank() == 0)
+        comm.send(1, tag);
+    else if (comm.rank() == 1) {
+        auto message = comm.mprobe(0, tag);
+        EXPECT_TRUE(message);
+        auto status = message.recv();
+        EXPECT_EQ(status.source(), 0);
+        EXPECT_EQ(status.tag(), tag);
+        EXPECT_FALSE(message);
+    }
+}
+
+TEST(MPITest, improbe_recv_vector_any_source)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int tag(4);
+    if (comm.rank() == 0) {
+        int num_received = 0;
+        for (int attempt = 0; num_received < comm.size() - 1 && attempt < 1000; ++attempt) {
+            auto message = comm.improbe(ANY_SOURCE, tag);
+            if (!message) {
+                usleep(10000);
+                continue;
+            }
+
+            auto source = message.source();
+            EXPECT_EQ(message.tag(), tag);
+            EXPECT_EQ(message.count<int>(), source);
+
+            std::vector<int> values;
+            auto status = message.recv(values);
+            EXPECT_EQ(status.source(), source);
+            EXPECT_EQ(status.tag(), tag);
+            ASSERT_EQ(values.size(), source);
+            for (std::size_t i = 0; i < values.size(); ++i)
+                EXPECT_EQ(values[i], 10 * source + i);
+            EXPECT_FALSE(message);
+            ++num_received;
+        }
+        EXPECT_EQ(num_received, comm.size() - 1);
+    }
+    else {
+        std::vector<int> values(comm.rank());
+        for (std::size_t i = 0; i < values.size(); ++i)
+            values[i] = 10 * comm.rank() + i;
+        comm.send(0, tag, values);
+    }
+}
+
 TEST(MPITest, isend_irecv_wait)
 {
     Communicator comm;
