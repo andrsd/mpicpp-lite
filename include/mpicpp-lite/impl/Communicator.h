@@ -10,6 +10,7 @@
 #include "Datatype.h"
 #include "Status.h"
 #include "Request.h"
+#include "MatchedMessage.h"
 #include "Operation.h"
 #include "Error.h"
 #include "Group.h"
@@ -233,6 +234,22 @@ public:
     ///          otherwise
     bool iprobe(int source, int tag, Status & status) const;
     bool iprobe(int source, Tag tag, Status & status) const;
+
+    /// Blocking matched probe for a message
+    ///
+    /// @param source Rank of source or `ANY_SOURCE`
+    /// @param tag Message tag or `ANY_TAG`
+    /// @return Matched message
+    MatchedMessage mprobe(int source, int tag) const;
+    MatchedMessage mprobe(int source, Tag tag) const;
+
+    /// Nonblocking matched probe for a message
+    ///
+    /// @param source Rank of source or `ANY_SOURCE`
+    /// @param tag Message tag or `ANY_TAG`
+    /// @return Matched message, or an empty object if no message is available
+    MatchedMessage improbe(int source, int tag) const;
+    MatchedMessage improbe(int source, Tag tag) const;
 
     /// Wait for all processes within a communicator to reach the barrier.
     void barrier() const;
@@ -1090,6 +1107,39 @@ Communicator::iprobe(int source, Tag tag, Status & status) const
     int flag;
     MPI_CHECK_SELF(MPI_Iprobe(source, tag.value(), this->comm_, &flag, &status.native()));
     return flag != 0;
+}
+
+inline MatchedMessage
+Communicator::mprobe(int source, int tag) const
+{
+    MPI_Message message;
+    Status status;
+    MPI_CHECK_SELF(MPI_Mprobe(source, tag, this->comm_, &message, &status.native()));
+    return { message, status, this->comm_ };
+}
+
+inline MatchedMessage
+Communicator::mprobe(int source, Tag tag) const
+{
+    return mprobe(source, tag.value());
+}
+
+inline MatchedMessage
+Communicator::improbe(int source, int tag) const
+{
+    int flag;
+    MPI_Message message = MPI_MESSAGE_NULL;
+    Status status;
+    MPI_CHECK_SELF(MPI_Improbe(source, tag, this->comm_, &flag, &message, &status.native()));
+    if (flag == 0)
+        return {};
+    return { message, status, this->comm_ };
+}
+
+inline MatchedMessage
+Communicator::improbe(int source, Tag tag) const
+{
+    return improbe(source, tag.value());
 }
 
 // Barrier
