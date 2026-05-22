@@ -78,6 +78,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator5irecvE7RequestiiP1Ti"><code class="docutils literal notranslate"><span class="pre">Communicator::irecv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator6iprobeEii"><code class="docutils literal notranslate"><span class="pre">Communicator::iprobe()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator6iprobeEiiR6Status"><code class="docutils literal notranslate"><span class="pre">Communicator::iprobe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator6mprobeEii"><code class="docutils literal notranslate"><span class="pre">Communicator::mprobe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator7improbeEii"><code class="docutils literal notranslate"><span class="pre">Communicator::improbe()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator7barrierEv"><code class="docutils literal notranslate"><span class="pre">Communicator::barrier()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator9broadcastEvR1Ti"><code class="docutils literal notranslate"><span class="pre">Communicator::broadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator9broadcastEvRNSt6vectorI1TEEi"><code class="docutils literal notranslate"><span class="pre">Communicator::broadcast()</span></code></a></li>
@@ -125,6 +127,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="datatype.html">Datatype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matched-message.html">MatchedMessage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="request.html">Request</a></li>
 <li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
@@ -531,6 +534,40 @@
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if a message with the specified source, and tag is available, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator6mprobeEii">
+<span id="_CPPv3NK11mpicpp_lite12Communicator6mprobeEii"></span><span id="_CPPv2NK11mpicpp_lite12Communicator6mprobeEii"></span><span id="mpicpp_lite::Communicator::mprobe__i.iC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1a039611a21eebbb322c03283802a09cfd"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="matched-message.html#_CPPv4N11mpicpp_lite14MatchedMessageE" title="mpicpp_lite::MatchedMessage"><span class="n"><span class="pre">MatchedMessage</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mprobe</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tag</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator6mprobeEii" title="Link to this definition"></a><br /></dt>
+<dd><p>Blocking matched probe for a message. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
+<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Matched message </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator7improbeEii">
+<span id="_CPPv3NK11mpicpp_lite12Communicator7improbeEii"></span><span id="_CPPv2NK11mpicpp_lite12Communicator7improbeEii"></span><span id="mpicpp_lite::Communicator::improbe__i.iC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1a32e85ffd8f153223f4d647a564cbf159"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="matched-message.html#_CPPv4N11mpicpp_lite14MatchedMessageE" title="mpicpp_lite::MatchedMessage"><span class="n"><span class="pre">MatchedMessage</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">improbe</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tag</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator7improbeEii" title="Link to this definition"></a><br /></dt>
+<dd><p>Nonblocking matched probe for a message. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
+<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Matched message, or an empty object if no message is available </p>
 </dd>
 </dl>
 </dd></dl>
