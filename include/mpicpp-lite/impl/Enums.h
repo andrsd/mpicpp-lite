@@ -5,4 +5,8 @@
 
 #include "mpi.h"
 
+namespace mpicpp_lite {
+
 enum { UNDEFINED = MPI_UNDEFINED, ANY_SOURCE = MPI_ANY_SOURCE, ANY_TAG = MPI_ANY_TAG };
+
+}
