@@ -686,6 +686,22 @@ TEST(MPITest, reduce_all_logical_xor)
     }
 }
 
+TEST(MPITest, all_reduce_sum_arr_in_place)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int n = comm.size();
+    std::vector<int> loc_sum = { (comm.rank() * 2) + 1, (comm.rank() * 2) + 2 };
+    comm.all_reduce(loc_sum, op::sum<int>());
+
+    int gold0 = n * n;
+    int gold1 = n * (n + 1);
+    EXPECT_EQ(loc_sum[0], gold0);
+    EXPECT_EQ(loc_sum[1], gold1);
+}
+
 TEST(MPITest, iall_reduce_min)
 {
     Communicator comm;

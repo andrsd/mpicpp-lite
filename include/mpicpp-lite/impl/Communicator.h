@@ -515,6 +515,18 @@ public:
     template <typename T, typename Op>
     void all_reduce(T & value, Op op) const;
 
+    /// Combine values from all processes and distributes the result back to all processes (in
+    /// place)
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param values Values to reduce
+    /// @param op Reduce operation
+    template <typename T, typename Op>
+    void all_reduce(int n, T * values, Op op) const;
+    template <typename T, typename Op>
+    void all_reduce(std::vector<T> & out_values, Op op) const;
+
     /// Combines values from all processes and distributes the result back to all processes in a
     /// nonblocking way
     ///
@@ -1502,6 +1514,21 @@ Communicator::all_reduce(T & in_value, Op op) const
     T out_value;
     all_reduce(&in_value, 1, &out_value, op);
     in_value = out_value;
+}
+
+template <typename T, typename Op>
+inline void
+Communicator::all_reduce(int n, T * values, Op) const
+{
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
+    MPI_CHECK_SELF(MPI_Allreduce(MPI_IN_PLACE, values, n, mpi_datatype<T>(), mpi_op, this->comm_));
+}
+
+template <typename T, typename Op>
+inline void
+Communicator::all_reduce(std::vector<T> & values, Op op) const
+{
+    all_reduce(values.size(), values.data(), op);
 }
 
 template <typename T, typename Op>
