@@ -430,6 +430,21 @@ public:
     template <typename T, typename Op>
     void reduce(const T & in_value, T & out_value, Op op, int root) const;
 
+    /// Reduce values on all processes to a single value (in place)
+    ///
+    /// @tparam T C++ type of the data
+    /// @tparam Op Type of the reduce operation
+    /// @param n Number of values
+    /// @param value/values Value(s) to reduce
+    /// @param op Reduce operation
+    /// @param root Rank of root process
+    template <typename T, typename Op>
+    void reduce(int n, T * values, Op op, int root) const;
+    template <typename T, typename Op>
+    void reduce(std::vector<T> & values, Op op, int root) const;
+    template <typename T, typename Op>
+    void reduce(T & value, Op op, int root) const;
+
     /// Combine values from all processes and distributes the result back to all processes
     ///
     /// @tparam T C++ type of the data
@@ -1204,6 +1219,32 @@ inline void
 Communicator::reduce(const T & in_value, T & out_value, Op op, int root) const
 {
     reduce(&in_value, 1, &out_value, op, root);
+}
+
+template <typename T, typename Op>
+inline void
+Communicator::reduce(int n, T * values, Op, int root) const
+{
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
+    if (rank() == root)
+        MPI_CHECK_SELF(
+            MPI_Reduce(MPI_IN_PLACE, values, n, mpi_datatype<T>(), mpi_op, root, this->comm));
+    else
+        MPI_CHECK_SELF(MPI_Reduce(values, NULL, n, mpi_datatype<T>(), mpi_op, root, this->comm));
+}
+
+template <typename T, typename Op>
+inline void
+Communicator::reduce(std::vector<T> & values, Op op, int root) const
+{
+    reduce(values.size(), values.data(), op, root);
+}
+
+template <typename T, typename Op>
+inline void
+Communicator::reduce(T & out_value, Op op, int root) const
+{
+    reduce(1, &out_value, op, root);
 }
 
 // All reduce
