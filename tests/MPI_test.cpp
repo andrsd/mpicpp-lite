@@ -483,6 +483,43 @@ TEST(MPITest, reduce_sum_arr)
     }
 }
 
+TEST(MPITest, reduce_sum_in_place)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int n = comm.size();
+    double loc_sum = (comm.rank() + 1) * 3;
+    comm.reduce(loc_sum, op::sum<double>(), 0);
+
+    if (comm.rank() == 0) {
+        double gold = 3. * (n * (1 + n) / 2.);
+        EXPECT_EQ(loc_sum, gold);
+    }
+}
+
+TEST(MPITest, reduce_sum_arr_in_place)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int n = comm.size();
+    std::vector<int> loc_sum(3);
+    for (int i = 0; i < loc_sum.size(); i++)
+        loc_sum[i] = (comm.rank() * loc_sum.size()) + i;
+    comm.reduce(loc_sum, op::sum<int>(), 0);
+
+    if (comm.rank() == 0) {
+        EXPECT_EQ(loc_sum.size(), 3);
+        for (int i = 0; i < 3; i++) {
+            int gold = n * (2 * i + (3 * (n - 1))) / 2;
+            EXPECT_EQ(loc_sum[i], gold);
+        }
+    }
+}
+
 TEST(MPITest, reduce_all_sum)
 {
     Communicator comm;
