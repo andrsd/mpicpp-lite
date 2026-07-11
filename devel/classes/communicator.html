@@ -71,6 +71,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator4recvE6StatusiiP1Ti"><code class="docutils literal notranslate"><span class="pre">Communicator::recv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4recvE6StatusiiRNSt6vectorI1T1AEE"><code class="docutils literal notranslate"><span class="pre">Communicator::recv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator4recvEii"><code class="docutils literal notranslate"><span class="pre">Communicator::recv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator5probeEii"><code class="docutils literal notranslate"><span class="pre">Communicator::probe()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator5isendE7RequestiiRK1T"><code class="docutils literal notranslate"><span class="pre">Communicator::isend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator5isendE7RequestiiRKNSt6vectorI1T1AEE"><code class="docutils literal notranslate"><span class="pre">Communicator::isend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator5isendE7RequestiiPK1Ti"><code class="docutils literal notranslate"><span class="pre">Communicator::isend()</span></code></a></li>
@@ -397,6 +398,23 @@
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><a class="reference internal" href="status.html#classmpicpp__lite_1_1_status"><span class="std std-ref"><span class="pre">Status</span></span></a></code> of the operation </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator5probeEii">
+<span id="_CPPv3NK11mpicpp_lite12Communicator5probeEii"></span><span id="_CPPv2NK11mpicpp_lite12Communicator5probeEii"></span><span id="mpicpp_lite::Communicator::probe__i.iC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1a48ed06c1e48575fffa3e0d88bba10c89"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="status.html#_CPPv4N11mpicpp_lite6StatusE" title="mpicpp_lite::Status"><span class="n"><span class="pre">Status</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">probe</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tag</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator5probeEii" title="Link to this definition"></a><br /></dt>
+<dd><p>Blocks until a message is available. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
+<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="status.html#classmpicpp__lite_1_1_status"><span class="std std-ref">Status</span></a> object </p>
 </dd>
 </dl>
 </dd></dl>
