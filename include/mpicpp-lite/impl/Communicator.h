@@ -155,6 +155,14 @@ public:
     Status recv(int source, int tag) const;
     Status recv(int source, Tag tag) const;
 
+    /// Blocks until a message is available
+    ///
+    /// @param source Rank of source or `ANY_SOURCE`
+    /// @param tag Message tag or `ANY_TAG`
+    /// @return Status object
+    Status probe(int source, int tag) const;
+    Status probe(int source, Tag tag) const;
+
     /// Send a message to a remote process without blocking
     ///
     /// @tparam T C++ type of the data
@@ -992,6 +1000,22 @@ Communicator::recv(int source, Tag tag, std::string & value) const
     auto status = recv(source, tag, str);
     value.assign(str.begin(), str.end());
     return status;
+}
+
+// Probe
+
+inline Status
+Communicator::probe(int source, int tag) const
+{
+    Status status;
+    MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm_, &status.native()));
+    return status;
+}
+
+inline Status
+Communicator::probe(int source, Tag tag) const
+{
+    return probe(source, tag.value());
 }
 
 // Isend
