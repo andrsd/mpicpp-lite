@@ -1247,3 +1247,24 @@ TEST(MPITest, status)
     EXPECT_EQ(s.tag(), 0);
     EXPECT_EQ(s.source(), 0);
 }
+
+TEST(MPITest, probe)
+{
+    Communicator comm;
+    if (comm.size() < 2)
+        return;
+
+    Tag tag(123);
+    if (comm.rank() == 0) {
+        int value = 42;
+        comm.send(1, tag, value);
+    }
+    else if (comm.rank() == 1) {
+        Status status = comm.probe(0, tag);
+        EXPECT_EQ(status.source(), 0);
+        EXPECT_EQ(status.tag(), tag.value());
+        int value;
+        comm.recv(0, tag, value);
+        EXPECT_EQ(value, 42);
+    }
+}
