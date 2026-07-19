@@ -1,5 +1,4 @@
 set(MPICPP_LITE_VERSION @PROJECT_VERSION@)
-set(MPICPP_LITE_WITH_FMT @MPICPP_LITE_WITH_FMT@)
 
 @PACKAGE_INIT@
 
@@ -9,9 +8,6 @@ include("${CMAKE_CURRENT_LIST_DIR}/mpicpp-lite-targets.cmake")
 include(FindPackageHandleStandardArgs)
 include(CMakeFindDependencyMacro)
 
-if (MPICPP_LITE_WITH_FMT)
-    find_dependency(fmt 11)
-endif()
 find_dependency(MPI REQUIRED COMPONENTS C)
 
 find_path(MPICPP_LITE_INCLUDE_DIR mpicpp-lite.h HINTS ${PACKAGE_PREFIX_DIR}/include/mpicpp-lite)

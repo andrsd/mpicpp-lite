@@ -24,10 +24,6 @@ target_link_libraries(
 
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
-if (MPICPP_LITE_WITH_FMT)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC MPICPP_LITE_WITH_FMT)
-    target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt)
-endif()
 
 target_code_coverage(${PROJECT_NAME})
 
