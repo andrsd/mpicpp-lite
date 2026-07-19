@@ -1035,7 +1035,7 @@ TEST(MPITest, test_some)
     if (comm.size() < 4)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         int n = comm.size() - 1;
         std::vector<int> vals(n);

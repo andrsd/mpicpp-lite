@@ -46,7 +46,6 @@ public:
     int size() const;
 
     ///
-    Communicator create(const Group & group, int tag = 0) const;
     Communicator create(const Group & group, Tag tag = {}) const;
 
     /// Makes a new communicator to which topology information has been attached
@@ -76,8 +75,6 @@ public:
     /// @param tag Message tag
     /// @param value Value to send
     template <typename T>
-    void send(int dest, int tag, const T & value) const;
-    template <typename T>
     void send(int dest, Tag tag, const T & value) const;
 
     /// Send data to another process
@@ -88,8 +85,6 @@ public:
     /// @param values Values to send
     /// @param n Number of values to send
     template <typename T>
-    void send(int dest, int tag, const T * values, int n) const;
-    template <typename T>
     void send(int dest, Tag tag, const T * values, int n) const;
 
     /// Send `std::vector` of data to another process
@@ -99,15 +94,12 @@ public:
     /// @param tag Message tag
     /// @param value Vector of `T` to send
     template <typename T, typename A>
-    void send(int dest, int tag, const std::vector<T, A> & value) const;
-    template <typename T, typename A>
     void send(int dest, Tag tag, const std::vector<T, A> & value) const;
 
     /// Send a message to another process without any data
     ///
     /// @param dest Destination rank
     /// @param tag Message tag
-    void send(int dest, int tag) const;
     void send(int dest, Tag tag) const;
 
     /// Receive data from a remote process
@@ -117,8 +109,6 @@ public:
     /// @param tag Message tag
     /// @param value Variable to recieve the data
     /// @return `Status` of the operation
-    template <typename T>
-    Status recv(int source, int tag, T & value) const;
     template <typename T>
     Status recv(int source, Tag tag, T & value) const;
 
@@ -131,8 +121,6 @@ public:
     /// @param n Number of values to receive
     /// @return `Status` of the operation
     template <typename T>
-    Status recv(int source, int tag, T * values, int n) const;
-    template <typename T>
     Status recv(int source, Tag tag, T * values, int n) const;
 
     /// Receive std::vector of data from a remote process
@@ -143,8 +131,6 @@ public:
     /// @param value Variable to recieve the data
     /// @return `Status` of the operation
     template <typename T, typename A>
-    Status recv(int source, int tag, std::vector<T, A> & value) const;
-    template <typename T, typename A>
     Status recv(int source, Tag tag, std::vector<T, A> & value) const;
 
     /// Receive a message from a remote process without any data
@@ -152,7 +138,6 @@ public:
     /// @param source Source rank
     /// @param tag Message tag
     /// @return `Status` of the operation
-    Status recv(int source, int tag) const;
     Status recv(int source, Tag tag) const;
 
     /// Blocks until a message is available
@@ -160,7 +145,6 @@ public:
     /// @param source Rank of source or `ANY_SOURCE`
     /// @param tag Message tag or `ANY_TAG`
     /// @return Status object
-    Status probe(int source, int tag) const;
     Status probe(int source, Tag tag) const;
 
     /// Send a message to a remote process without blocking
@@ -171,8 +155,6 @@ public:
     /// @param value Value to send
     /// @return Communication `Request`
     template <typename T>
-    Request isend(int dest, int tag, const T & value) const;
-    template <typename T>
     Request isend(int dest, Tag tag, const T & value) const;
 
     /// Send a std::vector of values to a remote process without blocking
@@ -182,8 +164,6 @@ public:
     /// @param tag Message tag
     /// @param value Values to send
     /// @return Communication `Request`
-    template <typename T, typename A>
-    Request isend(int dest, int tag, const std::vector<T, A> & values) const;
     template <typename T, typename A>
     Request isend(int dest, Tag tag, const std::vector<T, A> & values) const;
 
@@ -196,8 +176,6 @@ public:
     /// @param n Number of values to send
     /// @return Communication `Request`
     template <typename T>
-    Request isend(int dest, int tag, const T * values, int n) const;
-    template <typename T>
     Request isend(int dest, Tag tag, const T * values, int n) const;
 
     /// Receive a message from a remote process without blocking
@@ -207,8 +185,6 @@ public:
     /// @param tag Message tag
     /// @param value Variable to recieve the data
     /// @return Communication `Request`
-    template <typename T>
-    Request irecv(int source, int tag, T & value) const;
     template <typename T>
     Request irecv(int source, Tag tag, T & value) const;
 
@@ -220,8 +196,6 @@ public:
     /// @param values Variable to recieve the data
     /// @param n Number of values to receive
     template <typename T>
-    Request irecv(int source, int tag, T * values, int n) const;
-    template <typename T>
     Request irecv(int source, Tag tag, T * values, int n) const;
 
     /// Nonblocking test for a message
@@ -230,7 +204,6 @@ public:
     /// @param tag Message tag or `ANY_TAG`
     /// @return `true` if a message with the specified source, and tag is available, `false`
     ///          otherwise
-    bool iprobe(int source, int tag) const;
     bool iprobe(int source, Tag tag) const;
 
     /// Nonblocking test for a message
@@ -240,7 +213,6 @@ public:
     /// @param status Status object
     /// @return `true` if a message with the specified source, and tag is available, `false`
     ///          otherwise
-    bool iprobe(int source, int tag, Status & status) const;
     bool iprobe(int source, Tag tag, Status & status) const;
 
     /// Blocking matched probe for a message
@@ -248,7 +220,6 @@ public:
     /// @param source Rank of source or `ANY_SOURCE`
     /// @param tag Message tag or `ANY_TAG`
     /// @return Matched message
-    MatchedMessage mprobe(int source, int tag) const;
     MatchedMessage mprobe(int source, Tag tag) const;
 
     /// Nonblocking matched probe for a message
@@ -256,7 +227,6 @@ public:
     /// @param source Rank of source or `ANY_SOURCE`
     /// @param tag Message tag or `ANY_TAG`
     /// @return Matched message, or an empty object if no message is available
-    MatchedMessage improbe(int source, int tag) const;
     MatchedMessage improbe(int source, Tag tag) const;
 
     /// Wait for all processes within a communicator to reach the barrier.
@@ -773,14 +743,6 @@ Communicator::size() const
 }
 
 inline Communicator
-Communicator::create(const Group & group, int tag) const
-{
-    Communicator new_comm;
-    MPI_CHECK_SELF(MPI_Comm_create_group(this->comm_, group.group_, tag, &new_comm.comm_));
-    return new_comm;
-}
-
-inline Communicator
 Communicator::create(const Group & group, Tag tag) const
 {
     Communicator new_comm;
@@ -824,23 +786,9 @@ Communicator::is_valid() const
 
 template <typename T>
 inline void
-Communicator::send(int dest, int tag, const T & value) const
-{
-    send(dest, tag, &value, 1);
-}
-
-template <typename T>
-inline void
 Communicator::send(int dest, Tag tag, const T & value) const
 {
     send(dest, tag, &value, 1);
-}
-
-template <typename T>
-inline void
-Communicator::send(int dest, int tag, const T * values, int n) const
-{
-    MPI_CHECK_SELF(MPI_Send(const_cast<T *>(values), n, mpi_datatype<T>(), dest, tag, this->comm_));
 }
 
 template <typename T>
@@ -853,14 +801,6 @@ Communicator::send(int dest, Tag tag, const T * values, int n) const
 
 template <typename T, typename A>
 inline void
-Communicator::send(int dest, int tag, const std::vector<T, A> & value) const
-{
-    typename std::vector<T, A>::size_type size = value.size();
-    send(dest, tag, value.data(), size);
-}
-
-template <typename T, typename A>
-inline void
 Communicator::send(int dest, Tag tag, const std::vector<T, A> & value) const
 {
     typename std::vector<T, A>::size_type size = value.size();
@@ -868,24 +808,9 @@ Communicator::send(int dest, Tag tag, const std::vector<T, A> & value) const
 }
 
 inline void
-Communicator::send(int dest, int tag) const
-{
-    MPI_CHECK_SELF(MPI_Send(MPI_BOTTOM, 0, MPI_PACKED, dest, tag, this->comm_));
-}
-
-inline void
 Communicator::send(int dest, Tag tag) const
 {
     MPI_CHECK_SELF(MPI_Send(MPI_BOTTOM, 0, MPI_PACKED, dest, tag.value(), this->comm_));
-}
-
-template <>
-inline void
-Communicator::send(int dest, int tag, const std::string & value) const
-{
-    if (size() < 2)
-        return;
-    send(dest, tag, value.data(), value.size());
 }
 
 template <>
@@ -901,31 +826,9 @@ Communicator::send(int dest, Tag tag, const std::string & value) const
 
 template <typename T>
 inline Status
-Communicator::recv(int source, int tag, T & value) const
-{
-    return recv(source, tag, &value, 1);
-}
-
-template <typename T>
-inline Status
 Communicator::recv(int source, Tag tag, T & value) const
 {
     return recv(source, tag, &value, 1);
-}
-
-template <typename T>
-inline Status
-Communicator::recv(int source, int tag, T * values, int n) const
-{
-    Status status;
-    MPI_CHECK_SELF(MPI_Recv(const_cast<T *>(values),
-                            n,
-                            mpi_datatype<T>(),
-                            source,
-                            tag,
-                            this->comm_,
-                            &status.native()));
-    return status;
 }
 
 template <typename T>
@@ -945,17 +848,6 @@ Communicator::recv(int source, Tag tag, T * values, int n) const
 
 template <typename T, typename A>
 inline Status
-Communicator::recv(int source, int tag, std::vector<T, A> & values) const
-{
-    Status status;
-    MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm_, &status.native()));
-    auto size = status.count<T>();
-    values.resize(size);
-    return recv(source, tag, values.data(), size);
-}
-
-template <typename T, typename A>
-inline Status
 Communicator::recv(int source, Tag tag, std::vector<T, A> & values) const
 {
     Status status;
@@ -966,29 +858,11 @@ Communicator::recv(int source, Tag tag, std::vector<T, A> & values) const
 }
 
 inline Status
-Communicator::recv(int source, int tag) const
-{
-    Status status;
-    MPI_CHECK_SELF(MPI_Recv(MPI_BOTTOM, 0, MPI_PACKED, source, tag, this->comm_, &status.native()));
-    return status;
-}
-
-inline Status
 Communicator::recv(int source, Tag tag) const
 {
     Status status;
     MPI_CHECK_SELF(
         MPI_Recv(MPI_BOTTOM, 0, MPI_PACKED, source, tag.value(), this->comm_, &status.native()));
-    return status;
-}
-
-template <>
-inline Status
-Communicator::recv(int source, int tag, std::string & value) const
-{
-    std::vector<char> str;
-    auto status = recv(source, tag, str);
-    value.assign(str.begin(), str.end());
     return status;
 }
 
@@ -1005,27 +879,14 @@ Communicator::recv(int source, Tag tag, std::string & value) const
 // Probe
 
 inline Status
-Communicator::probe(int source, int tag) const
+Communicator::probe(int source, Tag tag) const
 {
     Status status;
-    MPI_CHECK_SELF(MPI_Probe(source, tag, this->comm_, &status.native()));
+    MPI_CHECK_SELF(MPI_Probe(source, tag.value(), this->comm_, &status.native()));
     return status;
 }
 
-inline Status
-Communicator::probe(int source, Tag tag) const
-{
-    return probe(source, tag.value());
-}
-
 // Isend
-
-template <typename T>
-inline Request
-Communicator::isend(int dest, int tag, const T & value) const
-{
-    return isend(dest, tag, &value, 1);
-}
 
 template <typename T>
 inline Request
@@ -1036,32 +897,9 @@ Communicator::isend(int dest, Tag tag, const T & value) const
 
 template <typename T, typename A>
 inline Request
-Communicator::isend(int dest, int tag, const std::vector<T, A> & values) const
-{
-    return isend(dest, tag, values.data(), values.size());
-}
-
-template <typename T, typename A>
-inline Request
 Communicator::isend(int dest, Tag tag, const std::vector<T, A> & values) const
 {
     return isend(dest, tag, values.data(), values.size());
-}
-
-template <typename T>
-inline Request
-Communicator::isend(int dest, int tag, const T * values, int n) const
-{
-    assert(values != nullptr);
-    Request request;
-    MPI_CHECK_SELF(MPI_Isend(const_cast<T *>(values),
-                             n,
-                             mpi_datatype<T>(),
-                             dest,
-                             tag,
-                             this->comm_,
-                             &request.native()));
-    return request;
 }
 
 template <typename T>
@@ -1084,32 +922,9 @@ Communicator::isend(int dest, Tag tag, const T * values, int n) const
 
 template <typename T>
 inline Request
-Communicator::irecv(int source, int tag, T & value) const
-{
-    return irecv(source, tag, &value, 1);
-}
-
-template <typename T>
-inline Request
 Communicator::irecv(int source, Tag tag, T & value) const
 {
     return irecv(source, tag, &value, 1);
-}
-
-template <typename T>
-inline Request
-Communicator::irecv(int source, int tag, T * values, int n) const
-{
-    assert(values != nullptr);
-    Request request;
-    MPI_CHECK_SELF(MPI_Irecv(const_cast<T *>(values),
-                             n,
-                             mpi_datatype<T>(),
-                             source,
-                             tag,
-                             this->comm_,
-                             &request.native()));
-    return request;
 }
 
 template <typename T>
@@ -1129,26 +944,10 @@ Communicator::irecv(int source, Tag tag, T * values, int n) const
 }
 
 inline bool
-Communicator::iprobe(int source, int tag) const
-{
-    int flag;
-    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm_, &flag, MPI_STATUS_IGNORE));
-    return flag != 0;
-}
-
-inline bool
 Communicator::iprobe(int source, Tag tag) const
 {
     int flag;
     MPI_CHECK_SELF(MPI_Iprobe(source, tag.value(), this->comm_, &flag, MPI_STATUS_IGNORE));
-    return flag != 0;
-}
-
-inline bool
-Communicator::iprobe(int source, int tag, Status & status) const
-{
-    int flag;
-    MPI_CHECK_SELF(MPI_Iprobe(source, tag, this->comm_, &flag, &status.native()));
     return flag != 0;
 }
 
@@ -1161,36 +960,25 @@ Communicator::iprobe(int source, Tag tag, Status & status) const
 }
 
 inline MatchedMessage
-Communicator::mprobe(int source, int tag) const
+Communicator::mprobe(int source, Tag tag) const
 {
     MPI_Message message;
     Status status;
-    MPI_CHECK_SELF(MPI_Mprobe(source, tag, this->comm_, &message, &status.native()));
-    return { message, status, this->comm_ };
-}
-
-inline MatchedMessage
-Communicator::mprobe(int source, Tag tag) const
-{
-    return mprobe(source, tag.value());
-}
-
-inline MatchedMessage
-Communicator::improbe(int source, int tag) const
-{
-    int flag;
-    MPI_Message message = MPI_MESSAGE_NULL;
-    Status status;
-    MPI_CHECK_SELF(MPI_Improbe(source, tag, this->comm_, &flag, &message, &status.native()));
-    if (flag == 0)
-        return {};
+    MPI_CHECK_SELF(MPI_Mprobe(source, tag.value(), this->comm_, &message, &status.native()));
     return { message, status, this->comm_ };
 }
 
 inline MatchedMessage
 Communicator::improbe(int source, Tag tag) const
 {
-    return improbe(source, tag.value());
+    int flag;
+    MPI_Message message = MPI_MESSAGE_NULL;
+    Status status;
+    MPI_CHECK_SELF(
+        MPI_Improbe(source, tag.value(), this->comm_, &flag, &message, &status.native()));
+    if (flag == 0)
+        return {};
+    return { message, status, this->comm_ };
 }
 
 // Barrier
@@ -1217,7 +1005,7 @@ Communicator::broadcast(std::vector<T> & value, int root) const
     if (size() < 2)
         return;
 
-    int tag = 0;
+    Tag tag(0);
     if (rank() == root) {
         for (int i = 0; i < size(); ++i) {
             if (i != root)
@@ -1241,7 +1029,7 @@ Communicator::broadcast(std::map<KEY, VALUE> & map, int root) const
 {
     auto n = map.size();
     broadcast(n, root);
-    int tag = 0;
+    Tag tag(0);
     if (rank() == root) {
         for (const auto & [key, value] : map) {
             for (int i = 0; i < size(); ++i) {
@@ -1270,7 +1058,7 @@ Communicator::broadcast(std::string & value, int root) const
     if (size() < 2)
         return;
 
-    int tag = 0;
+    Tag tag(0);
     if (rank() == root) {
         for (int i = 0; i < size(); ++i) {
             if (i != root)
