@@ -8,6 +8,7 @@
 #include "Operation.h"
 #include "Datatype.h"
 #include "Group.h"
+#include "Info.h"
 #include <vector>
 
 namespace mpicpp_lite {
@@ -183,12 +184,12 @@ private:
     MPI_Win win_;
 
 public:
-    static Window create(void * base, MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm);
+    static Window create(void * base, MPI_Aint size, int disp_unit, Info info, MPI_Comm comm);
 
     template <typename T>
-    static Window create(std::vector<T> & base, MPI_Info info, MPI_Comm comm);
+    static Window create(std::vector<T> & base, Info info, MPI_Comm comm);
 
-    static Window create_dynamic(MPI_Info info, MPI_Comm comm);
+    static Window create_dynamic(Info info, MPI_Comm comm);
 };
 
 inline Window::Window() : win_(MPI_WIN_NULL) {}
@@ -356,25 +357,25 @@ Window::sync() const
 }
 
 inline Window
-Window::create(void * base, MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm)
+Window::create(void * base, MPI_Aint size, int disp_unit, Info info, MPI_Comm comm)
 {
     Window w;
-    MPI_CHECK(MPI_Win_create(base, size, disp_unit, info, comm, &w.win_));
+    MPI_CHECK(MPI_Win_create(base, size, disp_unit, info.native(), comm, &w.win_));
     return w;
 }
 
 template <typename T>
 inline Window
-Window::create(std::vector<T> & base, MPI_Info info, MPI_Comm comm)
+Window::create(std::vector<T> & base, Info info, MPI_Comm comm)
 {
-    return create(base.data(), base.size() * sizeof(T), sizeof(T), info, comm);
+    return create(base.data(), base.size() * sizeof(T), sizeof(T), info.native(), comm);
 }
 
 inline Window
-Window::create_dynamic(MPI_Info info, MPI_Comm comm)
+Window::create_dynamic(Info info, MPI_Comm comm)
 {
     Window w;
-    MPI_CHECK(MPI_Win_create_dynamic(info, comm, &w.win_));
+    MPI_CHECK(MPI_Win_create_dynamic(info.native(), comm, &w.win_));
     return w;
 }
 
