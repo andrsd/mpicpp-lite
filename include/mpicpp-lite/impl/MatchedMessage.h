@@ -10,6 +10,7 @@
 #include "Datatype.h"
 #include "Error.h"
 #include "Status.h"
+#include "Tag.h"
 
 namespace mpicpp_lite {
 
@@ -42,7 +43,7 @@ public:
     /// Get the message tag
     ///
     /// @return Message tag
-    int tag() const;
+    Tag tag() const;
 
     /// Gets the number of "top level" elements in the matched message
     ///
@@ -132,7 +133,7 @@ MatchedMessage::source() const
     return this->status_.source();
 }
 
-inline int
+inline Tag
 MatchedMessage::tag() const
 {
     return this->status_.tag();

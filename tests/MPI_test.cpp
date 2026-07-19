@@ -78,7 +78,7 @@ TEST(MPITest, send_recv_int)
             int val;
             auto status = comm.recv(i, tag, val);
             EXPECT_EQ(val, i * 4);
-            EXPECT_EQ(status.tag(), tag.value());
+            EXPECT_EQ(status.tag(), tag);
             EXPECT_EQ(status.source(), i);
             EXPECT_EQ(status.error(), 0);
         }
@@ -102,7 +102,7 @@ TEST(MPITest, send_recv_bool)
             bool val;
             auto status = comm.recv(i, tag, val);
             EXPECT_EQ(val, i % 2 == 0);
-            EXPECT_EQ(status.tag(), tag.value());
+            EXPECT_EQ(status.tag(), tag);
             EXPECT_EQ(status.source(), i);
             EXPECT_EQ(status.error(), 0);
         }
@@ -125,7 +125,7 @@ TEST(MPITest, send_recv)
         for (int i = 1; i < n_mpis; i++) {
             auto status = comm.recv(i, tag);
             EXPECT_EQ(status.source(), i);
-            EXPECT_EQ(status.tag(), tag.value());
+            EXPECT_EQ(status.tag(), tag);
         }
     }
     else
@@ -149,7 +149,7 @@ TEST(MPITest, send_recv_arr_int)
             for (int j = 0; j < sz; j++)
                 EXPECT_EQ(arr[j], 2 * j);
             EXPECT_EQ(status.source(), i);
-            EXPECT_EQ(status.tag(), tag.value());
+            EXPECT_EQ(status.tag(), tag);
         }
     }
     else {
@@ -174,7 +174,7 @@ TEST(MPITest, send_recv_empty_std_vector)
         for (int i = 1; i < n_mpis; i++) {
             std::vector<int> arr;
             auto status = comm.recv(i, tag, arr);
-            EXPECT_EQ(status.tag(), tag.value());
+            EXPECT_EQ(status.tag(), tag);
             EXPECT_EQ(status.source(), i);
             EXPECT_EQ(status.error(), 0);
         }
@@ -793,14 +793,14 @@ TEST(MPITest, mprobe_recv)
         auto message = comm.mprobe(0, tag);
         EXPECT_TRUE(message);
         EXPECT_EQ(message.source(), 0);
-        EXPECT_EQ(message.tag(), tag.value());
+        EXPECT_EQ(message.tag(), tag);
         EXPECT_EQ(message.count<int>(), 1);
 
         int val;
         auto status = message.recv(&val, 1);
         EXPECT_EQ(val, 125);
         EXPECT_EQ(status.source(), 0);
-        EXPECT_EQ(status.tag(), tag.value());
+        EXPECT_EQ(status.tag(), tag);
         EXPECT_FALSE(message);
     }
 }
@@ -819,7 +819,7 @@ TEST(MPITest, mprobe_recv_empty_message)
         EXPECT_TRUE(message);
         auto status = message.recv();
         EXPECT_EQ(status.source(), 0);
-        EXPECT_EQ(status.tag(), tag.value());
+        EXPECT_EQ(status.tag(), tag);
         EXPECT_FALSE(message);
     }
 }
@@ -841,13 +841,13 @@ TEST(MPITest, improbe_recv_vector_any_source)
             }
 
             auto source = message.source();
-            EXPECT_EQ(message.tag(), tag.value());
+            EXPECT_EQ(message.tag(), tag);
             EXPECT_EQ(message.count<int>(), source);
 
             std::vector<int> values;
             auto status = message.recv(values);
             EXPECT_EQ(status.source(), source);
-            EXPECT_EQ(status.tag(), tag.value());
+            EXPECT_EQ(status.tag(), tag);
             ASSERT_EQ(values.size(), source);
             for (std::size_t i = 0; i < values.size(); ++i)
                 EXPECT_EQ(values[i], 10 * source + i);
@@ -908,7 +908,7 @@ TEST(MPITest, isend_irecv_wait_w_status)
         wait(request, status);
         EXPECT_EQ(val, comm.rank() * 5);
         EXPECT_EQ(status.source(), 0);
-        EXPECT_EQ(status.tag(), tag.value());
+        EXPECT_EQ(status.tag(), tag);
     }
 }
 
@@ -1035,7 +1035,7 @@ TEST(MPITest, test_some)
     if (comm.size() < 4)
         return;
 
-    int tag = 1;
+    Tag tag(1);
     if (comm.rank() == 0) {
         int n = comm.size() - 1;
         std::vector<int> vals(n);
@@ -1262,7 +1262,7 @@ TEST(MPITest, probe)
     else if (comm.rank() == 1) {
         Status status = comm.probe(0, tag);
         EXPECT_EQ(status.source(), 0);
-        EXPECT_EQ(status.tag(), tag.value());
+        EXPECT_EQ(status.tag(), tag);
         int value;
         comm.recv(0, tag, value);
         EXPECT_EQ(value, 42);

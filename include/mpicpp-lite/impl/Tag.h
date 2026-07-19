@@ -25,9 +25,21 @@ public:
     }
 
     constexpr bool
+    operator==(Tag other) const
+    {
+        return this->value_ == other.value_;
+    }
+
+    constexpr bool
     operator==(int other) const
     {
         return this->value_ == other;
+    }
+
+    constexpr bool
+    operator!=(Tag other) const
+    {
+        return this->value_ != other.value_;
     }
 
     constexpr bool
