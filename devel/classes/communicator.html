@@ -116,6 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvRKNSt6vectorINSt6vectorI1TEEEERNSt6vectorI1TEE"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator10all_to_allEvRKNSt6vectorI1TEERKNSt6vectorIiEERKNSt6vectorIiEERNSt6vectorI1TEERKNSt6vectorIiEERKNSt6vectorIiEE"><code class="docutils literal notranslate"><span class="pre">Communicator::all_to_all()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator5splitEii"><code class="docutils literal notranslate"><span class="pre">Communicator::split()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator10split_typeE8CommTypei4Info"><code class="docutils literal notranslate"><span class="pre">Communicator::split_type()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvPK1TiP1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::scan()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::scan()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRK1TR1T2Op"><code class="docutils literal notranslate"><span class="pre">Communicator::scan()</span></code></a></li>
@@ -1239,6 +1240,20 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>color</strong> – Control of subset assignment. Processes with the same color are in the same new communicator </p></li>
 <li><p><strong>key</strong> – Control of rank assignment. This is the rank of the calling process in the new communicator </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator10split_typeE8CommTypei4Info">
+<span id="_CPPv3NK11mpicpp_lite12Communicator10split_typeE8CommTypei4Info"></span><span id="_CPPv2NK11mpicpp_lite12Communicator10split_typeE8CommTypei4Info"></span><span id="mpicpp_lite::Communicator::split_type__CommType.i.InfoC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1ad4efb657a507c0496a1b1d9a444232a4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11mpicpp_lite12CommunicatorE" title="mpicpp_lite::Communicator"><span class="n"><span class="pre">Communicator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">split_type</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">CommType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">split_type</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">key</span></span>, <span class="n"><span class="pre">Info</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator10split_typeE8CommTypei4Info" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates new communicators based on split types and keys. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>split_type</strong> – Type of processes to be grouped together </p></li>
+<li><p><strong>key</strong> – Control of rank assignment </p></li>
 </ul>
 </dd>
 </dl>
