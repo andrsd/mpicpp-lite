@@ -39,8 +39,7 @@ jobs:
             sphinx=7 \
             sphinx_rtd_theme \
             breathe==4.35.0 \
-            sphinx-design \
-            fmt=11.*
+            sphinx-design
 
       - name: Build doco
         run: |

@@ -3,11 +3,8 @@
 
 #pragma once
 
-#ifdef MPICPP_LITE_WITH_FMT
-    #include "fmt/printf.h"
-#else
-    #include <iostream>
-#endif
+#include <iostream>
+#include <format>
 #include "mpi.h"
 
 namespace mpicpp_lite {
@@ -47,17 +44,12 @@ inline void
 check_mpi_error(MPI_Comm comm, int ierr, const char * file, int line)
 {
     if (ierr) {
-#ifdef MPICPP_LITE_WITH_FMT
-        fmt::print(stderr,
-                   "[ERROR] MPI error {} at {}:{}: {}\n",
-                   ierr,
-                   file,
-                   line,
-                   error_message(error_class(ierr)));
-#else
-        std::cerr << "[ERROR] MPI error " << ierr << " at " << file << ":" << line << ": "
-                  << error_message(error_class(ierr)) << std::endl;
-#endif
+        auto str = std::format("[ERROR] MPI error {} at {}:{}: {}",
+                               ierr,
+                               file,
+                               line,
+                               error_message(error_class(ierr)));
+        std::cerr << str << std::endl;
         terminate(comm, ierr);
     }
 }

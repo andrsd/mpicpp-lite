@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(mpicpp-lite
-    VERSION 2.5.0
+    VERSION 3.0.0
     LANGUAGES CXX
 )
 
@@ -15,11 +15,7 @@ include(CodeCoverage)
 include(Sanitization)
 
 option(MPICPP_LITE_BUILD_TESTS "Build tests" NO)
-option(MPICPP_LITE_WITH_FMT "Build with fmt support" NO)
 
-if (MPICPP_LITE_WITH_FMT)
-    find_package(fmt 11 REQUIRED)
-endif()
 find_package(MPI REQUIRED COMPONENTS C)
 
 file(GLOB_RECURSE HDRS CONFIGURE_DEPENDS include/mpicpp-lite/*.h)

@@ -30,7 +30,6 @@ jobs:
             make \
             mpich-mpicc=4.3.* \
             mpich-mpicxx=4.3.* \
-            fmt=11.* \
             gtest
 
       - name: Configure
