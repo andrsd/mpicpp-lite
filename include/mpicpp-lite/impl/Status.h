@@ -5,6 +5,7 @@
 
 #include "mpi.h"
 #include "Datatype.h"
+#include "Tag.h"
 
 namespace mpicpp_lite {
 
@@ -24,7 +25,7 @@ public:
     /// Get the message tag
     ///
     /// @return Message tag
-    int tag() const;
+    Tag tag() const;
 
     /// Get the error code
     ///
@@ -69,10 +70,10 @@ Status::source() const
     return this->status_.MPI_SOURCE;
 }
 
-inline int
+inline Tag
 Status::tag() const
 {
-    return this->status_.MPI_TAG;
+    return Tag(this->status_.MPI_TAG);
 }
 
 inline int

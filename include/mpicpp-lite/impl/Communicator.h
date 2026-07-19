@@ -47,7 +47,7 @@ public:
 
     ///
     Communicator create(const Group & group, int tag = 0) const;
-    Communicator create(const Group & group, Tag tag) const;
+    Communicator create(const Group & group, Tag tag = {}) const;
 
     /// Makes a new communicator to which topology information has been attached
     ///
