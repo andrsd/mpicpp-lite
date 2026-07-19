@@ -163,13 +163,6 @@ mpi_datatype<std::byte>()
 
 #endif
 
-template <typename T>
-[[deprecated("use `mpi_datatype` instead")]] inline MPI_Datatype
-get_mpi_datatype()
-{
-    return mpi_datatype<T>();
-}
-
 /// Create a new datatype for MPI communication
 ///
 /// @param types MPI datatypes

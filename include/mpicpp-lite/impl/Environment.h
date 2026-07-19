@@ -125,12 +125,6 @@ version()
     return std::make_tuple(version, subversion);
 }
 
-[[deprecated("use `version` instead")]] inline std::tuple<int, int>
-get_mpi_version()
-{
-    return version();
-}
-
 /// Creates a division of processors in a cartesian grid
 ///
 /// @param n_nodes Number of nodes
