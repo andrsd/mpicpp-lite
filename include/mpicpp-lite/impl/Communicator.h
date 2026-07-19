@@ -15,6 +15,7 @@
 #include "Error.h"
 #include "Group.h"
 #include "Tag.h"
+#include "Info.h"
 
 namespace mpicpp_lite {
 
@@ -592,6 +593,12 @@ public:
     /// @param key Control of rank assignment. This is the rank of the calling process in the new
     ///            communicator
     Communicator split(int color, int key) const;
+
+    /// Creates new communicators based on split types and keys
+    ///
+    /// @param split_type Type of processes to be grouped together
+    /// @param key Control of rank assignment
+    Communicator split_type(CommType split_type, int key, Info = {}) const;
 
     /// Computes the scan (partial reductions) of data on a collection of processes
     ///
@@ -1464,6 +1471,18 @@ Communicator::split(int color, int key) const
 {
     MPI_Comm new_comm;
     MPI_CHECK_SELF(MPI_Comm_split(this->comm_, color, key, &new_comm));
+    return { new_comm };
+}
+
+inline Communicator
+Communicator::split_type(CommType split_type, int key, Info info) const
+{
+    MPI_Comm new_comm;
+    MPI_CHECK_SELF(MPI_Comm_split_type(this->comm_,
+                                       static_cast<int>(split_type),
+                                       key,
+                                       info.native(),
+                                       &new_comm));
     return { new_comm };
 }
 
