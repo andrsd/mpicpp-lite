@@ -32,13 +32,6 @@ public:
     /// @return Error code
     int error() const;
 
-    template <typename T>
-    [[deprecated("use `count` instead")]] int
-    get_count() const
-    {
-        return count<T>();
-    }
-
     /// Gets the number of "top level" elements
     ///
     /// @tparam T datatype of each receive buffer element
