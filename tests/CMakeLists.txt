@@ -8,6 +8,7 @@ add_executable(${PROJECT_NAME}
     Exception_test.cpp
     Datatype_test.cpp
     Group_test.cpp
+    Info_test.cpp
     MPI_test.cpp
     Time_test.cpp
     Window_test.cpp

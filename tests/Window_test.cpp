@@ -16,7 +16,7 @@ TEST(WindowTest, get)
         arr[i] = (comm.rank() * 10) + i;
 
     std::vector<int> remote_arr(n, 0.);
-    auto win = Window::create(arr, MPI_INFO_NULL, comm);
+    auto win = Window::create(arr, Info{}, comm);
 
     int dest = (comm.rank() + 1) % comm.size();
 
