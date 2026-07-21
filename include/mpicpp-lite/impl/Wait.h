@@ -14,13 +14,16 @@
 
 namespace mpicpp_lite {
 
-/// Wait for a single request to complete, ignoring status
+/// Wait for a single request to complete
 ///
 /// @param request Request to wait for
-inline void
+/// @return Status of the operation
+inline Status
 wait(Request & request)
 {
-    MPI_CHECK(MPI_Wait(&request.native(), MPI_STATUS_IGNORE));
+    Status status;
+    MPI_CHECK(MPI_Wait(&request.native(), &status.native()));
+    return status;
 }
 
 /// Wait for a single request to complete with status
@@ -45,7 +48,7 @@ wait_with_timeout(Request & request, double timeout)
     auto start = wall_time();
     while (!completed && ((wall_time() - start) < timeout)) {
         // Busy wait
-        completed = test(request);
+        completed = test(request).has_value();
     }
     return completed;
 }

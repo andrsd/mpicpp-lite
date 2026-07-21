@@ -15,13 +15,17 @@ namespace mpicpp_lite {
 /// Test for the completion of a request
 ///
 /// @param request Request to test
-/// @return `true` if operation completed, `false` otherwise
-inline bool
+/// @return `Status` if operation completed, `nullopt` otherwise
+inline std::optional<Status>
 test(Request & request)
 {
     int flag;
-    MPI_CHECK(MPI_Test(&request.native(), &flag, MPI_STATUS_IGNORE));
-    return flag != 0;
+    Status status;
+    MPI_CHECK(MPI_Test(&request.native(), &flag, &status.native()));
+    if (flag != 0)
+        return status;
+    else
+        return std::nullopt;
 }
 
 /// Test for the completion of a request with status
