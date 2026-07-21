@@ -41,6 +41,11 @@ public:
     /// @return `true` if MPI is finalized, `false` otherwise
     static bool is_finalized();
 
+    /// Return the level of thread support provided by the MPI library
+    ///
+    /// @return Level of thread support provided
+    static ThreadSupport query_thread();
+
 private:
     /// Indicates if the environment is initialized
     bool initialized_;
@@ -110,6 +115,14 @@ Environment::is_finalized()
     int flag;
     MPI_CHECK(MPI_Finalized(&flag));
     return flag != 0;
+}
+
+inline ThreadSupport
+Environment::query_thread()
+{
+    int prov;
+    MPI_CHECK(MPI_Query_thread(&prov));
+    return static_cast<ThreadSupport>(prov);
 }
 
 //
