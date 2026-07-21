@@ -59,7 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="request.html">Request</a></li>
 <li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Test</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi"><code class="docutils literal notranslate"><span class="pre">test_any()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite8test_anyERNSt6vectorI7RequestEE"><code class="docutils literal notranslate"><span class="pre">test_any()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wait.html">Wait</a></li>
@@ -121,18 +121,15 @@ Potential matches:
 </div>
 </div>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi">
-<span id="_CPPv3N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi"></span><span id="_CPPv2N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi"></span><span id="mpicpp_lite::test_any__std::vector:Request:R.iR"></span><span class="target" id="_test_8h_1a95494319d7df09c31fe3ded55ec4ab29"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">test_any</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8test_anyERNSt6vectorI7RequestEERi" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite8test_anyERNSt6vectorI7RequestEE">
+<span id="_CPPv3N11mpicpp_lite8test_anyERNSt6vectorI7RequestEE"></span><span id="_CPPv2N11mpicpp_lite8test_anyERNSt6vectorI7RequestEE"></span><span id="mpicpp_lite::test_any__std::vector:Request:R"></span><span class="target" id="_test_8h_1a430c4bf60d90e861880968bfb986a96e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">optional</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">TestAnyResult</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">mpicpp_lite</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">test_any</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">requests</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite8test_anyERNSt6vectorI7RequestEE" title="Link to this definition"></a><br /></dt>
 <dd><p>Test for completion of any previously initiated requests. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>requests</strong> – Requests to test </p></li>
-<li><p><strong>index</strong> – Index of operation that completed or <code class="docutils literal notranslate"><span class="pre">UNDEFINED</span></code> if none completed </p></li>
-</ul>
+<dd class="field-odd"><p><strong>requests</strong> – Requests to test </p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if one of the operations is complete </p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">TestAnyResult</span></code> if one of the operations is complete </p>
 </dd>
 </dl>
 </dd></dl>
