@@ -79,7 +79,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator5irecvE7Requesti3TagP1Ti"><code class="docutils literal notranslate"><span class="pre">Communicator::irecv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator6iprobeEi3Tag"><code class="docutils literal notranslate"><span class="pre">Communicator::iprobe()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator6iprobeEi3TagR6Status"><code class="docutils literal notranslate"><span class="pre">Communicator::iprobe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0EN11mpicpp_lite12Communicator5mrecvE6StatusP1TiR7Message"><code class="docutils literal notranslate"><span class="pre">Communicator::mrecv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator6mprobeEi3Tag"><code class="docutils literal notranslate"><span class="pre">Communicator::mprobe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0EN11mpicpp_lite12Communicator6imrecvE7RequestP1TiR7Message"><code class="docutils literal notranslate"><span class="pre">Communicator::imrecv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator7improbeEi3Tag"><code class="docutils literal notranslate"><span class="pre">Communicator::improbe()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4NK11mpicpp_lite12Communicator7barrierEv"><code class="docutils literal notranslate"><span class="pre">Communicator::barrier()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4I0ENK11mpicpp_lite12Communicator9broadcastEvR1Ti"><code class="docutils literal notranslate"><span class="pre">Communicator::broadcast()</span></code></a></li>
@@ -131,7 +133,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="datatype.html">Datatype</a></li>
-<li class="toctree-l1"><a class="reference internal" href="matched-message.html">MatchedMessage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message.html">Message</a></li>
 <li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="request.html">Request</a></li>
 <li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
@@ -264,7 +266,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>dest</strong> – Destination rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>value</strong> – Value to send </p></li>
 </ul>
 </dd>
@@ -282,7 +284,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>dest</strong> – Destination rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>values</strong> – Values to send </p></li>
 <li><p><strong>n</strong> – Number of values to send </p></li>
 </ul>
@@ -301,7 +303,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>dest</strong> – Destination rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>value</strong> – Vector of <code class="docutils literal notranslate"><span class="pre">T</span></code> to send </p></li>
 </ul>
 </dd>
@@ -316,7 +318,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dest</strong> – Destination rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 </ul>
 </dd>
 </dl>
@@ -333,7 +335,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>source</strong> – Source rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>value</strong> – Variable to recieve the data </p></li>
 </ul>
 </dd>
@@ -354,7 +356,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>source</strong> – Source rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>values</strong> – Variable to recieve the data </p></li>
 <li><p><strong>n</strong> – Number of values to receive </p></li>
 </ul>
@@ -376,7 +378,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>source</strong> – Source rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>value</strong> – Variable to recieve the data </p></li>
 </ul>
 </dd>
@@ -394,7 +396,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> – Source rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -411,7 +413,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
-<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -431,7 +433,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>dest</strong> – Destination rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>value</strong> – Value to send </p></li>
 </ul>
 </dd>
@@ -452,7 +454,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>dest</strong> – Destination rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>value</strong> – Values to send </p></li>
 </ul>
 </dd>
@@ -473,7 +475,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>dest</strong> – Destination rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>values</strong> – Values to send </p></li>
 <li><p><strong>n</strong> – Number of values to send </p></li>
 </ul>
@@ -495,7 +497,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>source</strong> – Source rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>value</strong> – Variable to recieve the data </p></li>
 </ul>
 </dd>
@@ -516,7 +518,7 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>source</strong> – Source rank </p></li>
-<li><p><strong>tag</strong> – Message tag </p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag </p></li>
 <li><p><strong>values</strong> – Variable to recieve the data </p></li>
 <li><p><strong>n</strong> – Number of values to receive </p></li>
 </ul>
@@ -532,7 +534,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
-<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -549,7 +551,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
-<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
 <li><p><strong>status</strong> – <a class="reference internal" href="status.html#classmpicpp__lite_1_1_status"><span class="std std-ref">Status</span></a> object </p></li>
 </ul>
 </dd>
@@ -560,31 +562,67 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN11mpicpp_lite12Communicator5mrecvE6StatusP1TiR7Message">
+<span id="_CPPv3I0EN11mpicpp_lite12Communicator5mrecvEP1TiR7Message"></span><span id="_CPPv2I0EN11mpicpp_lite12Communicator5mrecvEP1TiR7Message"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classmpicpp__lite_1_1_communicator_1add7eefe3a300546541964ed0c8413fc0"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="status.html#_CPPv4N11mpicpp_lite6StatusE" title="mpicpp_lite::Status"><span class="n"><span class="pre">Status</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mrecv</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN11mpicpp_lite12Communicator5mrecvE6StatusP1TiR7Message" title="mpicpp_lite::Communicator::mrecv::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">values</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <a class="reference internal" href="message.html#_CPPv4N11mpicpp_lite7MessageE" title="mpicpp_lite::Message"><span class="n"><span class="pre">Message</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite12Communicator5mrecvE6StatusP1TiR7Message" title="Link to this definition"></a><br /></dt>
+<dd><p>Blocking receive of message matched by <code class="docutils literal notranslate"><span class="pre">mprobe</span></code> or <code class="docutils literal notranslate"><span class="pre">improbe</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – Values to receive </p></li>
+<li><p><strong>n</strong> – Number of values to receive </p></li>
+<li><p><strong>message</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="status.html#classmpicpp__lite_1_1_status"><span class="std std-ref">Status</span></a> object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator6mprobeEi3Tag">
-<span id="_CPPv3NK11mpicpp_lite12Communicator6mprobeEi3Tag"></span><span id="_CPPv2NK11mpicpp_lite12Communicator6mprobeEi3Tag"></span><span id="mpicpp_lite::Communicator::mprobe__i.TagC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1a3ddafd2a9122b7673bf8faea39977803"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="matched-message.html#_CPPv4N11mpicpp_lite14MatchedMessageE" title="mpicpp_lite::MatchedMessage"><span class="n"><span class="pre">MatchedMessage</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mprobe</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="n"><span class="pre">Tag</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tag</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator6mprobeEi3Tag" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3NK11mpicpp_lite12Communicator6mprobeEi3Tag"></span><span id="_CPPv2NK11mpicpp_lite12Communicator6mprobeEi3Tag"></span><span id="mpicpp_lite::Communicator::mprobe__i.TagC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1a4675e247e3ecf1e03c1f19abe57f9734"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">tuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="message.html#_CPPv4N11mpicpp_lite7MessageE" title="mpicpp_lite::Message"><span class="n"><span class="pre">Message</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="status.html#_CPPv4N11mpicpp_lite6StatusE" title="mpicpp_lite::Status"><span class="n"><span class="pre">Status</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mprobe</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="n"><span class="pre">Tag</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tag</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator6mprobeEi3Tag" title="Link to this definition"></a><br /></dt>
 <dd><p>Blocking matched probe for a message. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
-<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Matched message </p>
+<dd class="field-even"><p><a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> and <a class="reference internal" href="status.html#classmpicpp__lite_1_1_status"><span class="std std-ref">Status</span></a> (needed by a subsequent call to <code class="docutils literal notranslate"><span class="pre">mrecv</span></code>) </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN11mpicpp_lite12Communicator6imrecvE7RequestP1TiR7Message">
+<span id="_CPPv3I0EN11mpicpp_lite12Communicator6imrecvEP1TiR7Message"></span><span id="_CPPv2I0EN11mpicpp_lite12Communicator6imrecvEP1TiR7Message"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classmpicpp__lite_1_1_communicator_1a8b9f320ea2abf2a0250ce041ca758fbe"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="request.html#_CPPv4N11mpicpp_lite7RequestE" title="mpicpp_lite::Request"><span class="n"><span class="pre">Request</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">imrecv</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN11mpicpp_lite12Communicator6imrecvE7RequestP1TiR7Message" title="mpicpp_lite::Communicator::imrecv::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">values</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <a class="reference internal" href="message.html#_CPPv4N11mpicpp_lite7MessageE" title="mpicpp_lite::Message"><span class="n"><span class="pre">Message</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite12Communicator6imrecvE7RequestP1TiR7Message" title="Link to this definition"></a><br /></dt>
+<dd><p>Nonblocking receive of message matched by <code class="docutils literal notranslate"><span class="pre">mprobe</span></code> or <code class="docutils literal notranslate"><span class="pre">improbe</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – Values to receive </p></li>
+<li><p><strong>n</strong> – Number of values to receive </p></li>
+<li><p><strong>message</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Communication request </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK11mpicpp_lite12Communicator7improbeEi3Tag">
-<span id="_CPPv3NK11mpicpp_lite12Communicator7improbeEi3Tag"></span><span id="_CPPv2NK11mpicpp_lite12Communicator7improbeEi3Tag"></span><span id="mpicpp_lite::Communicator::improbe__i.TagC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1a1642f0fcc316357708555bb9ae808786"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="matched-message.html#_CPPv4N11mpicpp_lite14MatchedMessageE" title="mpicpp_lite::MatchedMessage"><span class="n"><span class="pre">MatchedMessage</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">improbe</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="n"><span class="pre">Tag</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tag</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator7improbeEi3Tag" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3NK11mpicpp_lite12Communicator7improbeEi3Tag"></span><span id="_CPPv2NK11mpicpp_lite12Communicator7improbeEi3Tag"></span><span id="mpicpp_lite::Communicator::improbe__i.TagC"></span><span class="target" id="classmpicpp__lite_1_1_communicator_1ae354ba1f37781b0976f4ccbdc194c004"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">optional</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">tuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="message.html#_CPPv4N11mpicpp_lite7MessageE" title="mpicpp_lite::Message"><span class="n"><span class="pre">Message</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="status.html#_CPPv4N11mpicpp_lite6StatusE" title="mpicpp_lite::Status"><span class="n"><span class="pre">Status</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">improbe</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">source</span></span>, <span class="n"><span class="pre">Tag</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tag</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11mpicpp_lite12Communicator7improbeEi3Tag" title="Link to this definition"></a><br /></dt>
 <dd><p>Nonblocking matched probe for a message. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> – Rank of source or <code class="docutils literal notranslate"><span class="pre">ANY_SOURCE</span></code></p></li>
-<li><p><strong>tag</strong> – Message tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
+<li><p><strong>tag</strong> – <a class="reference internal" href="message.html#classmpicpp__lite_1_1_message"><span class="std std-ref">Message</span></a> tag or <code class="docutils literal notranslate"><span class="pre">ANY_TAG</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

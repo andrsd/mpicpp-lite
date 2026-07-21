@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Request &mdash; mpicpp-lite  documentation</title>
+  <title>Message &mdash; mpicpp-lite  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -23,8 +23,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Status" href="status.html" />
-    <link rel="prev" title="Operation" href="operation.html" /> 
+    <link rel="next" title="Operation" href="operation.html" />
+    <link rel="prev" title="Datatype" href="datatype.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,16 +54,15 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="communicator.html">Communicator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datatype.html">Datatype</a></li>
-<li class="toctree-l1"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Message</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite7MessageE"><code class="docutils literal notranslate"><span class="pre">Message</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11mpicpp_lite7Message7MessageEv"><code class="docutils literal notranslate"><span class="pre">Message::Message()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Request</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N11mpicpp_lite7RequestE"><code class="docutils literal notranslate"><span class="pre">Request</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11mpicpp_lite7Request7RequestEv"><code class="docutils literal notranslate"><span class="pre">Request::Request()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11mpicpp_lite7Request6cancelEv"><code class="docutils literal notranslate"><span class="pre">Request::cancel()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="request.html">Request</a></li>
 <li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test.html">Test</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wait.html">Wait</a></li>
@@ -83,7 +82,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Request</li>
+      <li class="breadcrumb-item active">Message</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -92,24 +91,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="request">
-<h1>Request<a class="headerlink" href="#request" title="Link to this heading"></a></h1>
+  <section id="message">
+<h1>Message<a class="headerlink" href="#message" title="Link to this heading"></a></h1>
 <dl class="cpp class">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite7RequestE">
-<span id="_CPPv3N11mpicpp_lite7RequestE"></span><span id="_CPPv2N11mpicpp_lite7RequestE"></span><span id="mpicpp_lite::Request"></span><span class="target" id="classmpicpp__lite_1_1_request"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Request</span></span></span><a class="headerlink" href="#_CPPv4N11mpicpp_lite7RequestE" title="Link to this definition"></a><br /></dt>
-<dd><p>Wrapper around MPI_Request. </p>
-<div class="breathe-sectiondef docutils container">
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite7MessageE">
+<span id="_CPPv3N11mpicpp_lite7MessageE"></span><span id="_CPPv2N11mpicpp_lite7MessageE"></span><span id="mpicpp_lite::Message"></span><span class="target" id="classmpicpp__lite_1_1_message"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Message</span></span></span><a class="headerlink" href="#_CPPv4N11mpicpp_lite7MessageE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite7Request7RequestEv">
-<span id="_CPPv3N11mpicpp_lite7Request7RequestEv"></span><span id="_CPPv2N11mpicpp_lite7Request7RequestEv"></span><span id="mpicpp_lite::Request::Request"></span><span class="target" id="classmpicpp__lite_1_1_request_1acab7a3229b06259598c84e92502ff4ba"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Request</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite7Request7RequestEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Create empty request. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite7Request6cancelEv">
-<span id="_CPPv3N11mpicpp_lite7Request6cancelEv"></span><span id="_CPPv2N11mpicpp_lite7Request6cancelEv"></span><span id="mpicpp_lite::Request::cancel"></span><span class="target" id="classmpicpp__lite_1_1_request_1a88f3bcb1f5d5204ee0c8edc7aeac27e1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cancel</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite7Request6cancelEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Cancels a communication request. </p>
+<dt class="sig sig-object cpp" id="_CPPv4N11mpicpp_lite7Message7MessageEv">
+<span id="_CPPv3N11mpicpp_lite7Message7MessageEv"></span><span id="_CPPv2N11mpicpp_lite7Message7MessageEv"></span><span id="mpicpp_lite::Message::Message"></span><span class="target" id="classmpicpp__lite_1_1_message_1a52a173e394893a653b90f325d3d65ab1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Message</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11mpicpp_lite7Message7MessageEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Construct empty <code class="docutils literal notranslate"><a class="reference internal" href="#classmpicpp__lite_1_1_message"><span class="std std-ref"><span class="pre">Message</span></span></a></code> object. </p>
 </dd></dl>
 
 </div>
@@ -121,8 +113,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="operation.html" class="btn btn-neutral float-left" title="Operation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="status.html" class="btn btn-neutral float-right" title="Status" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="datatype.html" class="btn btn-neutral float-left" title="Datatype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="operation.html" class="btn btn-neutral float-right" title="Operation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

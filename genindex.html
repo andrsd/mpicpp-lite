@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="devel/classes/communicator.html">Communicator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="devel/classes/datatype.html">Datatype</a></li>
-<li class="toctree-l1"><a class="reference internal" href="devel/classes/matched-message.html">MatchedMessage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel/classes/message.html">Message</a></li>
 <li class="toctree-l1"><a class="reference internal" href="devel/classes/operation.html">Operation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="devel/classes/request.html">Request</a></li>
 <li class="toctree-l1"><a class="reference internal" href="devel/classes/status.html">Status</a></li>
@@ -124,6 +124,8 @@
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator7improbeEi3Tag">mpicpp_lite::Communicator::improbe (C++ function)</a>
 </li>
+      <li><a href="devel/classes/communicator.html#_CPPv4I0EN11mpicpp_lite12Communicator6imrecvE7RequestP1TiR7Message">mpicpp_lite::Communicator::imrecv (C++ function)</a>
+</li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator6iprobeEi3Tag">mpicpp_lite::Communicator::iprobe (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator6iprobeEi3TagR6Status">[1]</a>
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator5irecvE7Requesti3TagP1Ti">mpicpp_lite::Communicator::irecv (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator5irecvE7Requesti3TagR1T">[1]</a>
@@ -131,6 +133,8 @@
       <li><a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator5isendE7Requesti3TagRKNSt6vectorI1T1AEE">mpicpp_lite::Communicator::isend (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator5isendE7Requesti3TagPK1Ti">[1]</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator5isendE7Requesti3TagRK1T">[2]</a>
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator6mprobeEi3Tag">mpicpp_lite::Communicator::mprobe (C++ function)</a>
+</li>
+      <li><a href="devel/classes/communicator.html#_CPPv4I0EN11mpicpp_lite12Communicator5mrecvE6StatusP1TiR7Message">mpicpp_lite::Communicator::mrecv (C++ function)</a>
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12CommunicatorcvbEv">mpicpp_lite::Communicator::operator bool (C++ function)</a>
 </li>
@@ -144,6 +148,8 @@
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator6reduceEvPK1TiP1T2Opi">mpicpp_lite::Communicator::reduce (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator6reduceEvRK1TR1T2Opi">[1]</a>, <a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator6reduceEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Opi">[2]</a>, <a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator6reduceEviP1T2Opi">[3]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvPK1TiP1T2Op">mpicpp_lite::Communicator::scan (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRK1TR1T2Op">[1]</a>, <a href="devel/classes/communicator.html#_CPPv4I00ENK11mpicpp_lite12Communicator4scanEvRKNSt6vectorI1TEERNSt6vectorI1TEE2Op">[2]</a>
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator7scatterEvPK1TP1Tii">mpicpp_lite::Communicator::scatter (C++ function)</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator7scatterEvPK1TR1Ti">[1]</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator7scatterEvRKNSt6vectorI1TEEP1Tii">[2]</a>, <a href="devel/classes/communicator.html#_CPPv4I0ENK11mpicpp_lite12Communicator7scatterEvRKNSt6vectorI1TEER1Ti">[3]</a>
@@ -152,27 +158,13 @@
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator4sizeEv">mpicpp_lite::Communicator::size (C++ function)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator5splitEii">mpicpp_lite::Communicator::split (C++ function)</a>
 </li>
       <li><a href="devel/classes/communicator.html#_CPPv4NK11mpicpp_lite12Communicator10split_typeE8CommTypei4Info">mpicpp_lite::Communicator::split_type (C++ function)</a>
 </li>
-      <li><a href="devel/classes/matched-message.html#_CPPv4N11mpicpp_lite14MatchedMessageE">mpicpp_lite::MatchedMessage (C++ class)</a>
+      <li><a href="devel/classes/message.html#_CPPv4N11mpicpp_lite7MessageE">mpicpp_lite::Message (C++ class)</a>
 </li>
-      <li><a href="devel/classes/matched-message.html#_CPPv4I0ENK11mpicpp_lite14MatchedMessage5countEiv">mpicpp_lite::MatchedMessage::count (C++ function)</a>
-</li>
-      <li><a href="devel/classes/matched-message.html#_CPPv4N11mpicpp_lite14MatchedMessage14MatchedMessageERR14MatchedMessage">mpicpp_lite::MatchedMessage::MatchedMessage (C++ function)</a>, <a href="devel/classes/matched-message.html#_CPPv4N11mpicpp_lite14MatchedMessage14MatchedMessageEv">[1]</a>
-</li>
-      <li><a href="devel/classes/matched-message.html#_CPPv4NK11mpicpp_lite14MatchedMessagecvbEv">mpicpp_lite::MatchedMessage::operator bool (C++ function)</a>
-</li>
-      <li><a href="devel/classes/matched-message.html#_CPPv4N11mpicpp_lite14MatchedMessageaSERR14MatchedMessage">mpicpp_lite::MatchedMessage::operator= (C++ function)</a>
-</li>
-      <li><a href="devel/classes/matched-message.html#_CPPv4I00EN11mpicpp_lite14MatchedMessage4recvE6StatusRNSt6vectorI1T1AEE">mpicpp_lite::MatchedMessage::recv (C++ function)</a>, <a href="devel/classes/matched-message.html#_CPPv4I0EN11mpicpp_lite14MatchedMessage4recvE6StatusP1Ti">[1]</a>, <a href="devel/classes/matched-message.html#_CPPv4N11mpicpp_lite14MatchedMessage4recvEv">[2]</a>
-</li>
-      <li><a href="devel/classes/matched-message.html#_CPPv4NK11mpicpp_lite14MatchedMessage6sourceEv">mpicpp_lite::MatchedMessage::source (C++ function)</a>
-</li>
-      <li><a href="devel/classes/matched-message.html#_CPPv4NK11mpicpp_lite14MatchedMessage3tagEv">mpicpp_lite::MatchedMessage::tag (C++ function)</a>
+      <li><a href="devel/classes/message.html#_CPPv4N11mpicpp_lite7Message7MessageEv">mpicpp_lite::Message::Message (C++ function)</a>
 </li>
       <li><a href="devel/classes/datatype.html#_CPPv4I0EN11mpicpp_lite12mpi_datatypeE12MPI_Datatypev">mpicpp_lite::mpi_datatype (C++ function)</a>
 </li>
