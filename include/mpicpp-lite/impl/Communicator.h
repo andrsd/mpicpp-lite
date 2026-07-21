@@ -10,7 +10,7 @@
 #include "Datatype.h"
 #include "Status.h"
 #include "Request.h"
-#include "MatchedMessage.h"
+#include "Message.h"
 #include "Operation.h"
 #include "Error.h"
 #include "Group.h"
@@ -216,19 +216,47 @@ public:
     ///          otherwise
     bool iprobe(int source, Tag tag, Status & status) const;
 
+    /// Blocking receive of message matched by `mprobe` or `improbe`.
+    ///
+    /// @param values Values to receive
+    /// @param n Number of values to receive
+    /// @param message Message
+    /// @return Status object
+    template <typename T>
+    Status mrecv(T * values, int n, Message & message);
+
+    template <typename T, typename A>
+    Status mrecv(std::vector<T, A> & values, Message & message, Status status);
+
+    Status mrecv(Message & message);
+
     /// Blocking matched probe for a message
     ///
     /// @param source Rank of source or `ANY_SOURCE`
     /// @param tag Message tag or `ANY_TAG`
-    /// @return Matched message
-    MatchedMessage mprobe(int source, Tag tag) const;
+    /// @return Message and Status (needed by a subsequent call to `mrecv`)
+    std::tuple<Message, Status> mprobe(int source, Tag tag) const;
+
+    /// Nonblocking receive of message matched by `mprobe` or `improbe`.
+    ///
+    /// @param values Values to receive
+    /// @param n Number of values to receive
+    /// @param message Message
+    /// @return Communication request
+    template <typename T>
+    Request imrecv(T * values, int n, Message & message);
+
+    template <typename T, typename A>
+    Request imrecv(std::vector<T, A> & values, Message & message, Status status);
+
+    Request imrecv(Message & message);
 
     /// Nonblocking matched probe for a message
     ///
     /// @param source Rank of source or `ANY_SOURCE`
     /// @param tag Message tag or `ANY_TAG`
     /// @return Matched message, or an empty object if no message is available
-    MatchedMessage improbe(int source, Tag tag) const;
+    std::optional<std::tuple<Message, Status>> improbe(int source, Tag tag) const;
 
     /// Wait for all processes within a communicator to reach the barrier.
     void barrier() const;
@@ -970,26 +998,87 @@ Communicator::iprobe(int source, Tag tag, Status & status) const
     return flag != 0;
 }
 
-inline MatchedMessage
-Communicator::mprobe(int source, Tag tag) const
+template <typename T>
+inline Status
+Communicator::mrecv(T * values, int n, Message & message)
 {
-    MPI_Message message;
+    assert(message.is_valid());
+    assert(n >= 0);
+    assert(n == 0 || values != nullptr);
+
     Status status;
-    MPI_CHECK_SELF(MPI_Mprobe(source, tag.value(), this->comm_, &message, &status.native()));
-    return { message, status, this->comm_ };
+    MPI_CHECK_SELF(MPI_Mrecv(values, n, mpi_datatype<T>(), &message.native(), &status.native()));
+    return status;
 }
 
-inline MatchedMessage
+template <typename T, typename A>
+inline Status
+Communicator::mrecv(std::vector<T, A> & values, Message & message, Status status)
+{
+    auto size = status.count<T>();
+    assert(size >= 0);
+    values.resize(size);
+    return mrecv(values.empty() ? nullptr : values.data(), size, message);
+}
+
+inline Status
+Communicator::mrecv(Message & message)
+{
+    assert(message.is_valid());
+    Status status;
+    MPI_CHECK_SELF(MPI_Mrecv(MPI_BOTTOM, 0, MPI_PACKED, &message.native(), &status.native()));
+    return status;
+}
+
+inline std::tuple<Message, Status>
+Communicator::mprobe(int source, Tag tag) const
+{
+    Message message;
+    Status status;
+    MPI_CHECK_SELF(
+        MPI_Mprobe(source, tag.value(), this->comm_, &message.native(), &status.native()));
+    return { message, status };
+}
+
+template <typename T>
+inline Request
+Communicator::imrecv(T * values, int n, Message & message)
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Imrecv(values, n, mpi_datatype<T>(), &message.native(), &request.native()));
+}
+
+template <typename T, typename A>
+inline Request
+Communicator::imrecv(std::vector<T, A> & values, Message & message, Status status)
+{
+    auto size = status.count<T>();
+    assert(size >= 0);
+    values.resize(size);
+    return imrecv(values.empty() ? nullptr : values.data(), size, message);
+}
+
+inline Request
+Communicator::imrecv(Message & message)
+{
+    assert(message.is_valid());
+    Request request;
+    MPI_CHECK_SELF(MPI_Imrecv(MPI_BOTTOM, 0, MPI_PACKED, &message.native(), &request.native()));
+    return request;
+}
+
+inline std::optional<std::tuple<Message, Status>>
 Communicator::improbe(int source, Tag tag) const
 {
     int flag;
-    MPI_Message message = MPI_MESSAGE_NULL;
+    Message message;
     Status status;
     MPI_CHECK_SELF(
-        MPI_Improbe(source, tag.value(), this->comm_, &flag, &message, &status.native()));
+        MPI_Improbe(source, tag.value(), this->comm_, &flag, &message.native(), &status.native()));
     if (flag == 0)
-        return {};
-    return { message, status, this->comm_ };
+        return std::nullopt;
+    else
+        return { { message, status } };
 }
 
 // Barrier
