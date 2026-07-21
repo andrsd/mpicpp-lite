@@ -51,6 +51,17 @@ test_all(std::vector<Request> & requests)
     return flag != 0;
 }
 
+inline bool
+test_all(std::vector<Request> & requests, std::vector<Request> & statuses)
+{
+    auto n = static_cast<int>(requests.size());
+    auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
+    int flag;
+    auto * stats = reinterpret_cast<MPI_Status *>(statuses.data());
+    MPI_CHECK(MPI_Testall(n, reqs, &flag, stats));
+    return flag != 0;
+}
+
 /// Test for completion of any previously initiated requests
 ///
 /// @param requests Requests to test
