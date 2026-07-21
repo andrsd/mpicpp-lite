@@ -64,6 +64,19 @@ wait_all(std::vector<Request> & requests)
     MPI_CHECK(MPI_Waitall(n, reqs, MPI_STATUSES_IGNORE));
 }
 
+/// Wait for all requests to complete
+///
+/// @param requests Requests to wait for
+/// @param statuses Array of status objects
+inline void
+wait_all(std::vector<Request> & requests, std::vector<Request> & statuses)
+{
+    auto n = static_cast<int>(requests.size());
+    auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
+    auto * stats = reinterpret_cast<MPI_Status *>(statuses.data());
+    MPI_CHECK(MPI_Waitall(n, reqs, stats));
+}
+
 /// Wait for any specified request to complete
 ///
 /// @param requests Requests to wait for
