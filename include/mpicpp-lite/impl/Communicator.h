@@ -205,7 +205,7 @@ public:
     /// @param tag Message tag or `ANY_TAG`
     /// @return `true` if a message with the specified source, and tag is available, `false`
     ///          otherwise
-    bool iprobe(int source, Tag tag) const;
+    std::optional<Status> iprobe(int source, Tag tag) const;
 
     /// Nonblocking test for a message
     ///
@@ -950,12 +950,16 @@ Communicator::irecv(int source, Tag tag, T * values, int n) const
     return request;
 }
 
-inline bool
+inline std::optional<Status>
 Communicator::iprobe(int source, Tag tag) const
 {
+    Status status;
     int flag;
-    MPI_CHECK_SELF(MPI_Iprobe(source, tag.value(), this->comm_, &flag, MPI_STATUS_IGNORE));
-    return flag != 0;
+    MPI_CHECK_SELF(MPI_Iprobe(source, tag.value(), this->comm_, &flag, &status.native()));
+    if (flag != 0)
+        return status;
+    else
+        return std::nullopt;
 }
 
 inline bool
