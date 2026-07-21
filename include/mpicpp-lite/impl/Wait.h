@@ -75,4 +75,60 @@ wait_any(std::vector<Request> & requests)
     return idx;
 }
 
+/// Waits for some given requests to complete
+///
+/// @param requests Array of requests
+/// @param indices Array of indices of operations that completed
+/// @return `false` If there is no active handle in the list, otherwise `true`
+///         (in this case the length of indices indicates how many operations
+///         completed)
+inline bool
+wait_some(std::vector<Request> & requests, std::vector<int> & indices)
+{
+    auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
+    indices.resize(requests.size());
+    int outcount = UNDEFINED;
+    MPI_CHECK(MPI_Waitsome(static_cast<int>(requests.size()),
+                           reqs,
+                           &outcount,
+                           indices.data(),
+                           MPI_STATUSES_IGNORE));
+    if (outcount != UNDEFINED) {
+        indices.resize(static_cast<std::size_t>(outcount));
+        return true;
+    }
+    else
+        return false;
+}
+
+/// Waits for some given requests to complete
+///
+/// @param requests Array of requests
+/// @param indices Array of indices of operations that completed
+/// @param statuses Array of status objects for operations that completed
+/// @return `false` If there is no active handle in the list, otherwise `true`
+///         (in this case the length of indices indicates how many operations
+///         completed)
+inline bool
+wait_some(std::vector<Request> & requests,
+          std::vector<int> & indices,
+          std::vector<Status> & statuses)
+{
+    auto * reqs = reinterpret_cast<MPI_Request *>(requests.data());
+    indices.resize(requests.size());
+    statuses.resize(requests.size());
+    auto * stats = reinterpret_cast<MPI_Status *>(statuses.data());
+    int outcount = UNDEFINED;
+    MPI_CHECK(
+        MPI_Waitsome(static_cast<int>(requests.size()), reqs, &outcount, indices.data(), stats));
+    if (outcount != UNDEFINED) {
+        auto cnt = static_cast<std::size_t>(outcount);
+        indices.resize(cnt);
+        statuses.resize(cnt);
+        return true;
+    }
+    else
+        return false;
+}
+
 } // namespace mpicpp_lite
