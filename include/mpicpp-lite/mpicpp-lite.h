@@ -9,7 +9,7 @@
 #include "impl/Enums.h"
 #include "impl/Group.h"
 #include "impl/Info.h"
-#include "impl/MatchedMessage.h"
+#include "impl/Message.h"
 #include "impl/Operation.h"
 #include "impl/Request.h"
 #include "impl/Status.h"

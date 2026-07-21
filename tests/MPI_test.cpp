@@ -778,7 +778,7 @@ TEST(MPITest, iprobe_w_status)
     }
 }
 
-TEST(MPITest, mprobe_recv)
+TEST(MPITest, mprobe_mrecv)
 {
     Communicator comm;
     if (comm.size() == 1)
@@ -790,22 +790,22 @@ TEST(MPITest, mprobe_recv)
         comm.send(1, tag, val);
     }
     else if (comm.rank() == 1) {
-        auto message = comm.mprobe(0, tag);
-        EXPECT_TRUE(message);
-        EXPECT_EQ(message.source(), 0);
-        EXPECT_EQ(message.tag(), tag);
-        EXPECT_EQ(message.count<int>(), 1);
+        auto [message, stat1] = comm.mprobe(0, tag);
+        EXPECT_TRUE(message.is_valid());
+        EXPECT_EQ(stat1.source(), 0);
+        EXPECT_EQ(stat1.tag(), tag);
+        EXPECT_EQ(stat1.count<int>(), 1);
 
         int val;
-        auto status = message.recv(&val, 1);
+        auto stat2 = comm.mrecv(&val, 1, message);
         EXPECT_EQ(val, 125);
-        EXPECT_EQ(status.source(), 0);
-        EXPECT_EQ(status.tag(), tag);
-        EXPECT_FALSE(message);
+        EXPECT_EQ(stat2.source(), 0);
+        EXPECT_EQ(stat2.tag(), tag);
+        EXPECT_FALSE(message.is_valid());
     }
 }
 
-TEST(MPITest, mprobe_recv_empty_message)
+TEST(MPITest, mprobe_mrecv_empty_message)
 {
     Communicator comm;
     if (comm.size() == 1)
@@ -815,16 +815,16 @@ TEST(MPITest, mprobe_recv_empty_message)
     if (comm.rank() == 0)
         comm.send(1, tag);
     else if (comm.rank() == 1) {
-        auto message = comm.mprobe(0, tag);
-        EXPECT_TRUE(message);
-        auto status = message.recv();
-        EXPECT_EQ(status.source(), 0);
-        EXPECT_EQ(status.tag(), tag);
-        EXPECT_FALSE(message);
+        auto [message, stat1] = comm.mprobe(0, tag);
+        EXPECT_TRUE(message.is_valid());
+        auto stat2 = comm.mrecv(message);
+        EXPECT_EQ(stat2.source(), 0);
+        EXPECT_EQ(stat2.tag(), tag);
+        EXPECT_FALSE(message.is_valid());
     }
 }
 
-TEST(MPITest, improbe_recv_vector_any_source)
+TEST(MPITest, improbe_mrecv_vector_any_source)
 {
     Communicator comm;
     if (comm.size() == 1)
@@ -834,24 +834,25 @@ TEST(MPITest, improbe_recv_vector_any_source)
     if (comm.rank() == 0) {
         int num_received = 0;
         for (int attempt = 0; num_received < comm.size() - 1 && attempt < 1000; ++attempt) {
-            auto message = comm.improbe(ANY_SOURCE, tag);
-            if (!message) {
+            auto ret = comm.improbe(ANY_SOURCE, tag);
+            if (!ret.has_value()) {
                 usleep(10000);
                 continue;
             }
 
-            auto source = message.source();
-            EXPECT_EQ(message.tag(), tag);
-            EXPECT_EQ(message.count<int>(), source);
+            auto [message, stat1] = ret.value();
+            auto source = stat1.source();
+            EXPECT_EQ(stat1.tag(), tag);
+            EXPECT_EQ(stat1.count<int>(), source);
 
             std::vector<int> values;
-            auto status = message.recv(values);
-            EXPECT_EQ(status.source(), source);
-            EXPECT_EQ(status.tag(), tag);
+            auto stat2 = comm.mrecv(values, message, stat1);
+            EXPECT_EQ(stat2.source(), source);
+            EXPECT_EQ(stat2.tag(), tag);
             ASSERT_EQ(values.size(), source);
             for (std::size_t i = 0; i < values.size(); ++i)
                 EXPECT_EQ(values[i], 10 * source + i);
-            EXPECT_FALSE(message);
+            EXPECT_FALSE(message.is_valid());
             ++num_received;
         }
         EXPECT_EQ(num_received, comm.size() - 1);
@@ -861,6 +862,26 @@ TEST(MPITest, improbe_recv_vector_any_source)
         for (std::size_t i = 0; i < values.size(); ++i)
             values[i] = 10 * comm.rank() + i;
         comm.send(0, tag, values);
+    }
+}
+
+TEST(MPITest, mprobe_imrecv_empty_message)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    Tag tag(3);
+    if (comm.rank() == 0)
+        comm.send(1, tag);
+    else if (comm.rank() == 1) {
+        auto [message, stat1] = comm.mprobe(0, tag);
+        EXPECT_TRUE(message.is_valid());
+        auto req = comm.imrecv(message);
+        auto stat2 = wait(req);
+        EXPECT_EQ(stat2.source(), 0);
+        EXPECT_EQ(stat2.tag(), tag);
+        EXPECT_FALSE(message.is_valid());
     }
 }
 
