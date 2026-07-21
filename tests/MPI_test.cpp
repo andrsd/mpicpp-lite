@@ -1064,6 +1064,43 @@ TEST(MPITest, test_some)
     }
 }
 
+TEST(MPITest, wait_some)
+{
+    Communicator comm;
+    if (comm.size() < 4)
+        return;
+
+    Tag tag(1);
+    if (comm.rank() == 0) {
+        int n = comm.size() - 1;
+        std::vector<int> vals(n);
+        std::vector<Request> reqs(n);
+        for (int i = 0; i < n; i++)
+            reqs[i] = comm.irecv(i + 1, tag, vals[i]);
+
+        std::vector<bool> finished(n - 1, false);
+        while (true) {
+            std::vector<int> indices;
+            if (wait_some(reqs, indices)) {
+                for (auto i : indices)
+                    finished[i] = true;
+            }
+            else
+                break;
+        }
+
+        EXPECT_THAT(finished, Each(IsTrue()));
+    }
+    else {
+        int num = comm.rank() * 7;
+        auto req = comm.isend(0, tag, num);
+        while (!test(req))
+            ;
+    }
+
+    comm.barrier();
+}
+
 TEST(MPITest, all_to_all_1)
 {
     Communicator comm;
