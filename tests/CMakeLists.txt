@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME}
     Group_test.cpp
     Info_test.cpp
     MPI_test.cpp
+    Operations_test.cpp
     Time_test.cpp
     Window_test.cpp
     main.cpp
