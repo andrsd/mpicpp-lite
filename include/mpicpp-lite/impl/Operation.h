@@ -26,7 +26,7 @@ struct sum {
     /// @param x First operand
     /// @param y Second operand
     /// @return Sum of `x` and `y`
-    const T &
+    T
     operator()(const T & x, const T & y) const
     {
         return x + y;
@@ -45,7 +45,7 @@ struct prod {
     /// @param x First operand
     /// @param y Second operand
     /// @return Product of `x` and `y`
-    const T &
+    T
     operator()(const T & x, const T & y) const
     {
         return x * y;
@@ -62,7 +62,7 @@ struct max {
     /// @param x First operand
     /// @param y Second operand
     /// @return The maximum of `x` and `y`
-    const T &
+    T
     operator()(const T & x, const T & y) const
     {
         return x < y ? y : x;
@@ -79,7 +79,7 @@ struct min {
     /// @param x First operand
     /// @param y Second operand
     /// @return The minimum of `x` and `y`
-    const T &
+    T
     operator()(const T & x, const T & y) const
     {
         return x < y ? x : y;
