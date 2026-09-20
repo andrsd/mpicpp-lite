@@ -266,6 +266,52 @@ struct replace<void> {
 template <typename Op, typename T>
 struct IsCommutative : public std::false_type {};
 
+/// Map potentially transparent operation template to its specialized type `T` representation.
+template <typename Op, typename T>
+struct MapOp {
+    using type = Op;
+};
+
+template <typename T>
+struct MapOp<sum<void>, T> {
+    using type = sum<T>;
+};
+
+template <typename T>
+struct MapOp<prod<void>, T> {
+    using type = prod<T>;
+};
+
+template <typename T>
+struct MapOp<max<void>, T> {
+    using type = max<T>;
+};
+
+template <typename T>
+struct MapOp<min<void>, T> {
+    using type = min<T>;
+};
+
+template <typename T>
+struct MapOp<logical_and<void>, T> {
+    using type = logical_and<T>;
+};
+
+template <typename T>
+struct MapOp<logical_or<void>, T> {
+    using type = logical_or<T>;
+};
+
+template <typename T>
+struct MapOp<logical_xor<void>, T> {
+    using type = logical_xor<T>;
+};
+
+template <typename T>
+struct MapOp<replace<void>, T> {
+    using type = replace<T>;
+};
+
 /// Template for MPI operation `Op` on a `T` type
 ///
 /// @tparam Op Operation
@@ -440,11 +486,13 @@ create(MPI_User_function * user_fn, bool commute)
 /// @tparam T Datatype
 template <typename Op, typename T>
 struct UserOp {
+    using MappedOp = typename MapOp<Op, T>::type;
+
     /// Get the `MPI_Op` for the user-defined operation
     static MPI_Op
     op()
     {
-        static auto mop = create(&UserOp<Op, T>::perform, IsCommutative<Op, T>::value);
+        static auto mop = create(&UserOp<Op, T>::perform, IsCommutative<MappedOp, T>::value);
         return mop;
     }
 
@@ -454,7 +502,7 @@ private:
     {
         T * invec = static_cast<T *>(a);
         T * outvec = static_cast<T *>(b);
-        Op op {};
+        MappedOp op;
         std::transform(invec, invec + *len, outvec, outvec, op);
     }
 };
