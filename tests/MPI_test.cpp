@@ -453,7 +453,7 @@ TEST(MPITest, reduce_sum)
     int n = comm.size();
     double loc_sum = (comm.rank() + 1) * 3;
     double glob_sum;
-    comm.reduce(loc_sum, glob_sum, op::sum<double>(), 0);
+    comm.reduce(loc_sum, glob_sum, op::sum<>(), 0);
 
     if (comm.rank() == 0) {
         double gold = 3. * (n * (1 + n) / 2.);
@@ -472,7 +472,7 @@ TEST(MPITest, reduce_sum_arr)
     for (int i = 0; i < loc_sum.size(); i++)
         loc_sum[i] = (comm.rank() * loc_sum.size()) + i;
     std::vector<int> glob_sum;
-    comm.reduce(loc_sum, glob_sum, op::sum<int>(), 0);
+    comm.reduce(loc_sum, glob_sum, op::sum<>(), 0);
 
     if (comm.rank() == 0) {
         EXPECT_EQ(glob_sum.size(), 3);
@@ -491,7 +491,7 @@ TEST(MPITest, reduce_sum_in_place)
 
     int n = comm.size();
     double loc_sum = (comm.rank() + 1) * 3;
-    comm.reduce(loc_sum, op::sum<double>(), 0);
+    comm.reduce(loc_sum, op::sum<>(), 0);
 
     if (comm.rank() == 0) {
         double gold = 3. * (n * (1 + n) / 2.);
@@ -509,7 +509,7 @@ TEST(MPITest, reduce_sum_arr_in_place)
     std::vector<int> loc_sum(3);
     for (int i = 0; i < loc_sum.size(); i++)
         loc_sum[i] = (comm.rank() * loc_sum.size()) + i;
-    comm.reduce(loc_sum, op::sum<int>(), 0);
+    comm.reduce(loc_sum, op::sum<>(), 0);
 
     if (comm.rank() == 0) {
         EXPECT_EQ(loc_sum.size(), 3);
@@ -529,8 +529,8 @@ TEST(MPITest, reduce_all_sum)
     int n = comm.size();
     int loc_sum = (comm.rank() + 1) * 3;
     int glob_sum;
-    comm.all_reduce(loc_sum, glob_sum, op::sum<int>());
-    comm.all_reduce(loc_sum, op::sum<int>());
+    comm.all_reduce(loc_sum, glob_sum, op::sum<>());
+    comm.all_reduce(loc_sum, op::sum<>());
 
     int gold = 3 * (n * (1 + n) / 2);
     EXPECT_EQ(loc_sum, gold);
@@ -546,7 +546,7 @@ TEST(MPITest, all_reduce_sum_arr)
     int n = comm.size();
     std::vector<int> loc_sum = { (comm.rank() * 2) + 1, (comm.rank() * 2) + 2 };
     std::vector<int> glob_sum = { 0, 0 };
-    comm.all_reduce(loc_sum, glob_sum, op::sum<int>());
+    comm.all_reduce(loc_sum, glob_sum, op::sum<>());
 
     int gold0 = n * n;
     int gold1 = n * (n + 1);
@@ -562,8 +562,8 @@ TEST(MPITest, reduce_all_prod)
 
     int loc_prod = (comm.rank() + 1) * 3;
     int glob_prod;
-    comm.all_reduce(loc_prod, glob_prod, op::prod<int>());
-    comm.all_reduce(loc_prod, op::prod<int>());
+    comm.all_reduce(loc_prod, glob_prod, op::prod<>());
+    comm.all_reduce(loc_prod, op::prod<>());
 
     int gold = 1;
     for (int i = 1; i <= comm.size(); i++)
@@ -581,8 +581,8 @@ TEST(MPITest, reduce_all_min)
 
     int loc = (comm.rank() + 1) * 3;
     int glob;
-    comm.all_reduce(loc, glob, op::min<int>());
-    comm.all_reduce(loc, op::min<int>());
+    comm.all_reduce(loc, glob, op::min<>());
+    comm.all_reduce(loc, op::min<>());
 
     int gold = 3;
     EXPECT_EQ(loc, gold);
@@ -597,8 +597,8 @@ TEST(MPITest, reduce_all_max)
 
     int loc = (comm.rank() + 1) * 3;
     int glob;
-    comm.all_reduce(loc, glob, op::max<int>());
-    comm.all_reduce(loc, op::max<int>());
+    comm.all_reduce(loc, glob, op::max<>());
+    comm.all_reduce(loc, op::max<>());
 
     int gold = comm.size() * 3;
     EXPECT_EQ(loc, gold);
@@ -614,21 +614,21 @@ TEST(MPITest, reduce_all_logical_and)
     bool loc = false;
     bool glob;
 
-    comm.all_reduce(loc, glob, op::logical_and<bool>());
-    comm.all_reduce(loc, op::logical_and<bool>());
+    comm.all_reduce(loc, glob, op::logical_and<>());
+    comm.all_reduce(loc, op::logical_and<>());
     EXPECT_FALSE(loc);
     EXPECT_FALSE(glob);
 
     loc = true;
-    comm.all_reduce(loc, glob, op::logical_and<bool>());
-    comm.all_reduce(loc, op::logical_and<bool>());
+    comm.all_reduce(loc, glob, op::logical_and<>());
+    comm.all_reduce(loc, op::logical_and<>());
     EXPECT_TRUE(loc);
     EXPECT_TRUE(glob);
 
     if (comm.rank() == 0)
         loc = false;
-    comm.all_reduce(loc, glob, op::logical_and<bool>());
-    comm.all_reduce(loc, op::logical_and<bool>());
+    comm.all_reduce(loc, glob, op::logical_and<>());
+    comm.all_reduce(loc, op::logical_and<>());
     EXPECT_FALSE(loc);
     EXPECT_FALSE(glob);
 }
@@ -642,21 +642,21 @@ TEST(MPITest, reduce_all_logical_or)
     bool loc = false;
     bool glob;
 
-    comm.all_reduce(loc, glob, op::logical_or<bool>());
-    comm.all_reduce(loc, op::logical_or<bool>());
+    comm.all_reduce(loc, glob, op::logical_or<>());
+    comm.all_reduce(loc, op::logical_or<>());
     EXPECT_FALSE(loc);
     EXPECT_FALSE(glob);
 
     loc = true;
-    comm.all_reduce(loc, glob, op::logical_or<bool>());
-    comm.all_reduce(loc, op::logical_or<bool>());
+    comm.all_reduce(loc, glob, op::logical_or<>());
+    comm.all_reduce(loc, op::logical_or<>());
     EXPECT_TRUE(loc);
     EXPECT_TRUE(glob);
 
     if (comm.rank() != 0)
         loc = false;
-    comm.all_reduce(loc, glob, op::logical_or<bool>());
-    comm.all_reduce(loc, op::logical_or<bool>());
+    comm.all_reduce(loc, glob, op::logical_or<>());
+    comm.all_reduce(loc, op::logical_or<>());
     EXPECT_TRUE(loc);
     EXPECT_TRUE(glob);
 }
@@ -668,14 +668,14 @@ TEST(MPITest, reduce_all_logical_xor)
     bool loc = false;
     bool glob;
 
-    comm.all_reduce(loc, glob, op::logical_xor<bool>());
-    comm.all_reduce(loc, op::logical_xor<bool>());
+    comm.all_reduce(loc, glob, op::logical_xor<>());
+    comm.all_reduce(loc, op::logical_xor<>());
     EXPECT_FALSE(loc);
     EXPECT_FALSE(glob);
 
     loc = true;
-    comm.all_reduce(loc, glob, op::logical_xor<bool>());
-    comm.all_reduce(loc, op::logical_xor<bool>());
+    comm.all_reduce(loc, glob, op::logical_xor<>());
+    comm.all_reduce(loc, op::logical_xor<>());
     if (comm.size() % 2 == 0) {
         EXPECT_FALSE(loc);
         EXPECT_FALSE(glob);
@@ -694,7 +694,7 @@ TEST(MPITest, all_reduce_sum_arr_in_place)
 
     int n = comm.size();
     std::vector<int> loc_sum = { (comm.rank() * 2) + 1, (comm.rank() * 2) + 2 };
-    comm.all_reduce(loc_sum, op::sum<int>());
+    comm.all_reduce(loc_sum, op::sum<>());
 
     int gold0 = n * n;
     int gold1 = n * (n + 1);
@@ -710,7 +710,7 @@ TEST(MPITest, iall_reduce_min)
 
     int loc = (comm.rank() + 1) * 3;
     int glob;
-    auto rq1 = comm.iall_reduce(loc, glob, op::min<int>());
+    auto rq1 = comm.iall_reduce(loc, glob, op::min<>());
     wait(rq1);
 
     int gold = 3;
@@ -1204,7 +1204,7 @@ TEST(MPITest, scan_single)
     auto rank = comm.rank();
     std::vector<int> size = { 2, 3, 6, 4 };
     int offset = 0;
-    comm.scan(size[rank], offset, op::sum<int>());
+    comm.scan(size[rank], offset, op::sum<>());
     if (rank == 0)
         EXPECT_EQ(offset, 2);
     else if (rank == 1)
@@ -1233,7 +1233,7 @@ TEST(MPITest, scan_array)
         vals = { 4, 7 };
 
     std::vector<int> sum(2, 0);
-    comm.scan(vals, sum, op::sum<int>());
+    comm.scan(vals, sum, op::sum<>());
 
     if (rank == 0)
         EXPECT_THAT(sum, testing::ElementsAre(2, 3));
@@ -1254,7 +1254,7 @@ TEST(MPITest, exscan_single)
     auto rank = comm.rank();
     std::vector<int> size = { 2, 3, 6, 4 };
     int offset = 0;
-    comm.exscan(size[rank], offset, op::sum<int>());
+    comm.exscan(size[rank], offset, op::sum<>());
     if (rank == 0)
         EXPECT_EQ(offset, 0);
     else if (rank == 1)
@@ -1283,7 +1283,7 @@ TEST(MPITest, exscan_array)
         vals = { 4, 7 };
 
     std::vector<int> sum(2, 0);
-    comm.exscan(vals, sum, op::sum<int>());
+    comm.exscan(vals, sum, op::sum<>());
 
     if (rank == 0)
         EXPECT_THAT(sum, testing::ElementsAre(0, 0));
