@@ -59,6 +59,20 @@ TEST(MPITest, size_rank)
     EXPECT_EQ(comm.rank(), rank);
 }
 
+TEST(MPITest, tag_upper_bound)
+{
+    int * expected = nullptr;
+    int found = 0;
+    ASSERT_EQ(MPI_Comm_get_attr(MPI_COMM_WORLD, MPI_TAG_UB, static_cast<void *>(&expected), &found),
+              MPI_SUCCESS);
+    ASSERT_TRUE(found);
+    ASSERT_NE(expected, nullptr);
+
+    Communicator comm;
+    EXPECT_EQ(comm.tag_upper_bound(), *expected);
+    EXPECT_GE(comm.tag_upper_bound(), 32767);
+}
+
 TEST(MPITest, barrier)
 {
     Communicator comm;

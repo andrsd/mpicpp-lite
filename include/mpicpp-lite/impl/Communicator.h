@@ -46,6 +46,11 @@ public:
     /// @return Number of processes
     int size() const;
 
+    /// Return the maximum message tag supported by this communicator
+    ///
+    /// @return Maximum message tag value
+    int tag_upper_bound() const;
+
     ///
     Communicator create(const Group & group, Tag tag = {}) const;
 
@@ -775,6 +780,18 @@ Communicator::size() const
     int sz;
     MPI_Comm_size(this->comm_, &sz);
     return sz;
+}
+
+inline int
+Communicator::tag_upper_bound() const
+{
+    int * value = nullptr;
+    int found = 0;
+    MPI_CHECK_SELF(MPI_Comm_get_attr(this->comm_, MPI_TAG_UB, static_cast<void *>(&value), &found));
+    // The MPI standard guarantees MPI_TAG_UB is at least 32767.
+    if (!found || value == nullptr)
+        return 32767;
+    return *value;
 }
 
 inline Communicator
