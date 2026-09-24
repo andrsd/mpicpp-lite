@@ -1247,3 +1247,11 @@ TEST(MPITest, status)
     EXPECT_EQ(s.tag(), 0);
     EXPECT_EQ(s.source(), 0);
 }
+
+TEST(MPITest, get_attr_predefined)
+{
+    Communicator comm;
+    auto upper_bound = comm.attr<int>(tag_ub);
+    ASSERT_TRUE(upper_bound.has_value());
+    EXPECT_GE(upper_bound.value(), 32767);
+}

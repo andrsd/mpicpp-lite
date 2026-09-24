@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <cassert>
+#include <concepts>
 #include "Datatype.h"
 #include "Status.h"
 #include "Request.h"
@@ -18,8 +19,6 @@
 namespace mpicpp_lite {
 
 class CartesianCommunicator;
-
-class CommKey;
 
 /// Wrapper around `MPI_Comm`
 class Communicator {
@@ -687,6 +686,14 @@ public:
     /// @param op Reduce operation
     template <typename T, typename Op>
     void exscan(const T & in_value, T & out_value, Op op) const;
+
+    /// Retrieves attribute value by key
+    ///
+    /// @param key Key of the attribute to get
+    /// @return Attribute value, if found, otherwise `std::nullopt`
+    template <typename T>
+        requires std::copyable<T>
+    std::optional<T> attr(Key key) const;
 
     /// Abort all tasks in the group of this communicator
     ///
@@ -1541,6 +1548,20 @@ Communicator::exscan(const T & in_value, T & out_value, Op op) const
 }
 
 //
+
+template <typename T>
+    requires std::copyable<T>
+inline std::optional<T>
+Communicator::attr(Key key) const
+{
+    T * val = nullptr;
+    int flag = 0;
+    MPI_CHECK_SELF(MPI_Comm_get_attr(this->comm, key.value(), &val, &flag));
+    if (flag)
+        return *val;
+    else
+        return std::nullopt;
+}
 
 inline void
 Communicator::abort(int errcode) const
