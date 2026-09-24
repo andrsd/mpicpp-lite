@@ -710,6 +710,19 @@ public:
 
 protected:
     MPI_Comm comm;
+
+public:
+    static inline Key
+    create_key(void * extra_state = nullptr)
+    {
+        int keyval = MPI_KEYVAL_INVALID;
+        MPI_CHECK(MPI_Comm_create_keyval(MPI_COMM_NULL_COPY_FN,
+                                         MPI_COMM_NULL_DELETE_FN,
+                                         &keyval,
+                                         extra_state));
+        Environment::comm_key_vals.push_back(keyval);
+        return Key { keyval };
+    }
 };
 
 //
