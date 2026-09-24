@@ -695,6 +695,11 @@ public:
         requires std::copyable<T>
     std::optional<T> attr(Key key) const;
 
+    /// Stores attribute value associated with a key
+    template <typename T>
+        requires std::copyable<T>
+    void set_attr(Key key, const T & val);
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -1574,6 +1579,14 @@ Communicator::attr(Key key) const
         return *val;
     else
         return std::nullopt;
+}
+
+template <typename T>
+    requires std::copyable<T>
+inline void
+Communicator::set_attr(Key key, const T & val)
+{
+    MPI_CHECK_SELF(MPI_Comm_set_attr(this->comm, key.value(), const_cast<T *>(&val)));
 }
 
 inline void
