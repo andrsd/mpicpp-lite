@@ -21,9 +21,50 @@ namespace mpicpp_lite {
 
 class CartesianCommunicator;
 
+class CommKey;
+
 /// Wrapper around `MPI_Comm`
 class Communicator {
 public:
+    class Key {
+    public:
+        constexpr Key() : value_(0) {}
+        explicit constexpr Key(int tag) : value_(tag) {}
+
+        constexpr int
+        value() const
+        {
+            return this->value_;
+        }
+
+        constexpr bool
+        operator==(Key other) const
+        {
+            return this->value_ == other.value_;
+        }
+
+        constexpr bool
+        operator==(int other) const
+        {
+            return this->value_ == other;
+        }
+
+        constexpr bool
+        operator!=(Key other) const
+        {
+            return this->value_ != other.value_;
+        }
+
+        constexpr bool
+        operator!=(int other) const
+        {
+            return this->value_ != other;
+        }
+
+    private:
+        int value_;
+    };
+
     /// Create `MPI_COMM_WORLD` communicator
     Communicator();
 
@@ -747,6 +788,12 @@ private:
 };
 
 //
+
+constexpr Communicator::Key tag_ub { MPI_TAG_UB };
+[[deprecated]] constexpr Communicator::Key host { MPI_HOST };
+constexpr Communicator::Key io { MPI_IO };
+constexpr Communicator::Key wtime_is_global { MPI_WTIME_IS_GLOBAL };
+constexpr Communicator::Key keyval_invalid { MPI_KEYVAL_INVALID };
 
 inline Communicator::Communicator() : comm_(MPI_COMM_WORLD) {}
 
