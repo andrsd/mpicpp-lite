@@ -700,6 +700,11 @@ public:
         requires std::copyable<T>
     void set_attr(Key key, const T & val);
 
+    /// Deletes an attribute value associated with a key on a communicator
+    ///
+    /// @param key Key of the attribute to delete
+    void delete_attr(Key key);
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -1587,6 +1592,12 @@ inline void
 Communicator::set_attr(Key key, const T & val)
 {
     MPI_CHECK_SELF(MPI_Comm_set_attr(this->comm, key.value(), const_cast<T *>(&val)));
+}
+
+inline void
+Communicator::delete_attr(Key key)
+{
+    MPI_CHECK_SELF(MPI_Comm_delete_attr(this->comm, key.value()));
 }
 
 inline void
