@@ -56,9 +56,12 @@ public:
 private:
     /// User-registered datatypes
     static inline std::vector<MPI_Datatype> user_datatypes_;
+    /// User-registered
+    static inline std::vector<int> comm_key_vals_;
 
     template <typename T>
     friend MPI_Datatype register_mpi_datatype();
+    friend class Communicator;
 };
 
 inline Environment::Environment() : initialized_(false)
@@ -157,6 +160,9 @@ Environment::destroy()
     for (auto & dt : user_datatypes_)
         MPI_CHECK(MPI_Type_free(&dt));
     user_datatypes_.clear();
+    for (auto & kv : comm_key_vals_)
+        MPI_CHECK(MPI_Comm_free_keyval(&kv));
+    comm_key_vals_.clear();
 }
 
 } // namespace mpicpp_lite

@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <cassert>
+#include <concepts>
 #include "Datatype.h"
 #include "Status.h"
 #include "Request.h"
@@ -24,6 +25,45 @@ class CartesianCommunicator;
 /// Wrapper around `MPI_Comm`
 class Communicator {
 public:
+    class Key {
+    public:
+        constexpr Key() : value_(0) {}
+        explicit constexpr Key(int tag) : value_(tag) {}
+
+        constexpr int
+        value() const
+        {
+            return this->value_;
+        }
+
+        constexpr bool
+        operator==(Key other) const
+        {
+            return this->value_ == other.value_;
+        }
+
+        constexpr bool
+        operator==(int other) const
+        {
+            return this->value_ == other;
+        }
+
+        constexpr bool
+        operator!=(Key other) const
+        {
+            return this->value_ != other.value_;
+        }
+
+        constexpr bool
+        operator!=(int other) const
+        {
+            return this->value_ != other;
+        }
+
+    private:
+        int value_;
+    };
+
     /// Create `MPI_COMM_WORLD` communicator
     Communicator();
 
@@ -690,6 +730,24 @@ public:
     template <typename T, typename Op>
     void exscan(const T & in_value, T & out_value, Op op) const;
 
+    /// Retrieves attribute value by key
+    ///
+    /// @param key Key of the attribute to get
+    /// @return Attribute value, if found, otherwise `std::nullopt`
+    template <typename T>
+        requires std::copyable<T>
+    std::optional<T> attr(Key key) const;
+
+    /// Stores attribute value associated with a key
+    template <typename T>
+        requires std::copyable<T>
+    void set_attr(Key key, const T & val);
+
+    /// Deletes an attribute value associated with a key on a communicator
+    ///
+    /// @param key Key of the attribute to delete
+    void delete_attr(Key key);
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -705,6 +763,19 @@ public:
 
 protected:
     MPI_Comm comm_;
+
+public:
+    static inline Key
+    create_key(void * extra_state = nullptr)
+    {
+        int keyval = MPI_KEYVAL_INVALID;
+        MPI_CHECK(MPI_Comm_create_keyval(MPI_COMM_NULL_COPY_FN,
+                                         MPI_COMM_NULL_DELETE_FN,
+                                         &keyval,
+                                         extra_state));
+        Environment::comm_key_vals_.push_back(keyval);
+        return Key { keyval };
+    }
 };
 
 //
@@ -747,6 +818,12 @@ private:
 };
 
 //
+
+constexpr Communicator::Key tag_ub { MPI_TAG_UB };
+[[deprecated]] constexpr Communicator::Key host { MPI_HOST };
+constexpr Communicator::Key io { MPI_IO };
+constexpr Communicator::Key wtime_is_global { MPI_WTIME_IS_GLOBAL };
+constexpr Communicator::Key keyval_invalid { MPI_KEYVAL_INVALID };
 
 inline Communicator::Communicator() : comm_(MPI_COMM_WORLD) {}
 
@@ -1640,6 +1717,34 @@ Communicator::exscan(const T & in_value, T & out_value, Op op) const
 }
 
 //
+
+template <typename T>
+    requires std::copyable<T>
+inline std::optional<T>
+Communicator::attr(Key key) const
+{
+    T * val = nullptr;
+    int flag = 0;
+    MPI_CHECK_SELF(MPI_Comm_get_attr(this->comm_, key.value(), &val, &flag));
+    if (flag)
+        return *val;
+    else
+        return std::nullopt;
+}
+
+template <typename T>
+    requires std::copyable<T>
+inline void
+Communicator::set_attr(Key key, const T & val)
+{
+    MPI_CHECK_SELF(MPI_Comm_set_attr(this->comm_, key.value(), const_cast<T *>(&val)));
+}
+
+inline void
+Communicator::delete_attr(Key key)
+{
+    MPI_CHECK_SELF(MPI_Comm_delete_attr(this->comm_, key.value()));
+}
 
 inline void
 Communicator::abort(int errcode) const
