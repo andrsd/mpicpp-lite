@@ -1247,3 +1247,53 @@ TEST(MPITest, status)
     EXPECT_EQ(s.tag(), 0);
     EXPECT_EQ(s.source(), 0);
 }
+
+TEST(MPITest, get_attr_predefined)
+{
+    Communicator comm;
+    auto upper_bound = comm.attr<int>(tag_ub);
+    ASSERT_TRUE(upper_bound.has_value());
+    // See MPI standard, section 7.1.1.1 Tag values
+    EXPECT_GE(upper_bound.value(), 32767);
+}
+
+TEST(MPITest, attributes)
+{
+    Communicator comm;
+
+    auto k1 = Communicator::create_key();
+    int my_value = 1234;
+    comm.set_attr(k1, my_value);
+
+    {
+        auto existing_value = comm.attr<int>(k1);
+        ASSERT_TRUE(existing_value.has_value());
+        EXPECT_EQ(existing_value.value(), 1234);
+    }
+
+    comm.delete_attr(k1);
+    {
+        auto non_existing_value = comm.attr<int>(k1);
+        ASSERT_FALSE(non_existing_value.has_value());
+    }
+
+    // dynamically allocated attribute
+    {
+        auto k2 = Communicator::create_key();
+
+        auto * data = new double[3];
+        data[0] = 1;
+        data[1] = 2;
+        data[2] = 3;
+
+        comm.set_attr(k2, data);
+        auto existing_value = comm.attr<double *>(k2);
+        ASSERT_TRUE(existing_value.has_value());
+        auto d = existing_value.value();
+        EXPECT_DOUBLE_EQ(d[0], 1);
+        EXPECT_DOUBLE_EQ(d[1], 2);
+        EXPECT_DOUBLE_EQ(d[2], 3);
+
+        delete[] data;
+    }
+}
