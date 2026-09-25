@@ -1165,14 +1165,18 @@ TEST(MPITest, all_to_all_vec)
     std::vector<int> out;
     comm.all_to_all(in_vals, out);
 
-    if (comm.rank() == 0)
+    if (comm.rank() == 0) {
         EXPECT_THAT(out, ElementsAre(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-    else if (comm.rank() == 1)
+    }
+    else if (comm.rank() == 1) {
         EXPECT_THAT(out, ElementsAre(2, 4, 6, 8));
-    else if (comm.rank() == 2)
+    }
+    else if (comm.rank() == 2) {
         EXPECT_THAT(out, ElementsAre(-10, -11, -12, -13, -14, -15, -16, -17));
-    else if (comm.rank() == 3)
+    }
+    else if (comm.rank() == 3) {
         EXPECT_THAT(out, ElementsAre(100, 200));
+    }
 }
 
 TEST(MPITest, split)
@@ -1214,14 +1218,18 @@ TEST(MPITest, scan_single)
     std::vector<int> size = { 2, 3, 6, 4 };
     int offset = 0;
     comm.scan(size[rank], offset, op::sum<>());
-    if (rank == 0)
+    if (rank == 0) {
         EXPECT_EQ(offset, 2);
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_EQ(offset, 5);
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_EQ(offset, 11);
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_EQ(offset, 15);
+    }
 }
 
 TEST(MPITest, scan_array)
@@ -1244,14 +1252,18 @@ TEST(MPITest, scan_array)
     std::vector<int> sum(2, 0);
     comm.scan(vals, sum, op::sum<>());
 
-    if (rank == 0)
+    if (rank == 0) {
         EXPECT_THAT(sum, testing::ElementsAre(2, 3));
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_THAT(sum, testing::ElementsAre(3, 8));
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_THAT(sum, testing::ElementsAre(9, 17));
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_THAT(sum, testing::ElementsAre(13, 24));
+    }
 }
 
 TEST(MPITest, exscan_single)
@@ -1264,14 +1276,18 @@ TEST(MPITest, exscan_single)
     std::vector<int> size = { 2, 3, 6, 4 };
     int offset = 0;
     comm.exscan(size[rank], offset, op::sum<>());
-    if (rank == 0)
+    if (rank == 0) {
         EXPECT_EQ(offset, 0);
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_EQ(offset, 2);
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_EQ(offset, 5);
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_EQ(offset, 11);
+    }
 }
 
 TEST(MPITest, exscan_array)
@@ -1294,14 +1310,18 @@ TEST(MPITest, exscan_array)
     std::vector<int> sum(2, 0);
     comm.exscan(vals, sum, op::sum<>());
 
-    if (rank == 0)
+    if (rank == 0) {
         EXPECT_THAT(sum, testing::ElementsAre(0, 0));
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_THAT(sum, testing::ElementsAre(2, 3));
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_THAT(sum, testing::ElementsAre(3, 8));
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_THAT(sum, testing::ElementsAre(9, 17));
+    }
 }
 
 //
