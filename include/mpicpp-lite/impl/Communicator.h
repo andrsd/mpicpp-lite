@@ -748,6 +748,16 @@ public:
     /// @param key Key of the attribute to delete
     void delete_attr(Key key);
 
+    /// Set the print name for an MPI communicator
+    ///
+    /// @param name The character string which is remembered as the name
+    void set_name(const char * name) const;
+
+    /// Get the print name associated with the MPI communicator
+    ///
+    /// @return The name of the communicator
+    std::string name() const;
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -1744,6 +1754,21 @@ inline void
 Communicator::delete_attr(Key key)
 {
     MPI_CHECK_SELF(MPI_Comm_delete_attr(this->comm_, key.value()));
+}
+
+inline void
+Communicator::set_name(const char * name) const
+{
+    MPI_CHECK_SELF(MPI_Comm_set_name(this->comm_, name));
+}
+
+inline std::string
+Communicator::name() const
+{
+    char nm[MPI_MAX_OBJECT_NAME];
+    int len;
+    MPI_CHECK_SELF(MPI_Comm_get_name(this->comm_, nm, &len));
+    return std::string(nm);
 }
 
 inline void

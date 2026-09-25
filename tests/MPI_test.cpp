@@ -11,6 +11,15 @@ TEST(MPITest, duplicate)
     EXPECT_EQ(comm.size(), dup.size());
 }
 
+TEST(MPITest, name)
+{
+    Communicator comm;
+    auto dup = comm.duplicate();
+    dup.set_name("test-comm");
+    EXPECT_EQ(dup.name(), "test-comm");
+    dup.free();
+}
+
 TEST(MPITest, get_version)
 {
     auto [major, minor] = mpicpp_lite::version();
