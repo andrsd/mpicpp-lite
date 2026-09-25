@@ -46,6 +46,11 @@ public:
     /// @return Level of thread support provided
     static ThreadSupport query_thread();
 
+    /// Determine if the calling thread is the main thread
+    ///
+    /// @return `true` if the calling thread is the main thread, `false` otherwise
+    static bool is_thread_main();
+
 private:
     /// Indicates if the environment is initialized
     bool initialized_;
@@ -123,6 +128,14 @@ Environment::query_thread()
     int prov;
     MPI_CHECK(MPI_Query_thread(&prov));
     return static_cast<ThreadSupport>(prov);
+}
+
+inline bool
+Environment::is_thread_main()
+{
+    int flag;
+    MPI_CHECK(MPI_Is_thread_main(&flag));
+    return flag != 0;
 }
 
 //
