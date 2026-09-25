@@ -5,8 +5,9 @@ include(GoogleTest)
 
 add_executable(${PROJECT_NAME}
     CartesianCommunicator_test.cpp
-    Exception_test.cpp
     Datatype_test.cpp
+    Environment_test.cpp
+    Exception_test.cpp
     Group_test.cpp
     Info_test.cpp
     MPI_test.cpp
