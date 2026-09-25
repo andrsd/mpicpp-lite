@@ -106,7 +106,7 @@ template <>
 struct logical_and<CustomEnum> : public UserOp<logical_and<CustomEnum>, CustomEnum> {
 public:
     CustomEnum
-    operator()(const CustomEnum & x, const CustomEnum & y) const
+    operator()(const CustomEnum &, const CustomEnum &) const
     {
         return CustomEnum::RED;
     }
@@ -116,7 +116,7 @@ template <>
 struct logical_or<CustomEnum> : public UserOp<logical_or<CustomEnum>, CustomEnum> {
 public:
     CustomEnum
-    operator()(const CustomEnum & x, const CustomEnum & y) const
+    operator()(const CustomEnum &, const CustomEnum &) const
     {
         return CustomEnum::BLUE;
     }

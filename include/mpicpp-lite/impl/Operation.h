@@ -238,7 +238,7 @@ struct logical_xor<void> {
 template <typename T = void>
 struct replace {
     T
-    operator()(const T & x, const T & y) const
+    operator()(const T & x, const T & /*y*/) const
     {
         return x;
     }
@@ -249,7 +249,7 @@ template <>
 struct replace<void> {
     template <typename U, typename V>
     constexpr auto
-    operator()(U && x, V && y) const -> decltype(std::forward<U>(x))
+    operator()(U && x, V && /*y*/) const -> decltype(std::forward<U>(x))
     {
         return std::forward<U>(x);
     }

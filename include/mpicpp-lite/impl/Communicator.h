@@ -1294,8 +1294,8 @@ Communicator::gather(const std::vector<T> & in_values,
                      const std::vector<int> & out_offsets,
                      int root) const
 {
-    assert(out_counts.size() == size());
-    assert(out_offsets.size() == size());
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
     int n_out_vals = 0;
     for (std::size_t i = 0; i < out_counts.size(); i++)
         n_out_vals += out_counts[i];
@@ -1344,7 +1344,7 @@ Communicator::all_gather(const std::vector<T> & in_values, std::vector<T> & out_
         all_gather(sz, n);
         std::vector<int> offsets(size());
         offsets[0] = 0;
-        for (int i = 0; i < n.size() - 1; i++)
+        for (std::size_t i = 0; i < n.size() - 1; i++)
             offsets[i + 1] = offsets[i] + n[i];
         all_gather(in_values, out_values, n, offsets);
     }
@@ -1357,8 +1357,8 @@ Communicator::all_gather(const std::vector<T> & in_values,
                          const std::vector<int> & out_counts,
                          const std::vector<int> & out_offsets) const
 {
-    assert(out_counts.size() == size());
-    assert(out_offsets.size() == size());
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
     int n_out_vals = 0;
     for (std::size_t i = 0; i < out_counts.size(); i++)
         n_out_vals += out_counts[i];
@@ -1570,7 +1570,7 @@ template <typename T>
 inline void
 Communicator::all_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const
 {
-    assert(in_values.size() == size());
+    assert(static_cast<int>(in_values.size()) == size());
     out_values.resize(size());
     all_to_all(in_values.data(), 1, out_values.data(), 1);
 }
@@ -1617,10 +1617,10 @@ Communicator::all_to_all(const std::vector<T> & in_values,
                          const std::vector<int> & out_counts,
                          const std::vector<int> & out_offsets) const
 {
-    assert(in_counts.size() == size());
-    assert(in_offsets.size() == size());
-    assert(out_counts.size() == size());
-    assert(out_offsets.size() == size());
+    assert(static_cast<int>(in_counts.size()) == size());
+    assert(static_cast<int>(in_offsets.size()) == size());
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
     int n_receive_vals = 0;
     for (std::size_t i = 0; i < out_counts.size(); i++)
         n_receive_vals += out_counts[i];

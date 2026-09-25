@@ -146,7 +146,7 @@ TEST(MPITest, send_recv_arr_int)
             auto status = comm.recv(i, tag, arr);
             auto sz = arr.size();
             EXPECT_EQ(sz, i);
-            for (int j = 0; j < sz; j++)
+            for (std::size_t j = 0; j < sz; j++)
                 EXPECT_EQ(arr[j], 2 * j);
             EXPECT_EQ(status.source(), i);
             EXPECT_EQ(status.tag(), tag);
@@ -287,7 +287,7 @@ TEST(MPITest, gather)
     std::vector<int> vals;
     comm.gather(number, vals, 0);
     if (comm.rank() == 0) {
-        for (std::size_t i = 0; i < comm.size(); i++)
+        for (int i = 0; i < comm.size(); i++)
             EXPECT_EQ(vals[i], i * 5);
     }
 }
@@ -302,7 +302,7 @@ TEST(MPITest, gather_n)
     std::vector<int> vals;
     comm.gather(number, 2, vals, 0);
     if (comm.rank() == 0) {
-        for (std::size_t i = 0; i < comm.size(); i++) {
+        for (int i = 0; i < comm.size(); i++) {
             EXPECT_EQ(vals[2 * i], i * 5);
             EXPECT_EQ(vals[2 * i + 1], i * 7);
         }
@@ -469,7 +469,7 @@ TEST(MPITest, reduce_sum_arr)
 
     int n = comm.size();
     std::vector<int> loc_sum(3);
-    for (int i = 0; i < loc_sum.size(); i++)
+    for (std::size_t i = 0; i < loc_sum.size(); i++)
         loc_sum[i] = (comm.rank() * loc_sum.size()) + i;
     std::vector<int> glob_sum;
     comm.reduce(loc_sum, glob_sum, op::sum<>(), 0);
@@ -507,7 +507,7 @@ TEST(MPITest, reduce_sum_arr_in_place)
 
     int n = comm.size();
     std::vector<int> loc_sum(3);
-    for (int i = 0; i < loc_sum.size(); i++)
+    for (std::size_t i = 0; i < loc_sum.size(); i++)
         loc_sum[i] = (comm.rank() * loc_sum.size()) + i;
     comm.reduce(loc_sum, op::sum<>(), 0);
 
@@ -1128,12 +1128,12 @@ TEST(MPITest, all_to_all_1)
         return;
 
     std::vector<int> in_vals(comm.size());
-    for (int i = 0; i < in_vals.size(); i++)
+    for (std::size_t i = 0; i < in_vals.size(); i++)
         in_vals[i] = (10 * comm.rank()) + i;
     std::vector<int> out_vals;
     comm.all_to_all(in_vals, out_vals);
 
-    for (int i = 0; i < out_vals.size(); i++)
+    for (std::size_t i = 0; i < out_vals.size(); i++)
         EXPECT_EQ(out_vals[i], (10 * i) + comm.rank());
 }
 

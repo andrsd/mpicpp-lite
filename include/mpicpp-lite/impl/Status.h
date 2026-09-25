@@ -55,7 +55,7 @@ private:
     MPI_Status status_;
 };
 
-inline Status::Status() : status_({ 0 }) {}
+inline Status::Status() : status_({ 0, 0, 0, 0, 0 }) {}
 
 inline int
 Status::source() const
