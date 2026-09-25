@@ -192,8 +192,9 @@ TEST(DatatypeTest, custom_op_reduce)
 
     CustomEnum f = CustomEnum::GREEN;
     comm.reduce(e, f, mpi::op::logical_and<>(), 0);
-    if (comm.rank() == 0)
+    if (comm.rank() == 0) {
         EXPECT_EQ(f, CustomEnum::RED);
+    }
 }
 
 TEST(DatatypeTest, custom_op_all_reduce)

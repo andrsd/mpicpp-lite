@@ -98,7 +98,7 @@ jobs:
         if: always()
         with:
           paths: ${{ github.workspace }}/build/gtest-results-*.xml
-          show: fail,skip
+          show: "fail,skip"
 
       - name: Upload test results to codecov.io
         if: ${{ !cancelled() }}

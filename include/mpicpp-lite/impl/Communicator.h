@@ -1133,6 +1133,7 @@ Communicator::imrecv(T * values, int n, Message & message)
 {
     Request request;
     MPI_CHECK_SELF(MPI_Imrecv(values, n, mpi_datatype<T>(), &message.native(), &request.native()));
+    return request;
 }
 
 template <typename T, typename A>
