@@ -7,6 +7,7 @@
 #include "Error.h"
 #include <vector>
 #include <tuple>
+#include <string>
 
 namespace mpicpp_lite {
 
@@ -152,6 +153,18 @@ version()
     int version, subversion;
     MPI_CHECK(MPI_Get_version(&version, &subversion));
     return std::make_tuple(version, subversion);
+}
+
+/// Get the name of the processor
+///
+/// @return The name of the processor
+inline std::string
+processor_name()
+{
+    char name[MPI_MAX_PROCESSOR_NAME];
+    int len;
+    MPI_CHECK(MPI_Get_processor_name(name, &len));
+    return std::string(name);
 }
 
 /// Creates a division of processors in a cartesian grid
