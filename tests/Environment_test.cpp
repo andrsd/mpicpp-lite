@@ -14,3 +14,9 @@ TEST(EnvironmentTest, basic)
                 thread_level == ThreadSupport::SERIALIZED ||
                 thread_level == ThreadSupport::MULTIPLE);
 }
+
+TEST(EnvironmentTest, processor_name)
+{
+    auto name = mpicpp_lite::processor_name();
+    EXPECT_FALSE(name.empty());
+}
