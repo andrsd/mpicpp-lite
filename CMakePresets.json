@@ -27,6 +27,20 @@
                 "MPICPP_LITE_BUILD_TESTS": "OFF",
                 "MPICPP_LITE_CODE_COVERAGE": "OFF"
             }
+        },
+        {
+            "name": "ci",
+            "displayName": "CI",
+            "generator": "Unix Makefiles",
+            "binaryDir": "build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_FLAGS": "-Wall -Wextra",
+                "CMAKE_C_FLAGS": "-Wall -Wextra",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "MPICPP_LITE_BUILD_TESTS": "ON",
+                "MPICPP_LITE_CODE_COVERAGE": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -41,12 +55,21 @@
             "displayName": "Release Build",
             "configurePreset": "release",
             "configuration": "Release"
+        },
+        {
+            "name": "ci",
+            "displayName": "CI Build",
+            "configurePreset": "ci"
         }
     ],
     "testPresets": [
         {
             "name": "debug",
             "configurePreset": "debug"
+        },
+        {
+            "name": "ci",
+            "configurePreset": "ci"
         }
     ]
 }

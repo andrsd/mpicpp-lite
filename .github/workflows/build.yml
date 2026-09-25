@@ -62,14 +62,12 @@ jobs:
 
       - name: Configure
         run: |
-          cmake -S ${{ github.workspace }} -B ${{ github.workspace }}/build \
+          cmake --preset ci \
             -DGCOV_PATH=`which x86_64-conda-linux-gnu-gcov` \
-            -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
-            -DMPICPP_LITE_BUILD_TESTS=YES \
-            -DMPICPP_LITE_CODE_COVERAGE=YES
+            -DCMAKE_BUILD_TYPE=${{ matrix.build }}
 
       - name: Build
-        run: cmake --build ${{ github.workspace }}/build
+        run: cmake --build --preset ci
 
       - name: "Run tests: mpi-1"
         run: |
