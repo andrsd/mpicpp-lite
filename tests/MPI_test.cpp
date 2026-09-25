@@ -1,5 +1,6 @@
 #include "gmock/gmock.h"
 #include "mpicpp-lite/mpicpp-lite.h"
+#include <numeric>
 
 using namespace mpicpp_lite;
 using namespace testing;
@@ -1039,7 +1040,12 @@ TEST(MPITest, test_any)
 
         int timeout = 2;
         while (timeout > 0) {
-            if (test_any(reqs)) {
+            if (auto r = test_any(reqs)) {
+                for (int i = 0; i < n; i++) {
+                    if (i != r->index) {
+                        wait(reqs[i]);
+                    }
+                }
                 SUCCEED();
                 return;
             }
@@ -1072,7 +1078,7 @@ TEST(MPITest, test_some)
         for (int i = 0; i < n; i++)
             reqs[i] = comm.irecv(i + 1, tag, vals[i]);
 
-        std::vector<bool> finished(n - 1, false);
+        std::vector<bool> finished(n, false);
         while (true) {
             std::vector<int> indices;
             if (test_some(reqs, indices)) {
@@ -1107,7 +1113,7 @@ TEST(MPITest, wait_some)
         for (int i = 0; i < n; i++)
             reqs[i] = comm.irecv(i + 1, tag, vals[i]);
 
-        std::vector<bool> finished(n - 1, false);
+        std::vector<bool> finished(n, false);
         while (true) {
             std::vector<int> indices;
             if (wait_some(reqs, indices)) {
