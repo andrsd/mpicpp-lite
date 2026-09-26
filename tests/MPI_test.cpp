@@ -47,6 +47,18 @@ TEST(MPITest, info)
     dup.free();
 }
 
+TEST(MPITest, duplicate_with_info)
+{
+    Communicator comm;
+    Info info;
+    info.set("key1", "val1");
+
+    auto dup = comm.duplicate(info);
+    EXPECT_EQ(comm.size(), dup.size());
+    EXPECT_TRUE(dup.is_valid());
+    dup.free();
+}
+
 TEST(MPITest, get_version)
 {
     auto [major, minor] = mpicpp_lite::version();
