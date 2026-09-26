@@ -6,6 +6,7 @@
 #include "mpi.h"
 #include <vector>
 #include <map>
+#include <utility>
 #include <cassert>
 #include <concepts>
 #include "Datatype.h"
@@ -107,6 +108,17 @@ public:
     /// @param info Info object containing the hints to associate with the new communicator
     /// @return A new communicator over the same group as comm but with a new context.
     Communicator duplicate(const Info & info) const;
+
+    /// Non-blocking duplication of an existing communicator
+    ///
+    /// @return Pair with the new communicator and the request associated with the duplication
+    std::pair<Communicator, Request> iduplicate() const;
+
+    /// Non-blocking duplication of an existing communicator with info hints
+    ///
+    /// @param info Info object containing the hints to associate with the new communicator
+    /// @return Pair with the new communicator and the request associated with the duplication
+    std::pair<Communicator, Request> iduplicate(const Info & info) const;
 
     /// Accesses the group associated with given communicator
     ///
@@ -927,6 +939,25 @@ Communicator::duplicate(const Info & info) const
     MPI_Comm new_comm;
     MPI_CHECK_SELF(MPI_Comm_dup_with_info(this->comm_, info.native(), &new_comm));
     return { new_comm };
+}
+
+inline std::pair<Communicator, Request>
+Communicator::iduplicate() const
+{
+    Communicator new_comm;
+    Request request;
+    MPI_CHECK_SELF(MPI_Comm_idup(this->comm_, &new_comm.comm_, &request.native()));
+    return { new_comm, request };
+}
+
+inline std::pair<Communicator, Request>
+Communicator::iduplicate(const Info & info) const
+{
+    Communicator new_comm;
+    Request request;
+    MPI_CHECK_SELF(
+        MPI_Comm_idup_with_info(this->comm_, info.native(), &new_comm.comm_, &request.native()));
+    return { new_comm, request };
 }
 
 inline Group
