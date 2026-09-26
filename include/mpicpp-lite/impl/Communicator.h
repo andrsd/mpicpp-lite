@@ -758,6 +758,20 @@ public:
     /// @return The name of the communicator
     std::string name() const;
 
+    enum ComparisonResult {
+        IDENTICAL = MPI_IDENT,
+        CONGRUENT = MPI_CONGRUENT,
+        SIMILAR = MPI_SIMILAR,
+        UNEQUAL = MPI_UNEQUAL,
+    };
+
+    /// Compares two communicators
+    ///
+    /// @param c1 First communicator
+    /// @param c2 Second communicator
+    /// @return Comparison result
+    static ComparisonResult compare(const Communicator & c1, const Communicator & c2);
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -1770,6 +1784,14 @@ Communicator::name() const
     int len;
     MPI_CHECK_SELF(MPI_Comm_get_name(this->comm_, nm, &len));
     return std::string(nm);
+}
+
+inline Communicator::ComparisonResult
+Communicator::compare(const Communicator & c1, const Communicator & c2)
+{
+    int result;
+    MPI_CHECK(MPI_Comm_compare(c1.comm_, c2.comm_, &result));
+    return static_cast<ComparisonResult>(result);
 }
 
 inline void

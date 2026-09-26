@@ -21,6 +21,16 @@ TEST(MPITest, name)
     dup.free();
 }
 
+TEST(MPITest, compare)
+{
+    Communicator comm;
+    EXPECT_EQ(Communicator::compare(comm, comm), Communicator::IDENTICAL);
+
+    auto dup = comm.duplicate();
+    EXPECT_EQ(Communicator::compare(comm, dup), Communicator::CONGRUENT);
+    dup.free();
+}
+
 TEST(MPITest, get_version)
 {
     auto [major, minor] = mpicpp_lite::version();
