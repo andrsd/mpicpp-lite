@@ -160,6 +160,11 @@ public:
     /// Completes an RMA operations begun after an `start`
     void complete() const;
 
+    /// Synchronize RMA operations on a window
+    ///
+    /// @param assert Assertion hints
+    void fence(int assert = 0) const;
+
     void free();
 
     /// Start an RMA exposure epoch
@@ -412,6 +417,12 @@ Window::complete() const
     MPI_CHECK(MPI_Win_complete(this->win_));
 }
 
+inline void
+Window::fence(int assert) const
+{
+    MPI_CHECK(MPI_Win_fence(assert, this->win_));
+}
+
 inline std::string
 Window::name() const
 {
@@ -459,7 +470,8 @@ Window::sync() const
     MPI_CHECK(MPI_Win_sync(this->win_));
 }
 
-inline Window::operator bool() const
+inline Window::
+operator bool() const
 {
     return is_valid();
 }

@@ -83,3 +83,15 @@ TEST(WindowTest, custom_attributes)
 
     win.free();
 }
+
+TEST(WindowTest, fence)
+{
+    Communicator comm;
+    auto [win, base] = Window::allocate<int>(5, Info {}, comm);
+
+    win.fence();
+    win.fence(MPI_MODE_NOPRECEDE);
+    win.fence(MPI_MODE_NOSUCCEED);
+
+    win.free();
+}
