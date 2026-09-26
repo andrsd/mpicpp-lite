@@ -82,3 +82,11 @@ TEST(InfoTest, get_env)
     // So, that's why we test this.
     SUCCEED();
 }
+
+TEST(InfoTest, hw_resource_info)
+{
+#if (MPI_VERSION >= 4)
+    auto info = hw_resource_info();
+    EXPECT_TRUE(info.is_valid());
+#endif
+}
