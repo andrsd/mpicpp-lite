@@ -10,6 +10,9 @@
 #include "Group.h"
 #include "Info.h"
 #include <vector>
+#include <optional>
+#include <utility>
+#include <type_traits>
 #include <span>
 
 namespace mpicpp_lite {
@@ -22,8 +25,74 @@ enum class Lock {
 
 class Window {
 public:
+    class Key {
+    public:
+        constexpr Key() : value_(0) {}
+        explicit constexpr Key(int val) : value_(val) {}
+
+        constexpr int
+        value() const
+        {
+            return this->value_;
+        }
+
+        constexpr bool
+        operator==(Key other) const
+        {
+            return this->value_ == other.value_;
+        }
+
+        constexpr bool
+        operator==(int other) const
+        {
+            return this->value_ == other;
+        }
+
+        constexpr bool
+        operator!=(Key other) const
+        {
+            return this->value_ != other.value_;
+        }
+
+        constexpr bool
+        operator!=(int other) const
+        {
+            return this->value_ != other;
+        }
+
+    private:
+        int value_;
+    };
+
     Window();
-    ~Window();
+
+    /// Set new configuration hints for an RMA window
+    ///
+    /// @param info Info object containing the new hints
+    void set_info(const Info & info) const;
+
+    /// Get active hints associated with an RMA window
+    ///
+    /// @return Info object containing the hints
+    Info info() const;
+
+    /// Retrieves attribute value by key on a window
+    ///
+    /// @param key Key of the attribute to get
+    /// @return Attribute value, if found, otherwise `std::nullopt`
+    template <typename T>
+        requires std::copyable<T>
+    std::optional<T> attr(Key key) const;
+
+    /// Stores attribute value associated with a key on a window
+    template <typename T>
+        requires std::copyable<T>
+    void set_attr(Key key, const T & val) const;
+
+    /// Deletes an attribute value associated with a key on a window
+    ///
+    /// @param key Key of the attribute to delete
+    void delete_attr(Key key) const;
 
     /// Attach memory to a dynamic window
     ///
@@ -91,6 +160,11 @@ public:
     /// Completes an RMA operations begun after an `start`
     void complete() const;
 
+    /// Synchronize RMA operations on a window
+    ///
+    /// @param assert Assertion hints
+    void fence(int assert = 0) const;
+
     void free();
 
     /// Start an RMA exposure epoch
@@ -110,6 +184,12 @@ public:
 
     /// Synchronize public and private copies of the given window
     void sync() const;
+
+    /// Check if window is valid
+    operator bool() const;
+
+    /// Check if window is valid
+    bool is_valid() const;
 
     /// Test whether an RMA exposure epoch has completed
     ///
@@ -185,6 +265,39 @@ private:
     MPI_Win win_;
 
 public:
+    /// Creates a keyval for RMA windows
+    static inline Key
+    create_key(void * extra_state = nullptr)
+    {
+        int keyval = MPI_KEYVAL_INVALID;
+        MPI_CHECK(MPI_Win_create_keyval(MPI_WIN_NULL_COPY_FN,
+                                        MPI_WIN_NULL_DELETE_FN,
+                                        &keyval,
+                                        extra_state));
+        Environment::win_key_vals_.push_back(keyval);
+        return Key { keyval };
+    }
+
+    /// Allocate memory and create an MPI RMA window
+    ///
+    /// @param size Size of the window in bytes
+    /// @param disp_unit Displacement unit for window, in bytes
+    /// @param info Info object containing hints
+    /// @param comm Communicator
+    /// @return Pair containing the allocated window and the base pointer to the allocated memory
+    static std::pair<Window, void *>
+    allocate(MPI_Aint size, int disp_unit, Info info, MPI_Comm comm);
+
+    /// Allocate memory and create an MPI RMA window for a specific type
+    ///
+    /// @tparam T Type of elements to allocate
+    /// @param n Number of elements to allocate
+    /// @param info Info object containing hints
+    /// @param comm Communicator
+    /// @return Pair containing the allocated window and the typed pointer to the allocated memory
+    template <typename T>
+    static std::pair<Window, T *> allocate(MPI_Aint n, Info info, MPI_Comm comm);
+
     static Window create(void * base, MPI_Aint size, int disp_unit, Info info, MPI_Comm comm);
 
     template <typename T>
@@ -194,12 +307,6 @@ public:
 };
 
 inline Window::Window() : win_(MPI_WIN_NULL) {}
-
-inline Window::~Window()
-{
-    if (win_ != MPI_WIN_NULL)
-        free();
-}
 
 inline void
 Window::attach(void * base, MPI_Aint size) const
@@ -310,6 +417,12 @@ Window::complete() const
     MPI_CHECK(MPI_Win_complete(this->win_));
 }
 
+inline void
+Window::fence(int assert) const
+{
+    MPI_CHECK(MPI_Win_fence(assert, this->win_));
+}
+
 inline std::string
 Window::name() const
 {
@@ -355,6 +468,18 @@ inline void
 Window::sync() const
 {
     MPI_CHECK(MPI_Win_sync(this->win_));
+}
+
+inline Window::
+operator bool() const
+{
+    return is_valid();
+}
+
+inline bool
+Window::is_valid() const
+{
+    return this->win_ != MPI_WIN_NULL;
 }
 
 inline Window
@@ -447,5 +572,76 @@ Window::accumulate(const T * origin_addr,
                                  op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op(),
                                  this->win_));
 }
+
+inline void
+Window::set_info(const Info & info) const
+{
+    MPI_CHECK(MPI_Win_set_info(this->win_, info.native()));
+}
+
+inline Info
+Window::info() const
+{
+    MPI_Info info;
+    MPI_CHECK(MPI_Win_get_info(this->win_, &info));
+    return Info(info);
+}
+
+template <typename T>
+    requires std::copyable<T>
+inline std::optional<T>
+Window::attr(Key key) const
+{
+    void * val = nullptr;
+    int flag = 0;
+    MPI_CHECK(MPI_Win_get_attr(this->win_, key.value(), &val, &flag));
+    if (flag) {
+        if constexpr (std::is_pointer_v<T>) {
+            return reinterpret_cast<T>(val);
+        }
+        else {
+            return *reinterpret_cast<T *>(val);
+        }
+    }
+    else
+        return std::nullopt;
+}
+
+template <typename T>
+    requires std::copyable<T>
+inline void
+Window::set_attr(Key key, const T & val) const
+{
+    MPI_CHECK(MPI_Win_set_attr(this->win_, key.value(), const_cast<T *>(&val)));
+}
+
+inline void
+Window::delete_attr(Key key) const
+{
+    MPI_CHECK(MPI_Win_delete_attr(this->win_, key.value()));
+}
+
+inline std::pair<Window, void *>
+Window::allocate(MPI_Aint size, int disp_unit, Info info, MPI_Comm comm)
+{
+    Window w;
+    void * baseptr = nullptr;
+    MPI_CHECK(MPI_Win_allocate(size, disp_unit, info.native(), comm, &baseptr, &w.win_));
+    return { w, baseptr };
+}
+
+template <typename T>
+inline std::pair<Window, T *>
+Window::allocate(MPI_Aint n, Info info, MPI_Comm comm)
+{
+    auto [w, baseptr] = allocate(n * sizeof(T), sizeof(T), info, comm);
+    return { w, static_cast<T *>(baseptr) };
+}
+
+constexpr Window::Key win_base { MPI_WIN_BASE };
+constexpr Window::Key win_size { MPI_WIN_SIZE };
+constexpr Window::Key win_disp_unit { MPI_WIN_DISP_UNIT };
+constexpr Window::Key win_create_flavor { MPI_WIN_CREATE_FLAVOR };
+constexpr Window::Key win_model { MPI_WIN_MODEL };
 
 } // namespace mpicpp_lite

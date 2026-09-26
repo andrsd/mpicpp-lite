@@ -64,10 +64,13 @@ private:
     static inline std::vector<MPI_Datatype> user_datatypes_;
     /// User-registered
     static inline std::vector<int> comm_key_vals_;
+    /// User-registered window keys
+    static inline std::vector<int> win_key_vals_;
 
     template <typename T>
     friend MPI_Datatype register_mpi_datatype();
     friend class Communicator;
+    friend class Window;
 };
 
 inline Environment::Environment() : initialized_(false)
@@ -189,6 +192,9 @@ Environment::destroy()
     for (auto & kv : comm_key_vals_)
         MPI_CHECK(MPI_Comm_free_keyval(&kv));
     comm_key_vals_.clear();
+    for (auto & kv : win_key_vals_)
+        MPI_CHECK(MPI_Win_free_keyval(&kv));
+    win_key_vals_.clear();
 }
 
 } // namespace mpicpp_lite
