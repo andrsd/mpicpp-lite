@@ -101,6 +101,13 @@ public:
     /// @return A new communicator over the same group as comm but with a new context.
     Communicator duplicate() const;
 
+    /// Duplicates an existing communicator with all its cached information and associated info
+    /// hints
+    ///
+    /// @param info Info object containing the hints to associate with the new communicator
+    /// @return A new communicator over the same group as comm but with a new context.
+    Communicator duplicate(const Info & info) const;
+
     /// Accesses the group associated with given communicator
     ///
     /// @return Group corresponding to communicator
@@ -911,6 +918,14 @@ Communicator::duplicate() const
 {
     MPI_Comm new_comm;
     MPI_CHECK_SELF(MPI_Comm_dup(this->comm_, &new_comm));
+    return { new_comm };
+}
+
+inline Communicator
+Communicator::duplicate(const Info & info) const
+{
+    MPI_Comm new_comm;
+    MPI_CHECK_SELF(MPI_Comm_dup_with_info(this->comm_, info.native(), &new_comm));
     return { new_comm };
 }
 
