@@ -748,6 +748,16 @@ public:
     /// @param key Key of the attribute to delete
     void delete_attr(Key key);
 
+    /// Set new configuration hints for a communicator
+    ///
+    /// @param info Info object containing the new hints
+    void set_info(const Info & info) const;
+
+    /// Get active hints associated with a communicator
+    ///
+    /// @return Info object containing the hints
+    Info info() const;
+
     /// Set the print name for an MPI communicator
     ///
     /// @param name The character string which is remembered as the name
@@ -1769,6 +1779,20 @@ inline void
 Communicator::delete_attr(Key key)
 {
     MPI_CHECK_SELF(MPI_Comm_delete_attr(this->comm_, key.value()));
+}
+
+inline void
+Communicator::set_info(const Info & info) const
+{
+    MPI_CHECK_SELF(MPI_Comm_set_info(this->comm_, info.native()));
+}
+
+inline Info
+Communicator::info() const
+{
+    MPI_Info info;
+    MPI_CHECK_SELF(MPI_Comm_get_info(this->comm_, &info));
+    return Info(info);
 }
 
 inline void
