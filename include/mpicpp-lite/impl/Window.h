@@ -10,6 +10,7 @@
 #include "Group.h"
 #include "Info.h"
 #include <vector>
+#include <span>
 
 namespace mpicpp_lite {
 
@@ -187,7 +188,7 @@ public:
     static Window create(void * base, MPI_Aint size, int disp_unit, Info info, MPI_Comm comm);
 
     template <typename T>
-    static Window create(std::vector<T> & base, Info info, MPI_Comm comm);
+    static Window create(std::span<T> base, Info info, MPI_Comm comm);
 
     static Window create_dynamic(Info info, MPI_Comm comm);
 };
@@ -366,7 +367,7 @@ Window::create(void * base, MPI_Aint size, int disp_unit, Info info, MPI_Comm co
 
 template <typename T>
 inline Window
-Window::create(std::vector<T> & base, Info info, MPI_Comm comm)
+Window::create(std::span<T> base, Info info, MPI_Comm comm)
 {
     return create(base.data(), base.size() * sizeof(T), sizeof(T), info.native(), comm);
 }
