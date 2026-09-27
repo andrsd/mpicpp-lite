@@ -1383,6 +1383,22 @@ TEST(MPITest, all_to_all_vec)
     }
 }
 
+TEST(MPITest, iall_to_all)
+{
+    Communicator comm;
+    std::vector<int> send_vals(comm.size());
+    for (int i = 0; i < comm.size(); i++) {
+        send_vals[i] = comm.rank() * 10 + i;
+    }
+    std::vector<int> recv_vals;
+    auto req = comm.iall_to_all(send_vals, recv_vals);
+    wait(req);
+    ASSERT_EQ(recv_vals.size(), comm.size());
+    for (int i = 0; i < comm.size(); i++) {
+        EXPECT_EQ(recv_vals[i], i * 10 + comm.rank());
+    }
+}
+
 TEST(MPITest, split)
 {
     Communicator comm;

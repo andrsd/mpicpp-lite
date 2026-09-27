@@ -804,6 +804,23 @@ public:
                     const std::vector<int> & out_counts,
                     const std::vector<int> & out_offsets) const;
 
+    /// Sends data from all to all processes (non-blocking)
+    template <typename T>
+    Request iall_to_all(const T * in_values, int n, T * out_values, int m) const;
+
+    /// Sends data from all to all processes (non-blocking)
+    template <typename T>
+    Request iall_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const;
+
+    /// Sends data from all to all processes (non-blocking)
+    template <typename T>
+    Request iall_to_all(const std::vector<T> & in_values,
+                        const std::vector<int> & in_counts,
+                        const std::vector<int> & in_offsets,
+                        std::vector<T> & out_values,
+                        const std::vector<int> & out_counts,
+                        const std::vector<int> & out_offsets) const;
+
     /// Split a communicator
     ///
     /// @param color Control of subset assignment. Processes with the same color are in the same
@@ -2177,6 +2194,62 @@ Communicator::all_to_all(const std::vector<T> & in_values,
                                  out_offsets.data(),
                                  mpi_datatype<T>(),
                                  this->comm_));
+}
+
+template <typename T>
+inline Request
+Communicator::iall_to_all(const T * in_values, int n, T * out_values, int m) const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Ialltoall(in_values,
+                                 n,
+                                 mpi_datatype<T>(),
+                                 out_values,
+                                 m,
+                                 mpi_datatype<T>(),
+                                 this->comm_,
+                                 &request.native()));
+    return request;
+}
+
+template <typename T>
+inline Request
+Communicator::iall_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const
+{
+    assert(static_cast<int>(in_values.size()) == size());
+    out_values.resize(size());
+    return iall_to_all(in_values.data(), 1, out_values.data(), 1);
+}
+
+template <typename T>
+inline Request
+Communicator::iall_to_all(const std::vector<T> & in_values,
+                          const std::vector<int> & in_counts,
+                          const std::vector<int> & in_offsets,
+                          std::vector<T> & out_values,
+                          const std::vector<int> & out_counts,
+                          const std::vector<int> & out_offsets) const
+{
+    assert(static_cast<int>(in_counts.size()) == size());
+    assert(static_cast<int>(in_offsets.size()) == size());
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
+    int n_receive_vals = 0;
+    for (std::size_t i = 0; i < out_counts.size(); i++)
+        n_receive_vals += out_counts[i];
+    out_values.resize(n_receive_vals);
+    Request request;
+    MPI_CHECK_SELF(MPI_Ialltoallv(in_values.data(),
+                                  in_counts.data(),
+                                  in_offsets.data(),
+                                  mpi_datatype<T>(),
+                                  out_values.data(),
+                                  out_counts.data(),
+                                  out_offsets.data(),
+                                  mpi_datatype<T>(),
+                                  this->comm_,
+                                  &request.native()));
+    return request;
 }
 
 inline Communicator
