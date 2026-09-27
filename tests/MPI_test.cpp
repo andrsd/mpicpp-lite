@@ -716,6 +716,18 @@ TEST(MPITest, reduce_sum_arr_in_place)
     }
 }
 
+TEST(MPITest, ireduce)
+{
+    Communicator comm;
+    int reduce_val = 1;
+    int reduced_sum = 0;
+    auto req = comm.ireduce(reduce_val, reduced_sum, std::plus<int> {}, 0);
+    wait(req);
+    if (comm.rank() == 0) {
+        EXPECT_EQ(reduced_sum, comm.size());
+    }
+}
+
 TEST(MPITest, reduce_all_sum)
 {
     Communicator comm;
@@ -1368,6 +1380,22 @@ TEST(MPITest, all_to_all_vec)
     }
     else if (comm.rank() == 3) {
         EXPECT_THAT(out, ElementsAre(100, 200));
+    }
+}
+
+TEST(MPITest, iall_to_all)
+{
+    Communicator comm;
+    std::vector<int> send_vals(comm.size());
+    for (int i = 0; i < comm.size(); i++) {
+        send_vals[i] = comm.rank() * 10 + i;
+    }
+    std::vector<int> recv_vals;
+    auto req = comm.iall_to_all(send_vals, recv_vals);
+    wait(req);
+    ASSERT_EQ(recv_vals.size(), comm.size());
+    for (int i = 0; i < comm.size(); i++) {
+        EXPECT_EQ(recv_vals[i], i * 10 + comm.rank());
     }
 }
 
