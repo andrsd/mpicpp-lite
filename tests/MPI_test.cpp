@@ -86,6 +86,19 @@ TEST(MPITest, iduplicate_with_info)
     dup.free();
 }
 
+TEST(MPITest, status_cancel)
+{
+    Communicator comm;
+    int val = 0;
+    Tag tag(9999);
+    auto req = comm.irecv(comm.rank(), tag, val);
+
+    req.cancel();
+
+    Status status = wait(req);
+    EXPECT_TRUE(status.is_cancelled());
+}
+
 TEST(MPITest, get_version)
 {
     auto [major, minor] = mpicpp_lite::version();

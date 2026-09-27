@@ -6,6 +6,7 @@
 #include "mpi.h"
 #include "Datatype.h"
 #include "Tag.h"
+#include "Error.h"
 
 namespace mpicpp_lite {
 
@@ -31,6 +32,11 @@ public:
     ///
     /// @return Error code
     int error() const;
+
+    /// Check if communication request has been cancelled
+    ///
+    /// @return `true` if the request was cancelled, `false` otherwise
+    bool is_cancelled() const;
 
     /// Gets the number of "top level" elements
     ///
@@ -73,6 +79,14 @@ inline int
 Status::error() const
 {
     return this->status_.MPI_ERROR;
+}
+
+inline bool
+Status::is_cancelled() const
+{
+    int flag;
+    MPI_CHECK(MPI_Test_cancelled(&this->status_, &flag));
+    return flag != 0;
 }
 
 template <typename T>
