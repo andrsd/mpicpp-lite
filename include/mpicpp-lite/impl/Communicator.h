@@ -465,6 +465,30 @@ public:
                 const std::vector<int> & out_offsets,
                 int root) const;
 
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const T & in_value, T * out_values, int root) const;
+
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const T & in_value, std::vector<T> & out_values, int root) const;
+
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const T * in_values, int n, T * out_values, int root) const;
+
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const T * in_values, int n, std::vector<T> & out_values, int root) const;
+
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const std::vector<T> & in_values,
+                    std::vector<T> & out_values,
+                    const std::vector<int> & counts,
+                    const std::vector<int> & offsets,
+                    int root) const;
+
     /// Gathers data from all tasks and distribute the combined data to all tasks
     ///
     /// @tparam T C++ type of the data
@@ -1554,6 +1578,79 @@ Communicator::gather(const std::vector<T> & in_values,
                                mpi_datatype<T>(),
                                root,
                                this->comm_));
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const T & in_value, T * out_values, int root) const
+{
+    return igather(&in_value, 1, out_values, root);
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const T & in_value, std::vector<T> & out_values, int root) const
+{
+    if (rank() == root)
+        out_values.resize(size());
+    return igather(&in_value, 1, out_values.data(), root);
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const T * in_values, int n, T * out_values, int root) const
+{
+    Request request;
+    auto type = mpi_datatype<T>();
+    MPI_CHECK_SELF(MPI_Igather(const_cast<T *>(in_values),
+                               n,
+                               type,
+                               out_values,
+                               n,
+                               type,
+                               root,
+                               this->comm_,
+                               &request.native()));
+    return request;
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const T * in_values, int n, std::vector<T> & out_values, int root) const
+{
+    if (rank() == root)
+        out_values.resize(size() * (std::size_t) n);
+    return igather(in_values, n, out_values.data(), root);
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const std::vector<T> & in_values,
+                      std::vector<T> & out_values,
+                      const std::vector<int> & counts,
+                      const std::vector<int> & offsets,
+                      int root) const
+{
+    assert(static_cast<int>(counts.size()) == size());
+    assert(static_cast<int>(offsets.size()) == size());
+    if (this->rank() == root) {
+        int n_out_vals = 0;
+        for (std::size_t i = 0; i < counts.size(); i++)
+            n_out_vals += counts[i];
+        out_values.resize(n_out_vals);
+    }
+    Request request;
+    MPI_CHECK_SELF(MPI_Igatherv(in_values.data(),
+                                in_values.size(),
+                                mpi_datatype<T>(),
+                                out_values.data(),
+                                counts.data(),
+                                offsets.data(),
+                                mpi_datatype<T>(),
+                                root,
+                                this->comm_,
+                                &request.native()));
+    return request;
 }
 
 template <typename T>
