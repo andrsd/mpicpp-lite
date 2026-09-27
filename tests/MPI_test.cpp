@@ -99,6 +99,54 @@ TEST(MPITest, status_cancel)
     EXPECT_TRUE(status.is_cancelled());
 }
 
+TEST(MPITest, send_recv_api)
+{
+    Communicator comm;
+    if (comm.size() < 2)
+        return;
+
+    Tag send_tag(100), recv_tag(200);
+    if (comm.rank() == 0) {
+        int val_send = 123;
+        int val_recv = 0;
+        auto status = comm.send_recv(1, send_tag, val_send, 1, recv_tag, val_recv);
+        EXPECT_EQ(val_recv, 456);
+        EXPECT_EQ(status.source(), 1);
+        EXPECT_EQ(status.tag(), recv_tag);
+    }
+    else if (comm.rank() == 1) {
+        int val_send = 456;
+        int val_recv = 0;
+        auto status = comm.send_recv(0, recv_tag, val_send, 0, send_tag, val_recv);
+        EXPECT_EQ(val_recv, 123);
+        EXPECT_EQ(status.source(), 0);
+        EXPECT_EQ(status.tag(), send_tag);
+    }
+}
+
+TEST(MPITest, isend_recv_api)
+{
+    Communicator comm;
+    if (comm.size() < 2)
+        return;
+
+    Tag send_tag(300), recv_tag(400);
+    if (comm.rank() == 0) {
+        int val_send = 789;
+        int val_recv = 0;
+        auto req = comm.isend_recv(1, send_tag, val_send, 1, recv_tag, val_recv);
+        wait(req);
+        EXPECT_EQ(val_recv, 999);
+    }
+    else if (comm.rank() == 1) {
+        int val_send = 999;
+        int val_recv = 0;
+        auto req = comm.isend_recv(0, recv_tag, val_send, 0, send_tag, val_recv);
+        wait(req);
+        EXPECT_EQ(val_recv, 789);
+    }
+}
+
 TEST(MPITest, get_version)
 {
     auto [major, minor] = mpicpp_lite::version();
