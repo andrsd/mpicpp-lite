@@ -659,6 +659,19 @@ public:
     template <typename T, typename Op>
     void reduce(T & value, Op op, int root) const;
 
+    /// Reduce values on all processes to a single value (non-blocking)
+    template <typename T, typename Op>
+    Request ireduce(const T * in_values, int n, T * out_values, Op op, int root) const;
+
+    /// Reduce values on all processes to a single value (non-blocking)
+    template <typename T, typename Op>
+    Request
+    ireduce(const std::vector<T> & in_values, std::vector<T> & out_values, Op op, int root) const;
+
+    /// Reduce values on all processes to a single value (non-blocking)
+    template <typename T, typename Op>
+    Request ireduce(const T & in_value, T & out_value, Op op, int root) const;
+
     /// Combine values from all processes and distributes the result back to all processes
     ///
     /// @tparam T C++ type of the data
@@ -1959,6 +1972,41 @@ inline void
 Communicator::reduce(T & out_value, Op op, int root) const
 {
     reduce(1, &out_value, op, root);
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::ireduce(const T * in_values, int n, T * out_values, Op, int root) const
+{
+    Request request;
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
+    MPI_CHECK_SELF(MPI_Ireduce(const_cast<T *>(in_values),
+                               out_values,
+                               n,
+                               mpi_datatype<T>(),
+                               mpi_op,
+                               root,
+                               this->comm_,
+                               &request.native()));
+    return request;
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::ireduce(const std::vector<T> & in_values,
+                      std::vector<T> & out_values,
+                      Op op,
+                      int root) const
+{
+    assert(in_values.size() == out_values.size());
+    return ireduce(in_values.data(), in_values.size(), out_values.data(), op, root);
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::ireduce(const T & in_value, T & out_value, Op op, int root) const
+{
+    return ireduce(&in_value, 1, &out_value, op, root);
 }
 
 // All reduce

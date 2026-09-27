@@ -716,6 +716,18 @@ TEST(MPITest, reduce_sum_arr_in_place)
     }
 }
 
+TEST(MPITest, ireduce)
+{
+    Communicator comm;
+    int reduce_val = 1;
+    int reduced_sum = 0;
+    auto req = comm.ireduce(reduce_val, reduced_sum, std::plus<int> {}, 0);
+    wait(req);
+    if (comm.rank() == 0) {
+        EXPECT_EQ(reduced_sum, comm.size());
+    }
+}
+
 TEST(MPITest, reduce_all_sum)
 {
     Communicator comm;
