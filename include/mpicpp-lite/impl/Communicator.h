@@ -397,6 +397,18 @@ public:
     template <typename KEY, typename VALUE>
     void broadcast(std::map<KEY, VALUE> & map, int root) const;
 
+    /// Broadcast a value from a root process to all other processes (non-blocking)
+    template <typename T>
+    Request ibroadcast(T & value, int root) const;
+
+    /// Broadcast a std::vector of values from a root process to all other processes (non-blocking)
+    template <typename T>
+    Request ibroadcast(std::vector<T> & value, int root) const;
+
+    /// Broadcast a value from a root process to all other processes (non-blocking)
+    template <typename T>
+    Request ibroadcast(T * values, int n, int root) const;
+
     /// Gather together values from a group of processes
     ///
     /// @tparam T C++ type of the data
@@ -1457,6 +1469,29 @@ Communicator::broadcast(std::string & value, int root) const
         recv(root, tag, str);
         value.assign(str.begin(), str.end());
     }
+}
+
+template <typename T>
+inline Request
+Communicator::ibroadcast(T & value, int root) const
+{
+    return ibroadcast(&value, 1, root);
+}
+
+template <typename T>
+inline Request
+Communicator::ibroadcast(std::vector<T> & value, int root) const
+{
+    return ibroadcast(value.data(), value.size(), root);
+}
+
+template <typename T>
+inline Request
+Communicator::ibroadcast(T * values, int n, int root) const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Ibcast(values, n, mpi_datatype<T>(), root, this->comm_, &request.native()));
+    return request;
 }
 
 // Gather
