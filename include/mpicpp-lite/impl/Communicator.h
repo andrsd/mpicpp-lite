@@ -258,6 +258,46 @@ public:
     template <typename T>
     Request irecv(int source, Tag tag, T * values, int n) const;
 
+    /// Send and receive messages in a single blocking call
+    template <typename TSend, typename TRecv>
+    Status send_recv(int dest,
+                     Tag send_tag,
+                     const TSend & send_value,
+                     int source,
+                     Tag recv_tag,
+                     TRecv & recv_value) const;
+
+    /// Send and receive messages in a single blocking call
+    template <typename TSend, typename TRecv>
+    Status send_recv(int dest,
+                     Tag send_tag,
+                     const TSend * send_values,
+                     int send_count,
+                     int source,
+                     Tag recv_tag,
+                     TRecv * recv_values,
+                     int recv_count) const;
+
+    /// Send and receive messages in a single non-blocking call
+    template <typename TSend, typename TRecv>
+    Request isend_recv(int dest,
+                       Tag send_tag,
+                       const TSend & send_value,
+                       int source,
+                       Tag recv_tag,
+                       TRecv & recv_value) const;
+
+    /// Send and receive messages in a single non-blocking call
+    template <typename TSend, typename TRecv>
+    Request isend_recv(int dest,
+                       Tag send_tag,
+                       const TSend * send_values,
+                       int send_count,
+                       int source,
+                       Tag recv_tag,
+                       TRecv * recv_values,
+                       int recv_count) const;
+
     /// Nonblocking test for a message
     ///
     /// @param source Rank of source or `ANY_SOURCE`
@@ -1132,6 +1172,84 @@ Communicator::irecv(int source, Tag tag, T * values, int n) const
                              tag.value(),
                              this->comm_,
                              &request.native()));
+    return request;
+}
+
+template <typename TSend, typename TRecv>
+inline Status
+Communicator::send_recv(int dest,
+                        Tag send_tag,
+                        const TSend & send_value,
+                        int source,
+                        Tag recv_tag,
+                        TRecv & recv_value) const
+{
+    return send_recv(dest, send_tag, &send_value, 1, source, recv_tag, &recv_value, 1);
+}
+
+template <typename TSend, typename TRecv>
+inline Status
+Communicator::send_recv(int dest,
+                        Tag send_tag,
+                        const TSend * send_values,
+                        int send_count,
+                        int source,
+                        Tag recv_tag,
+                        TRecv * recv_values,
+                        int recv_count) const
+{
+    Status status;
+    MPI_CHECK_SELF(MPI_Sendrecv(const_cast<TSend *>(send_values),
+                                send_count,
+                                mpi_datatype<TSend>(),
+                                dest,
+                                send_tag.value(),
+                                recv_values,
+                                recv_count,
+                                mpi_datatype<TRecv>(),
+                                source,
+                                recv_tag.value(),
+                                this->comm_,
+                                &status.native()));
+    return status;
+}
+
+template <typename TSend, typename TRecv>
+inline Request
+Communicator::isend_recv(int dest,
+                         Tag send_tag,
+                         const TSend & send_value,
+                         int source,
+                         Tag recv_tag,
+                         TRecv & recv_value) const
+{
+    return isend_recv(dest, send_tag, &send_value, 1, source, recv_tag, &recv_value, 1);
+}
+
+template <typename TSend, typename TRecv>
+inline Request
+Communicator::isend_recv(int dest,
+                         Tag send_tag,
+                         const TSend * send_values,
+                         int send_count,
+                         int source,
+                         Tag recv_tag,
+                         TRecv * recv_values,
+                         int recv_count) const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Isendrecv(const_cast<TSend *>(send_values),
+                                 send_count,
+                                 mpi_datatype<TSend>(),
+                                 dest,
+                                 send_tag.value(),
+                                 recv_values,
+                                 recv_count,
+                                 mpi_datatype<TRecv>(),
+                                 source,
+                                 recv_tag.value(),
+                                 this->comm_,
+                                 &request.native()));
     return request;
 }
 
