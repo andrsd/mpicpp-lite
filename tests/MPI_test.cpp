@@ -554,6 +554,19 @@ TEST(MPITest, all_gather_vec_4_procs)
     EXPECT_THAT(all_vals, ElementsAre(1, 3, 0, 2, 4, 5));
 }
 
+TEST(MPITest, iall_gather)
+{
+    Communicator comm;
+    int gather_val = comm.rank();
+    std::vector<int> gathered_vals;
+    auto req = comm.iall_gather(gather_val, gathered_vals);
+    wait(req);
+    ASSERT_EQ(gathered_vals.size(), comm.size());
+    for (int i = 0; i < comm.size(); i++) {
+        EXPECT_EQ(gathered_vals[i], i);
+    }
+}
+
 TEST(MPITest, scatter)
 {
     Communicator comm;

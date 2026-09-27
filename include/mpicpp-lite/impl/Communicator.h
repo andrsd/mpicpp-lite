@@ -532,6 +532,21 @@ public:
                     const std::vector<int> & out_counts,
                     const std::vector<int> & out_offsets) const;
 
+    /// Gathers data from all tasks and distribute the combined data to all tasks (non-blocking)
+    template <typename T>
+    Request iall_gather(const T * in_value, int n, T * out_values, int m) const;
+
+    /// Gathers data from all tasks and distribute the combined data to all tasks (non-blocking)
+    template <typename T>
+    Request iall_gather(const T & in_value, std::vector<T> & out_values) const;
+
+    /// Gathers data from all tasks and deliver the combined data to all tasks (non-blocking)
+    template <typename T>
+    Request iall_gather(const std::vector<T> & in_values,
+                        std::vector<T> & out_values,
+                        const std::vector<int> & out_counts,
+                        const std::vector<int> & out_offsets) const;
+
     /// Send data from one process to all other processes in a communicator
     ///
     /// @tparam T C++ type of the data
@@ -1713,6 +1728,56 @@ Communicator::all_gather(const std::vector<T> & in_values,
                                   out_offsets.data(),
                                   mpi_datatype<T>(),
                                   this->comm_));
+}
+
+template <typename T>
+inline Request
+Communicator::iall_gather(const T * in_value, int n, T * out_values, int m) const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Iallgather(in_value,
+                                  n,
+                                  mpi_datatype<T>(),
+                                  out_values,
+                                  m,
+                                  mpi_datatype<T>(),
+                                  this->comm_,
+                                  &request.native()));
+    return request;
+}
+
+template <typename T>
+inline Request
+Communicator::iall_gather(const T & in_value, std::vector<T> & out_values) const
+{
+    out_values.resize(this->size());
+    return iall_gather(&in_value, 1, out_values.data(), 1);
+}
+
+template <typename T>
+inline Request
+Communicator::iall_gather(const std::vector<T> & in_values,
+                          std::vector<T> & out_values,
+                          const std::vector<int> & out_counts,
+                          const std::vector<int> & out_offsets) const
+{
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
+    int n_out_vals = 0;
+    for (std::size_t i = 0; i < out_counts.size(); i++)
+        n_out_vals += out_counts[i];
+    out_values.resize(n_out_vals);
+    Request request;
+    MPI_CHECK_SELF(MPI_Iallgatherv(in_values.data(),
+                                   in_values.size(),
+                                   mpi_datatype<T>(),
+                                   out_values.data(),
+                                   out_counts.data(),
+                                   out_offsets.data(),
+                                   mpi_datatype<T>(),
+                                   this->comm_,
+                                   &request.native()));
+    return request;
 }
 
 // Scatter
