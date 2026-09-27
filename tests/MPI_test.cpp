@@ -624,6 +624,22 @@ TEST(MPITest, scatter_n)
     EXPECT_EQ(number[1], (comm.rank() + 1) * 7);
 }
 
+TEST(MPITest, iscatter)
+{
+    Communicator comm;
+    std::vector<int> send_vals;
+    if (comm.rank() == 0) {
+        send_vals.resize(comm.size());
+        for (int i = 0; i < comm.size(); i++) {
+            send_vals[i] = i * 10;
+        }
+    }
+    int out_val = -1;
+    auto req = comm.iscatter(send_vals, out_val, 0);
+    wait(req);
+    EXPECT_EQ(out_val, comm.rank() * 10);
+}
+
 TEST(MPITest, reduce_sum)
 {
     Communicator comm;
