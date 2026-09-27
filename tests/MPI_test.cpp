@@ -488,6 +488,21 @@ TEST(MPITest, gather_std_vec)
     }
 }
 
+TEST(MPITest, igather)
+{
+    Communicator comm;
+    int gather_val = comm.rank();
+    std::vector<int> gathered_vals;
+    auto req = comm.igather(gather_val, gathered_vals, 0);
+    wait(req);
+    if (comm.rank() == 0) {
+        ASSERT_EQ(gathered_vals.size(), comm.size());
+        for (int i = 0; i < comm.size(); i++) {
+            EXPECT_EQ(gathered_vals[i], i);
+        }
+    }
+}
+
 TEST(MPITest, all_gather_1)
 {
     Communicator comm;
