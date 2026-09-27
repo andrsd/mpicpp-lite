@@ -420,6 +420,15 @@ TEST(MPITest, broadcast_str)
     EXPECT_EQ(str, "text to bcast");
 }
 
+TEST(MPITest, ibroadcast)
+{
+    Communicator comm;
+    int bcast_val = (comm.rank() == 0) ? 555 : 0;
+    auto req = comm.ibroadcast(bcast_val, 0);
+    wait(req);
+    EXPECT_EQ(bcast_val, 555);
+}
+
 TEST(MPITest, gather)
 {
     Communicator comm;
