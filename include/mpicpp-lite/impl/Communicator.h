@@ -585,6 +585,30 @@ public:
     template <typename T>
     void scatter(const std::vector<T> & in_values, T * out_values, int n, int root) const;
 
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const T * in_values, T & out_value, int root) const;
+
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const std::vector<T> & in_values, T & out_value, int root) const;
+
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const T * in_values, T * out_values, int n, int root) const;
+
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const std::vector<T> & in_values, T * out_values, int n, int root) const;
+
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const std::vector<T> & in_values,
+                     const std::vector<int> & counts,
+                     const std::vector<int> & offsets,
+                     std::vector<T> & out_values,
+                     int root) const;
+
     /// Reduce values on all processes to a single value
     ///
     /// @tparam T C++ type of the data
@@ -1810,6 +1834,70 @@ inline void
 Communicator::scatter(const std::vector<T> & in_values, T * out_values, int n, int root) const
 {
     scatter(in_values.data(), out_values, n, root);
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const T * in_values, T & out_value, int root) const
+{
+    return iscatter(in_values, &out_value, 1, root);
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const std::vector<T> & in_values, T & out_value, int root) const
+{
+    return iscatter(in_values.data(), &out_value, 1, root);
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const T * in_values, T * out_values, int n, int root) const
+{
+    Request request;
+    auto type = mpi_datatype<T>();
+    MPI_CHECK_SELF(MPI_Iscatter(const_cast<T *>(in_values),
+                                n,
+                                type,
+                                out_values,
+                                n,
+                                type,
+                                root,
+                                this->comm_,
+                                &request.native()));
+    return request;
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const std::vector<T> & in_values, T * out_values, int n, int root) const
+{
+    return iscatter(in_values.data(), out_values, n, root);
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const std::vector<T> & in_values,
+                       const std::vector<int> & counts,
+                       const std::vector<int> & offsets,
+                       std::vector<T> & out_values,
+                       int root) const
+{
+    assert(static_cast<int>(counts.size()) == size());
+    assert(static_cast<int>(offsets.size()) == size());
+    out_values.resize(counts[this->rank()]);
+    Request request;
+    MPI_CHECK_SELF(MPI_Iscatterv(in_values.data(),
+                                 counts.data(),
+                                 offsets.data(),
+                                 mpi_datatype<T>(),
+                                 out_values.data(),
+                                 out_values.size(),
+                                 mpi_datatype<T>(),
+                                 root,
+                                 this->comm_,
+                                 &request.native()));
+    return request;
 }
 
 // Reduce
