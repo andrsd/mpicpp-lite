@@ -201,6 +201,13 @@ TEST(MPITest, barrier)
     comm.barrier();
 }
 
+TEST(MPITest, ibarrier)
+{
+    Communicator comm;
+    auto req = comm.ibarrier();
+    wait(req);
+}
+
 TEST(MPITest, send_recv_int)
 {
     Communicator comm;

@@ -360,6 +360,9 @@ public:
     /// Wait for all processes within a communicator to reach the barrier.
     void barrier() const;
 
+    /// Wait for all processes within a communicator to reach the barrier (non-blocking).
+    Request ibarrier() const;
+
     /// Broadcast a value from a root process to all other processes
     ///
     /// @tparam T C++ type of the data
@@ -1363,6 +1366,14 @@ inline void
 Communicator::barrier() const
 {
     MPI_CHECK_SELF(MPI_Barrier(this->comm_));
+}
+
+inline Request
+Communicator::ibarrier() const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Ibarrier(this->comm_, &request.native()));
+    return request;
 }
 
 // Broadcast
