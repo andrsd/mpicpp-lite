@@ -1486,6 +1486,16 @@ TEST(MPITest, scan_array)
     }
 }
 
+TEST(MPITest, iscan)
+{
+    Communicator comm;
+    int scan_val = 1;
+    int scanned_sum = 0;
+    auto req = comm.iscan(scan_val, scanned_sum, std::plus<int> {});
+    wait(req);
+    EXPECT_EQ(scanned_sum, comm.rank() + 1);
+}
+
 TEST(MPITest, exscan_single)
 {
     Communicator comm;
