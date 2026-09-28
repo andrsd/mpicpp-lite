@@ -909,6 +909,21 @@ public:
     template <typename T, typename Op>
     void exscan(const T & in_value, T & out_value, Op op) const;
 
+    /// Computes the exclusive scan (partial reductions) of data on a collection of processes
+    /// (non-blocking)
+    template <typename T, typename Op>
+    Request iexscan(const T * in_values, int n, T * out_value, Op op) const;
+
+    /// Computes the exclusive scan (partial reductions) of data on a collection of processes
+    /// (non-blocking)
+    template <typename T, typename Op>
+    Request iexscan(const std::vector<T> & in_values, std::vector<T> & out_values, Op op) const;
+
+    /// Computes the exclusive scan (partial reductions) of data on a collection of processes
+    /// (non-blocking)
+    template <typename T, typename Op>
+    Request iexscan(const T & in_value, T & out_value, Op op) const;
+
     /// Retrieves attribute value by key
     ///
     /// @param key Key of the attribute to get
@@ -2373,6 +2388,37 @@ inline void
 Communicator::exscan(const T & in_value, T & out_value, Op op) const
 {
     exscan(&in_value, 1, &out_value, op);
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iexscan(const T * in_values, int n, T * out_value, Op) const
+{
+    Request request;
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
+    MPI_CHECK_SELF(MPI_Iexscan(const_cast<T *>(in_values),
+                               out_value,
+                               n,
+                               mpi_datatype<T>(),
+                               mpi_op,
+                               this->comm_,
+                               &request.native()));
+    return request;
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iexscan(const std::vector<T> & in_values, std::vector<T> & out_values, Op op) const
+{
+    assert(in_values.size() == out_values.size());
+    return iexscan(in_values.data(), in_values.size(), out_values.data(), op);
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iexscan(const T & in_value, T & out_value, Op op) const
+{
+    return iexscan(&in_value, 1, &out_value, op);
 }
 
 //

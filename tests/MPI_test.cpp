@@ -1554,6 +1554,18 @@ TEST(MPITest, exscan_array)
     }
 }
 
+TEST(MPITest, iexscan)
+{
+    Communicator comm;
+    int exscan_val = 1;
+    int exscanned_sum = 0;
+    auto req = comm.iexscan(exscan_val, exscanned_sum, std::plus<int> {});
+    wait(req);
+    if (comm.rank() > 0) {
+        EXPECT_EQ(exscanned_sum, comm.rank());
+    }
+}
+
 //
 
 TEST(MPITest, status)
