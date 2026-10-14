@@ -83,6 +83,54 @@ TEST(OperationsTest, lxor)
     EXPECT_FALSE(oper(a, b));
 }
 
+TEST(OperationsTest, bitwise_and)
+{
+    int a = 0b1100;
+    int b = 0b1010;
+    auto oper = mpi::op::bitwise_and<>();
+    EXPECT_EQ(oper(a, b), 0b1000);
+}
+
+TEST(OperationsTest, band)
+{
+    int a = 0b1100;
+    int b = 0b1010;
+    auto oper = mpi::op::band<>();
+    EXPECT_EQ(oper(a, b), 0b1000);
+}
+
+TEST(OperationsTest, bitwise_or)
+{
+    int a = 0b1100;
+    int b = 0b1010;
+    auto oper = mpi::op::bitwise_or<>();
+    EXPECT_EQ(oper(a, b), 0b1110);
+}
+
+TEST(OperationsTest, bor)
+{
+    int a = 0b1100;
+    int b = 0b1010;
+    auto oper = mpi::op::bor<>();
+    EXPECT_EQ(oper(a, b), 0b1110);
+}
+
+TEST(OperationsTest, bitwise_xor)
+{
+    int a = 0b1100;
+    int b = 0b1010;
+    auto oper = mpi::op::bitwise_xor<>();
+    EXPECT_EQ(oper(a, b), 0b0110);
+}
+
+TEST(OperationsTest, bxor)
+{
+    int a = 0b1100;
+    int b = 0b1010;
+    auto oper = mpi::op::bxor<>();
+    EXPECT_EQ(oper(a, b), 0b0110);
+}
+
 TEST(OperationsTest, replace)
 {
     double a = 10;

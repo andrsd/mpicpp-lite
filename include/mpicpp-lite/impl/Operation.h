@@ -8,11 +8,15 @@
 #include <algorithm>
 #include <type_traits>
 #include <concepts>
+#include <cstddef>
 
 namespace mpicpp_lite {
 
 template <typename T>
 concept Numeric = std::integral<T> || std::floating_point<T>;
+
+template <typename T>
+concept Bitwise = std::integral<T> || std::same_as<T, std::byte>;
 
 namespace op {
 
@@ -250,6 +254,114 @@ struct logical_xor<void> {
 template <typename T = void>
 using lxor = logical_xor<T>;
 
+/// Template for bitwise AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct bitwise_and {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return `x` AND `y`
+    T
+    operator()(const T & x, const T & y) const
+    {
+        return x & y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct bitwise_and<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) & std::forward<V>(y))
+    {
+        return std::forward<U>(x) & std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template alias for bitwise AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using band = bitwise_and<T>;
+
+/// Template for bitwise OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct bitwise_or {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return `x` OR `y`
+    T
+    operator()(const T & x, const T & y) const
+    {
+        return x | y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct bitwise_or<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) | std::forward<V>(y))
+    {
+        return std::forward<U>(x) | std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template alias for bitwise OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using bor = bitwise_or<T>;
+
+/// Template for bitwise XOR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct bitwise_xor {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return `x` XOR `y`
+    T
+    operator()(const T & x, const T & y) const
+    {
+        return x ^ y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct bitwise_xor<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) ^ std::forward<V>(y))
+    {
+        return std::forward<U>(x) ^ std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template alias for bitwise XOR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using bxor = bitwise_xor<T>;
+
 /// Template for replace on a `T` type
 ///
 /// @tparam T Datatype
@@ -323,6 +435,21 @@ struct MapOp<logical_or<void>, T> {
 template <typename T>
 struct MapOp<logical_xor<void>, T> {
     using type = logical_xor<T>;
+};
+
+template <typename T>
+struct MapOp<bitwise_and<void>, T> {
+    using type = bitwise_and<T>;
+};
+
+template <typename T>
+struct MapOp<bitwise_or<void>, T> {
+    using type = bitwise_or<T>;
+};
+
+template <typename T>
+struct MapOp<bitwise_xor<void>, T> {
+    using type = bitwise_xor<T>;
 };
 
 template <typename T>
@@ -464,6 +591,60 @@ struct Operation<Op, T> {
     op()
     {
         return MPI_LXOR;
+    }
+};
+
+/// Template for bitwise AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, Bitwise T>
+    requires std::same_as<Op, op::bitwise_and<void>> || std::same_as<Op, op::bitwise_and<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for bitwise AND
+    static MPI_Op
+    op()
+    {
+        return MPI_BAND;
+    }
+};
+
+/// Template for bitwise OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, Bitwise T>
+    requires std::same_as<Op, op::bitwise_or<void>> || std::same_as<Op, op::bitwise_or<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for bitwise OR
+    static MPI_Op
+    op()
+    {
+        return MPI_BOR;
+    }
+};
+
+/// Template for bitwise XOR on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, Bitwise T>
+    requires std::same_as<Op, op::bitwise_xor<void>> || std::same_as<Op, op::bitwise_xor<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for bitwise XOR
+    static MPI_Op
+    op()
+    {
+        return MPI_BXOR;
     }
 };
 

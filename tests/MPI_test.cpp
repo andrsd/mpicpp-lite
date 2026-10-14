@@ -975,6 +975,100 @@ TEST(MPITest, reduce_all_lxor)
     }
 }
 
+TEST(MPITest, reduce_all_bitwise_and)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int loc = 0b1111;
+    if (comm.rank() == 0)
+        loc = 0b1101;
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bitwise_and<>());
+    comm.all_reduce(loc, op::bitwise_and<>());
+    EXPECT_EQ(loc, 0b1101);
+    EXPECT_EQ(glob, 0b1101);
+}
+
+TEST(MPITest, reduce_all_band)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int loc = 0b1111;
+    if (comm.rank() == 0)
+        loc = 0b1101;
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::band<>());
+    comm.all_reduce(loc, op::band<>());
+    EXPECT_EQ(loc, 0b1101);
+    EXPECT_EQ(glob, 0b1101);
+}
+
+TEST(MPITest, reduce_all_bitwise_or)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int loc = 1 << comm.rank();
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bitwise_or<>());
+    comm.all_reduce(loc, op::bitwise_or<>());
+    int expected = (1 << comm.size()) - 1;
+    EXPECT_EQ(loc, expected);
+    EXPECT_EQ(glob, expected);
+}
+
+TEST(MPITest, reduce_all_bor)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int loc = 1 << comm.rank();
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bor<>());
+    comm.all_reduce(loc, op::bor<>());
+    int expected = (1 << comm.size()) - 1;
+    EXPECT_EQ(loc, expected);
+    EXPECT_EQ(glob, expected);
+}
+
+TEST(MPITest, reduce_all_bitwise_xor)
+{
+    Communicator comm;
+
+    int loc = 1;
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bitwise_xor<>());
+    comm.all_reduce(loc, op::bitwise_xor<>());
+    int expected = (comm.size() % 2 == 0) ? 0 : 1;
+    EXPECT_EQ(loc, expected);
+    EXPECT_EQ(glob, expected);
+}
+
+TEST(MPITest, reduce_all_bxor)
+{
+    Communicator comm;
+
+    int loc = 1;
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bxor<>());
+    comm.all_reduce(loc, op::bxor<>());
+    int expected = (comm.size() % 2 == 0) ? 0 : 1;
+    EXPECT_EQ(loc, expected);
+    EXPECT_EQ(glob, expected);
+}
+
 TEST(MPITest, all_reduce_sum_arr_in_place)
 {
     Communicator comm;
