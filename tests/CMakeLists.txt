@@ -13,6 +13,7 @@ add_executable(${PROJECT_NAME}
     MPI_test.cpp
     Operations_test.cpp
     Time_test.cpp
+    ValueLoc_tests.cpp
     Window_test.cpp
     main.cpp
 )
