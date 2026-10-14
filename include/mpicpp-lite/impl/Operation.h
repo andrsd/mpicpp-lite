@@ -172,6 +172,12 @@ struct logical_and<void> {
     using is_transparent = void;
 };
 
+/// Template alias for logical AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using land = logical_and<T>;
+
 /// Template for logical OR on a `T` type
 ///
 /// @tparam T Datatype
@@ -202,6 +208,12 @@ struct logical_or<void> {
     using is_transparent = void;
 };
 
+/// Template alias for logical OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using lor = logical_or<T>;
+
 /// Template for logical XOR on a `T` type
 ///
 /// @tparam T Datatype
@@ -231,6 +243,12 @@ struct logical_xor<void> {
 
     using is_transparent = void;
 };
+
+/// Template alias for logical XOR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using lxor = logical_xor<T>;
 
 /// Template for replace on a `T` type
 ///
