@@ -894,6 +894,87 @@ TEST(MPITest, reduce_all_logical_xor)
     }
 }
 
+TEST(MPITest, reduce_all_land)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    bool loc = false;
+    bool glob;
+
+    comm.all_reduce(loc, glob, op::land<>());
+    comm.all_reduce(loc, op::land<>());
+    EXPECT_FALSE(loc);
+    EXPECT_FALSE(glob);
+
+    loc = true;
+    comm.all_reduce(loc, glob, op::land<>());
+    comm.all_reduce(loc, op::land<>());
+    EXPECT_TRUE(loc);
+    EXPECT_TRUE(glob);
+
+    if (comm.rank() == 0)
+        loc = false;
+    comm.all_reduce(loc, glob, op::land<>());
+    comm.all_reduce(loc, op::land<>());
+    EXPECT_FALSE(loc);
+    EXPECT_FALSE(glob);
+}
+
+TEST(MPITest, reduce_all_lor)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    bool loc = false;
+    bool glob;
+
+    comm.all_reduce(loc, glob, op::lor<>());
+    comm.all_reduce(loc, op::lor<>());
+    EXPECT_FALSE(loc);
+    EXPECT_FALSE(glob);
+
+    loc = true;
+    comm.all_reduce(loc, glob, op::lor<>());
+    comm.all_reduce(loc, op::lor<>());
+    EXPECT_TRUE(loc);
+    EXPECT_TRUE(glob);
+
+    if (comm.rank() != 0)
+        loc = false;
+    comm.all_reduce(loc, glob, op::lor<>());
+    comm.all_reduce(loc, op::lor<>());
+    EXPECT_TRUE(loc);
+    EXPECT_TRUE(glob);
+}
+
+TEST(MPITest, reduce_all_lxor)
+{
+    Communicator comm;
+
+    bool loc = false;
+    bool glob;
+
+    comm.all_reduce(loc, glob, op::lxor<>());
+    comm.all_reduce(loc, op::lxor<>());
+    EXPECT_FALSE(loc);
+    EXPECT_FALSE(glob);
+
+    loc = true;
+    comm.all_reduce(loc, glob, op::lxor<>());
+    comm.all_reduce(loc, op::lxor<>());
+    if (comm.size() % 2 == 0) {
+        EXPECT_FALSE(loc);
+        EXPECT_FALSE(glob);
+    }
+    else {
+        EXPECT_TRUE(loc);
+        EXPECT_TRUE(glob);
+    }
+}
+
 TEST(MPITest, all_reduce_sum_arr_in_place)
 {
     Communicator comm;

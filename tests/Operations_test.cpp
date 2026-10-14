@@ -43,6 +43,14 @@ TEST(OperationsTest, logical_and)
     EXPECT_FALSE(oper(a, b));
 }
 
+TEST(OperationsTest, land)
+{
+    bool a = true;
+    bool b = false;
+    auto oper = mpi::op::land<>();
+    EXPECT_FALSE(oper(a, b));
+}
+
 TEST(OperationsTest, logical_or)
 {
     bool a = true;
@@ -51,11 +59,27 @@ TEST(OperationsTest, logical_or)
     EXPECT_TRUE(oper(a, b));
 }
 
+TEST(OperationsTest, lor)
+{
+    bool a = true;
+    bool b = false;
+    auto oper = mpi::op::lor<>();
+    EXPECT_TRUE(oper(a, b));
+}
+
 TEST(OperationsTest, logical_xor)
 {
     bool a = true;
     bool b = true;
     auto oper = mpi::op::logical_xor<>();
+    EXPECT_FALSE(oper(a, b));
+}
+
+TEST(OperationsTest, lxor)
+{
+    bool a = true;
+    bool b = true;
+    auto oper = mpi::op::lxor<>();
     EXPECT_FALSE(oper(a, b));
 }
 
