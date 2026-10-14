@@ -969,13 +969,6 @@ public:
         UNEQUAL = MPI_UNEQUAL,
     };
 
-    /// Compares two communicators
-    ///
-    /// @param c1 First communicator
-    /// @param c2 Second communicator
-    /// @return Comparison result
-    static ComparisonResult compare(const Communicator & c1, const Communicator & c2);
-
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -1004,6 +997,13 @@ public:
         Environment::comm_key_vals_.push_back(keyval);
         return Key { keyval };
     }
+
+    /// Compares two communicators
+    ///
+    /// @param c1 First communicator
+    /// @param c2 Second communicator
+    /// @return Comparison result
+    static ComparisonResult compare(const Communicator & c1, const Communicator & c2);
 };
 
 //
