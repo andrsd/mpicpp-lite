@@ -19,6 +19,12 @@ mpicpp-lite
    user-guide/environment-and-comm
    user-guide/point-to-point
    user-guide/collectives
+   user-guide/non-blocking
+   user-guide/custom-datatypes
+   user-guide/custom-operations
+   user-guide/parallel-exceptions
+   user-guide/topologies
+   user-guide/one-sided
 
 .. toctree::
    :maxdepth: 1
