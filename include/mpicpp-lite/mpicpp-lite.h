@@ -11,6 +11,7 @@
 #include "impl/Info.h"
 #include "impl/Message.h"
 #include "impl/Operation.h"
+#include "impl/ValueLoc.h"
 #include "impl/Request.h"
 #include "impl/Status.h"
 #include "impl/Test.h"

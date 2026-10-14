@@ -6,6 +6,7 @@
 #include "mpi.h"
 #include "Error.h"
 #include "Environment.h"
+#include "ValueLoc.h"
 #include <stdexcept>
 #include <vector>
 #include <cassert>
@@ -162,6 +163,48 @@ mpi_datatype<std::byte>()
 }
 
 #endif
+
+template <>
+inline MPI_Datatype
+mpi_datatype<ValueLoc<short, int>>()
+{
+    return MPI_SHORT_INT;
+}
+
+template <>
+inline MPI_Datatype
+mpi_datatype<ValueLoc<int, int>>()
+{
+    return MPI_2INT;
+}
+
+template <>
+inline MPI_Datatype
+mpi_datatype<ValueLoc<long int, int>>()
+{
+    return MPI_LONG_INT;
+}
+
+template <>
+inline MPI_Datatype
+mpi_datatype<ValueLoc<float, int>>()
+{
+    return MPI_FLOAT_INT;
+}
+
+template <>
+inline MPI_Datatype
+mpi_datatype<ValueLoc<double, int>>()
+{
+    return MPI_DOUBLE_INT;
+}
+
+template <>
+inline MPI_Datatype
+mpi_datatype<ValueLoc<long double, int>>()
+{
+    return MPI_LONG_DOUBLE_INT;
+}
 
 /// Create a new datatype for MPI communication
 ///

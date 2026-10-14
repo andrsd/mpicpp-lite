@@ -5,6 +5,7 @@
 
 #include "mpi.h"
 #include "Error.h"
+#include "ValueLoc.h"
 #include <algorithm>
 #include <type_traits>
 #include <concepts>
@@ -17,6 +18,15 @@ concept Numeric = std::integral<T> || std::floating_point<T>;
 
 template <typename T>
 concept Bitwise = std::integral<T> || std::same_as<T, std::byte>;
+
+template <typename T>
+concept ValueLocation =
+    std::same_as<T, ValueLoc<short, int>> ||
+    std::same_as<T, ValueLoc<int, int>> ||
+    std::same_as<T, ValueLoc<long int, int>> ||
+    std::same_as<T, ValueLoc<float, int>> ||
+    std::same_as<T, ValueLoc<double, int>> ||
+    std::same_as<T, ValueLoc<long double, int>>;
 
 namespace op {
 
@@ -362,6 +372,88 @@ struct bitwise_xor<void> {
 template <typename T = void>
 using bxor = bitwise_xor<T>;
 
+/// Template for finding minimum value and its location on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct minloc {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return The operand with minimum value (tie broken by smaller location)
+    T
+    operator()(const T & x, const T & y) const
+    {
+        if (x.value < y.value)
+            return x;
+        else if (y.value < x.value)
+            return y;
+        else
+            return (x.loc < y.loc) ? x : y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct minloc<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const
+        -> decltype((x.value < y.value) ? std::forward<U>(x) : std::forward<V>(y))
+    {
+        if (x.value < y.value)
+            return std::forward<U>(x);
+        else if (y.value < x.value)
+            return std::forward<V>(y);
+        else
+            return (x.loc < y.loc) ? std::forward<U>(x) : std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template for finding maximum value and its location on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct maxloc {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return The operand with maximum value (tie broken by smaller location)
+    T
+    operator()(const T & x, const T & y) const
+    {
+        if (x.value > y.value)
+            return x;
+        else if (y.value > x.value)
+            return y;
+        else
+            return (x.loc < y.loc) ? x : y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct maxloc<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const
+        -> decltype((x.value > y.value) ? std::forward<U>(x) : std::forward<V>(y))
+    {
+        if (x.value > y.value)
+            return std::forward<U>(x);
+        else if (y.value > x.value)
+            return std::forward<V>(y);
+        else
+            return (x.loc < y.loc) ? std::forward<U>(x) : std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
 /// Template for replace on a `T` type
 ///
 /// @tparam T Datatype
@@ -450,6 +542,16 @@ struct MapOp<bitwise_or<void>, T> {
 template <typename T>
 struct MapOp<bitwise_xor<void>, T> {
     using type = bitwise_xor<T>;
+};
+
+template <typename T>
+struct MapOp<minloc<void>, T> {
+    using type = minloc<T>;
+};
+
+template <typename T>
+struct MapOp<maxloc<void>, T> {
+    using type = maxloc<T>;
 };
 
 template <typename T>
@@ -645,6 +747,42 @@ struct Operation<Op, T> {
     op()
     {
         return MPI_BXOR;
+    }
+};
+
+/// Template for finding minimum value and its location on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, ValueLocation T>
+    requires std::same_as<Op, op::minloc<void>> || std::same_as<Op, op::minloc<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for finding minimum and location
+    static MPI_Op
+    op()
+    {
+        return MPI_MINLOC;
+    }
+};
+
+/// Template for finding maximum value and its location on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, ValueLocation T>
+    requires std::same_as<Op, op::maxloc<void>> || std::same_as<Op, op::maxloc<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for finding maximum and location
+    static MPI_Op
+    op()
+    {
+        return MPI_MAXLOC;
     }
 };
 
