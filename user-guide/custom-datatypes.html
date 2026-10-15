@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Datatypes &mdash; mpicpp-lite  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Custom Reductions &amp; Operations" href="custom-operations.html" />
+    <link rel="prev" title="Non-Blocking Communication" href="non-blocking.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            mpicpp-lite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/install.html">Installation &amp; Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="environment-and-comm.html">Environment &amp; Communicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="point-to-point.html">Point-to-Point Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collectives.html">Collective Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="non-blocking.html">Non-Blocking Communication</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Custom Datatypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#registering-custom-structs">Registering Custom Structs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sending-and-receiving-custom-structs">Sending and Receiving Custom Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#broadcasting-and-gathering-collections">Broadcasting and Gathering Collections</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#registering-custom-enums">Registering Custom Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#registering-templated-container-types">Registering Templated Container Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom-operations.html">Custom Reductions &amp; Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel-exceptions.html">Parallel Exception Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topologies.html">Process Topologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="one-sided.html">One-Sided Communication</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/communicator.html">Communicator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/datatype.html">Datatype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/message.html">Message</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/request.html">Request</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/status.html">Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/test.html">Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/wait.html">Wait</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mpicpp-lite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Custom Datatypes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="custom-datatypes">
+<h1>Custom Datatypes<a class="headerlink" href="#custom-datatypes" title="Link to this heading"></a></h1>
+<p>Standard MPI requires manually creating, committing, and passing <code class="docutils literal notranslate"><span class="pre">MPI_Datatype</span></code> handles whenever sending non-primitive C++ data structures.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">mpicpp-lite</span></code>, you register your data structure once by specializing <code class="docutils literal notranslate"><span class="pre">mpi::DatatypeTraits&lt;T&gt;</span></code>. Once specialized, the library treats your custom type as a first-class citizen—allowing you to send, receive, broadcast, scatter, and gather instances or <code class="docutils literal notranslate"><span class="pre">std::vector&lt;T&gt;</span></code> collections without ever referencing an <code class="docutils literal notranslate"><span class="pre">MPI_Datatype</span></code> again.</p>
+<section id="registering-custom-structs">
+<span id="index-0"></span><h2>Registering Custom Structs<a class="headerlink" href="#registering-custom-structs" title="Link to this heading"></a></h2>
+<p>To register a C++ struct, specialize <code class="docutils literal notranslate"><span class="pre">mpi::DatatypeTraits&lt;T&gt;</span></code> in the <code class="docutils literal notranslate"><span class="pre">mpicpp_lite</span></code> namespace and use <code class="docutils literal notranslate"><span class="pre">mpi::type_create_struct()</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mpicpp-lite/mpicpp-lite.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstddef&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">Particle</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">position</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">mass</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">is_active</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// Register Particle with mpicpp-lite:</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">template</span><span class="w"> </span><span class="o">&lt;&gt;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">DatatypeTraits</span><span class="o">&lt;</span><span class="n">Particle</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">MPI_Datatype</span>
+<span class="w">    </span><span class="nf">get</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">MPI_Datatype</span><span class="o">&gt;</span><span class="w"> </span><span class="n">types</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">MPI_INT</span><span class="p">,</span>
+<span class="w">            </span><span class="n">MPI_DOUBLE</span><span class="p">,</span>
+<span class="w">            </span><span class="n">MPI_DOUBLE</span><span class="p">,</span>
+<span class="w">            </span><span class="n">MPI_CXX_BOOL</span>
+<span class="w">        </span><span class="p">};</span>
+
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">blk_lens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">};</span>
+
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">MPI_Aint</span><span class="o">&gt;</span><span class="w"> </span><span class="n">offsets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">offsetof</span><span class="p">(</span><span class="n">Particle</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">),</span>
+<span class="w">            </span><span class="n">offsetof</span><span class="p">(</span><span class="n">Particle</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">),</span>
+<span class="w">            </span><span class="n">offsetof</span><span class="p">(</span><span class="n">Particle</span><span class="p">,</span><span class="w"> </span><span class="n">mass</span><span class="p">),</span>
+<span class="w">            </span><span class="n">offsetof</span><span class="p">(</span><span class="n">Particle</span><span class="p">,</span><span class="w"> </span><span class="n">is_active</span><span class="p">)</span>
+<span class="w">        </span><span class="p">};</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">type_create_struct</span><span class="p">(</span><span class="n">types</span><span class="p">,</span><span class="w"> </span><span class="n">blk_lens</span><span class="p">,</span><span class="w"> </span><span class="n">offsets</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace mpicpp_lite</span>
+</pre></div>
+</div>
+<section id="sending-and-receiving-custom-structs">
+<h3>Sending and Receiving Custom Structs<a class="headerlink" href="#sending-and-receiving-custom-structs" title="Link to this heading"></a></h3>
+<p>Once registered, communication is identical to standard primitive types:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">mpi</span><span class="o">::</span><span class="n">Communicator</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Particle</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="mf">5.5</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="n">comm</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Tag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">p</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Particle</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">    </span><span class="n">comm</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Tag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">p</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Particle ID: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
+<span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">", Mass: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">mass</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="broadcasting-and-gathering-collections">
+<h3>Broadcasting and Gathering Collections<a class="headerlink" href="#broadcasting-and-gathering-collections" title="Link to this heading"></a></h3>
+<p>Collections of custom structs work automatically with <code class="docutils literal notranslate"><span class="pre">std::vector&lt;T&gt;</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Particle</span><span class="o">&gt;</span><span class="w"> </span><span class="n">particles</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">particles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span>
+<span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">particles</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">comm</span><span class="p">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">particles</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="registering-custom-enums">
+<span id="index-1"></span><h2>Registering Custom Enums<a class="headerlink" href="#registering-custom-enums" title="Link to this heading"></a></h2>
+<p>Scoped enums (<code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">class</span></code>) can be registered as contiguous blocks of their underlying integral type using <code class="docutils literal notranslate"><span class="pre">mpi::type_contiguous()</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Color</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">RED</span><span class="p">,</span>
+<span class="w">    </span><span class="n">GREEN</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BLUE</span>
+<span class="p">};</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">template</span><span class="w"> </span><span class="o">&lt;&gt;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">DatatypeTraits</span><span class="o">&lt;</span><span class="n">Color</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">MPI_Datatype</span>
+<span class="w">    </span><span class="nf">get</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">type_contiguous</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">mpi_datatype</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace mpicpp_lite</span>
+</pre></div>
+</div>
+<p>Now you can send or reduce enums across processes:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Color</span><span class="w"> </span><span class="n">chosen_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Color</span><span class="o">::</span><span class="n">GREEN</span><span class="p">;</span>
+<span class="n">comm</span><span class="p">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">chosen_color</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="registering-templated-container-types">
+<span id="index-2"></span><h2>Registering Templated Container Types<a class="headerlink" href="#registering-templated-container-types" title="Link to this heading"></a></h2>
+<p>You can also specialize <code class="docutils literal notranslate"><span class="pre">mpi::DatatypeTraits</span></code> for templated math types, such as fixed-size vector or tensor structs:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="o">&gt;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Vec</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="o">&gt;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">DatatypeTraits</span><span class="o">&lt;</span><span class="n">Vec</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">MPI_Datatype</span>
+<span class="w">    </span><span class="nf">get</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">type_contiguous</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">mpi_datatype</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace mpicpp_lite</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="non-blocking.html" class="btn btn-neutral float-left" title="Non-Blocking Communication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom-operations.html" class="btn btn-neutral float-right" title="Custom Reductions &amp; Operations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-present, David Andrs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

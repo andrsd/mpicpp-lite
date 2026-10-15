@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; mpicpp-lite  documentation</title>
+  <title>Installation &amp; Setup &mdash; mpicpp-lite  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Communicator" href="../devel/classes/communicator.html" />
+    <link rel="next" title="Quickstart" href="quickstart.html" />
     <link rel="prev" title="mpicpp-lite" href="../index.html" /> 
 </head>
 
@@ -46,9 +46,26 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation &amp; Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-cmake-with-find-package">Using CMake with <code class="docutils literal notranslate"><span class="pre">find_package</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-cmake-with-fetchcontent">Using CMake with <code class="docutils literal notranslate"><span class="pre">FetchContent</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/environment-and-comm.html">Environment &amp; Communicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/point-to-point.html">Point-to-Point Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/collectives.html">Collective Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/non-blocking.html">Non-Blocking Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/custom-datatypes.html">Custom Datatypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/custom-operations.html">Custom Reductions &amp; Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/parallel-exceptions.html">Parallel Exception Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/topologies.html">Process Topologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/one-sided.html">One-Sided Communication</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul>
@@ -76,7 +93,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Installation</li>
+      <li class="breadcrumb-item active">Installation &amp; Setup</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -85,8 +102,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+  <section id="installation-setup">
+<h1>Installation &amp; Setup<a class="headerlink" href="#installation-setup" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">mpicpp-lite</span></code> is a header-only library requiring a C++20 compliant compiler and an MPI implementation (such as OpenMPI or MPICH).</p>
+<section id="using-cmake-with-find-package">
+<h2>Using CMake with <code class="docutils literal notranslate"><span class="pre">find_package</span></code><a class="headerlink" href="#using-cmake-with-find-package" title="Link to this heading"></a></h2>
+<p>If <code class="docutils literal notranslate"><span class="pre">mpicpp-lite</span></code> is installed on your system (or in a conda or spack environment), CMake automatically resolves the underlying MPI dependency transitively:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.16</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">my_mpi_app</span><span class="w"> </span><span class="s">LANGUAGES</span><span class="w"> </span><span class="s">CXX</span><span class="p">)</span>
+
+<span class="nb">find_package</span><span class="p">(</span><span class="s">mpicpp-lite</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">my_mpi_app</span><span class="w"> </span><span class="s">main.cpp</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">my_mpi_app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">mpicpp-lite::mpicpp-lite</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-cmake-with-fetchcontent">
+<h2>Using CMake with <code class="docutils literal notranslate"><span class="pre">FetchContent</span></code><a class="headerlink" href="#using-cmake-with-fetchcontent" title="Link to this heading"></a></h2>
+<p>You can also integrate <code class="docutils literal notranslate"><span class="pre">mpicpp-lite</span></code> directly into your CMake project without pre-installing it:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">include</span><span class="p">(</span><span class="s">FetchContent</span><span class="p">)</span>
+
+<span class="nb">FetchContent_Declare</span><span class="p">(</span>
+<span class="w">    </span><span class="s">mpicpp_lite</span>
+<span class="w">    </span><span class="s">GIT_REPOSITORY</span><span class="w"> </span><span class="s">https://github.com/andrsd/mpicpp-lite.git</span>
+<span class="w">    </span><span class="s">GIT_TAG</span><span class="w">        </span><span class="s">main</span>
+<span class="p">)</span>
+<span class="nb">FetchContent_MakeAvailable</span><span class="p">(</span><span class="s">mpicpp_lite</span><span class="p">)</span>
+
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">my_mpi_app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">mpicpp-lite</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -94,7 +141,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../index.html" class="btn btn-neutral float-left" title="mpicpp-lite" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../devel/classes/communicator.html" class="btn btn-neutral float-right" title="Communicator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="quickstart.html" class="btn btn-neutral float-right" title="Quickstart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

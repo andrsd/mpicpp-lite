@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Operation &mdash; mpicpp-lite  documentation</title>
@@ -46,9 +46,22 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../getting-started/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started/install.html">Installation &amp; Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/environment-and-comm.html">Environment &amp; Communicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/point-to-point.html">Point-to-Point Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/collectives.html">Collective Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/non-blocking.html">Non-Blocking Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/custom-datatypes.html">Custom Datatypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/custom-operations.html">Custom Reductions &amp; Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/parallel-exceptions.html">Parallel Exception Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/topologies.html">Process Topologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/one-sided.html">One-Sided Communication</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul class="current">
@@ -110,7 +123,7 @@
 
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4I0EN11mpicpp_lite2op3sumE">
-<span id="_CPPv3I0EN11mpicpp_lite2op3sumE"></span><span id="_CPPv2I0EN11mpicpp_lite2op3sumE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structmpicpp__lite_1_1op_1_1sum"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sum</span></span></span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite2op3sumE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3I0EN11mpicpp_lite2op3sumE"></span><span id="_CPPv2I0EN11mpicpp_lite2op3sumE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structmpicpp__lite_1_1op_1_1sum"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sum</span></span></span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite2op3sumE" title="Link to this definition"></a><br /></dt>
 <dd><p>Template for summation operation on a <code class="docutils literal notranslate"><span class="pre">T</span></code> type. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
@@ -121,7 +134,7 @@
 
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4I0EN11mpicpp_lite2op4prodE">
-<span id="_CPPv3I0EN11mpicpp_lite2op4prodE"></span><span id="_CPPv2I0EN11mpicpp_lite2op4prodE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structmpicpp__lite_1_1op_1_1prod"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">prod</span></span></span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite2op4prodE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3I0EN11mpicpp_lite2op4prodE"></span><span id="_CPPv2I0EN11mpicpp_lite2op4prodE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structmpicpp__lite_1_1op_1_1prod"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">prod</span></span></span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite2op4prodE" title="Link to this definition"></a><br /></dt>
 <dd><p>Template for product operation on a <code class="docutils literal notranslate"><span class="pre">T</span></code> type. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
@@ -132,7 +145,7 @@
 
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4I0EN11mpicpp_lite2op3minE">
-<span id="_CPPv3I0EN11mpicpp_lite2op3minE"></span><span id="_CPPv2I0EN11mpicpp_lite2op3minE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structmpicpp__lite_1_1op_1_1min"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">min</span></span></span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite2op3minE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3I0EN11mpicpp_lite2op3minE"></span><span id="_CPPv2I0EN11mpicpp_lite2op3minE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structmpicpp__lite_1_1op_1_1min"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">min</span></span></span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite2op3minE" title="Link to this definition"></a><br /></dt>
 <dd><p>Template for finding minimum on a <code class="docutils literal notranslate"><span class="pre">T</span></code> type. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
@@ -143,7 +156,7 @@
 
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4I0EN11mpicpp_lite2op3maxE">
-<span id="_CPPv3I0EN11mpicpp_lite2op3maxE"></span><span id="_CPPv2I0EN11mpicpp_lite2op3maxE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structmpicpp__lite_1_1op_1_1max"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max</span></span></span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite2op3maxE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3I0EN11mpicpp_lite2op3maxE"></span><span id="_CPPv2I0EN11mpicpp_lite2op3maxE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structmpicpp__lite_1_1op_1_1max"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max</span></span></span><a class="headerlink" href="#_CPPv4I0EN11mpicpp_lite2op3maxE" title="Link to this definition"></a><br /></dt>
 <dd><p>Template for finding maximum on a <code class="docutils literal notranslate"><span class="pre">T</span></code> type. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Template Parameters<span class="colon">:</span></dt>

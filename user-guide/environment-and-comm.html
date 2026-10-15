@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Environment &amp; Communicators &mdash; mpicpp-lite  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Point-to-Point Communication" href="point-to-point.html" />
+    <link rel="prev" title="Quickstart" href="../getting-started/quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            mpicpp-lite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/install.html">Installation &amp; Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Environment &amp; Communicators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#environment-lifecycle">Environment Lifecycle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-initialization">Basic Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#thread-level-support">Thread-Level Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wall-clock-timing">Wall-Clock Timing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-communicators">Working with Communicators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subdividing-communicators">Subdividing Communicators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shared-memory-sub-communicators">Shared-Memory Sub-Communicators</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="point-to-point.html">Point-to-Point Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collectives.html">Collective Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="non-blocking.html">Non-Blocking Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom-datatypes.html">Custom Datatypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom-operations.html">Custom Reductions &amp; Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel-exceptions.html">Parallel Exception Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topologies.html">Process Topologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="one-sided.html">One-Sided Communication</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/communicator.html">Communicator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/datatype.html">Datatype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/message.html">Message</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/request.html">Request</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/status.html">Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/test.html">Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/wait.html">Wait</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mpicpp-lite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Environment &amp; Communicators</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="environment-communicators">
+<h1>Environment &amp; Communicators<a class="headerlink" href="#environment-communicators" title="Link to this heading"></a></h1>
+<section id="environment-lifecycle">
+<span id="index-0"></span><h2>Environment Lifecycle<a class="headerlink" href="#environment-lifecycle" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">mpicpp-lite</span></code> encapsulates MPI initialization and finalization via the <code class="docutils literal notranslate"><span class="pre">Environment</span></code> class. It employs the RAII (Resource Acquisition Is Initialization) pattern to guarantee that <code class="docutils literal notranslate"><span class="pre">MPI_Finalize</span></code> is always invoked upon scope exit.</p>
+<section id="basic-initialization">
+<h3>Basic Initialization<a class="headerlink" href="#basic-initialization" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mpicpp-lite/mpicpp-lite.h"</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">mpi</span><span class="o">::</span><span class="n">Environment</span><span class="w"> </span><span class="n">env</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// MPI is now initialized and ready for communication</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// MPI_Finalize is automatically called when `env` leaves scope</span>
+</pre></div>
+</div>
+</section>
+<section id="thread-level-support">
+<span id="index-1"></span><h3>Thread-Level Support<a class="headerlink" href="#thread-level-support" title="Link to this heading"></a></h3>
+<p>If your application uses multithreading alongside MPI, you can request specific thread levels using <code class="docutils literal notranslate"><span class="pre">ThreadLevel</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">Environment</span><span class="w"> </span><span class="nf">env</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">ThreadLevel</span><span class="o">::</span><span class="n">MULTIPLE</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">env</span><span class="p">.</span><span class="n">thread_level</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">ThreadLevel</span><span class="o">::</span><span class="n">MULTIPLE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Multi-threaded MPI calls are supported</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Available levels correspond to standard MPI threading modes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ThreadLevel::SINGLE</span></code>: Only one thread will execute.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ThreadLevel::FUNNELED</span></code>: Process may be multithreaded, but only the main thread makes MPI calls.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ThreadLevel::SERIALIZED</span></code>: Multithreaded, but only one thread makes MPI calls at a time.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ThreadLevel::MULTIPLE</span></code>: Multiple threads may make MPI calls simultaneously.</p></li>
+</ul>
+</section>
+<section id="wall-clock-timing">
+<span id="index-2"></span><h3>Wall-Clock Timing<a class="headerlink" href="#wall-clock-timing" title="Link to this heading"></a></h3>
+<p>To benchmark code, <code class="docutils literal notranslate"><span class="pre">mpicpp-lite</span></code> provides high-resolution wall-clock timing functions:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="kt">double</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">time</span><span class="p">();</span>
+<span class="c1">// ... perform work ...</span>
+<span class="kt">double</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">time</span><span class="p">();</span>
+<span class="kt">double</span><span class="w"> </span><span class="n">elapsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="working-with-communicators">
+<span id="index-3"></span><h2>Working with Communicators<a class="headerlink" href="#working-with-communicators" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Communicator</span></code> class represents an MPI communicator. By default, constructing a <code class="docutils literal notranslate"><span class="pre">Communicator</span></code> wraps <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code>.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">Communicator</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">();</span><span class="w"> </span><span class="c1">// Equivalent to MPI_Comm_rank</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="c1">// Equivalent to MPI_Comm_size</span>
+</pre></div>
+</div>
+<section id="subdividing-communicators">
+<span id="index-4"></span><h3>Subdividing Communicators<a class="headerlink" href="#subdividing-communicators" title="Link to this heading"></a></h3>
+<p>You can subdivide an existing communicator into smaller disjoint sub-communicators using <code class="docutils literal notranslate"><span class="pre">split()</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="c1">// Split processes into even and odd groups</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">();</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">Communicator</span><span class="w"> </span><span class="n">sub_comm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="n">color</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Global rank "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span>
+<span class="w">          </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" has sub-comm rank "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sub_comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="shared-memory-sub-communicators">
+<span id="index-5"></span><h3>Shared-Memory Sub-Communicators<a class="headerlink" href="#shared-memory-sub-communicators" title="Link to this heading"></a></h3>
+<p>You can also split communicators by node topology to create shared-memory sub-communicators (matching <code class="docutils literal notranslate"><span class="pre">MPI_Comm_split_type</span></code> with <code class="docutils literal notranslate"><span class="pre">MPI_COMM_TYPE_SHARED</span></code>):</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">Communicator</span><span class="w"> </span><span class="n">node_comm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">split_type</span><span class="p">(</span><span class="n">mpi</span><span class="o">::</span><span class="n">CommType</span><span class="o">::</span><span class="n">SHARED</span><span class="p">,</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">());</span>
+<span class="c1">// node_comm only contains processes on the same physical host / node</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../getting-started/quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="point-to-point.html" class="btn btn-neutral float-right" title="Point-to-Point Communication" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-present, David Andrs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

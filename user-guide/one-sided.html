@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One-Sided Communication &mdash; mpicpp-lite  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Communicator" href="../devel/classes/communicator.html" />
+    <link rel="prev" title="Process Topologies" href="topologies.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            mpicpp-lite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/install.html">Installation &amp; Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="environment-and-comm.html">Environment &amp; Communicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="point-to-point.html">Point-to-Point Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collectives.html">Collective Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="non-blocking.html">Non-Blocking Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom-datatypes.html">Custom Datatypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom-operations.html">Custom Reductions &amp; Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel-exceptions.html">Parallel Exception Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topologies.html">Process Topologies</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">One-Sided Communication</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-windows">Creating Windows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wrapping-existing-memory">Wrapping Existing Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#allocating-remote-memory-directly">Allocating Remote Memory Directly</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#remote-memory-access-operations">Remote Memory Access Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reading-remote-memory">Reading Remote Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-remote-memory">Writing Remote Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#synchronization-with-fences">Synchronization with Fences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#releasing-windows">Releasing Windows</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/communicator.html">Communicator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/datatype.html">Datatype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/message.html">Message</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/request.html">Request</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/status.html">Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/test.html">Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/wait.html">Wait</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mpicpp-lite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">One-Sided Communication</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="one-sided-communication">
+<h1>One-Sided Communication<a class="headerlink" href="#one-sided-communication" title="Link to this heading"></a></h1>
+<p>One-sided communication (also known as Remote Memory Access, or RMA) decouples data transfer from process synchronization. Instead of both sender and receiver participating simultaneously, an origin process accesses the memory of a target process directly using a shared <code class="docutils literal notranslate"><span class="pre">Window</span></code>.</p>
+<section id="creating-windows">
+<span id="index-0"></span><h2>Creating Windows<a class="headerlink" href="#creating-windows" title="Link to this heading"></a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">Window</span></code> exposes a segment of memory for remote reads and writes across a communicator.</p>
+<section id="wrapping-existing-memory">
+<h3>Wrapping Existing Memory<a class="headerlink" href="#wrapping-existing-memory" title="Link to this heading"></a></h3>
+<p>Expose an existing array or container using <code class="docutils literal notranslate"><span class="pre">Window::create</span></code> and <code class="docutils literal notranslate"><span class="pre">std::span</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mpicpp-lite/mpicpp-lite.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;span&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">Communicator</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">my_data</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="n">mpi</span><span class="o">::</span><span class="n">Window</span><span class="w"> </span><span class="n">win</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">my_data</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Info</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="allocating-remote-memory-directly">
+<h3>Allocating Remote Memory Directly<a class="headerlink" href="#allocating-remote-memory-directly" title="Link to this heading"></a></h3>
+<p>Alternatively, allocate new memory and the window simultaneously using <code class="docutils literal notranslate"><span class="pre">Window::allocate&lt;T&gt;</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Allocates memory for 100 integers on each process and creates the window</span>
+<span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">win</span><span class="p">,</span><span class="w"> </span><span class="n">base_ptr</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">allocate</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Info</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="remote-memory-access-operations">
+<span id="index-1"></span><h2>Remote Memory Access Operations<a class="headerlink" href="#remote-memory-access-operations" title="Link to this heading"></a></h2>
+<section id="reading-remote-memory">
+<h3>Reading Remote Memory<a class="headerlink" href="#reading-remote-memory" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">get()</span></code> to copy data directly from a target process’s window into local memory:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">target_rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">remote_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">local_buffer</span><span class="p">(</span><span class="n">count</span><span class="p">);</span>
+
+<span class="c1">// Lock target window for shared read access</span>
+<span class="n">win</span><span class="p">.</span><span class="n">lock</span><span class="p">(</span><span class="n">mpi</span><span class="o">::</span><span class="n">Lock</span><span class="o">::</span><span class="n">SHARED</span><span class="p">,</span><span class="w"> </span><span class="n">target_rank</span><span class="p">);</span>
+
+<span class="c1">// Read 5 integers from target_rank starting at index 10</span>
+<span class="n">win</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">local_buffer</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">target_rank</span><span class="p">,</span><span class="w"> </span><span class="n">remote_offset</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+
+<span class="n">win</span><span class="p">.</span><span class="n">unlock</span><span class="p">(</span><span class="n">target_rank</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="writing-remote-memory">
+<h3>Writing Remote Memory<a class="headerlink" href="#writing-remote-memory" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">put()</span></code> to write local data directly into a target process’s window:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">target_rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="mi">43</span><span class="p">,</span><span class="w"> </span><span class="mi">44</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// Lock target window for exclusive write access</span>
+<span class="n">win</span><span class="p">.</span><span class="n">lock</span><span class="p">(</span><span class="n">mpi</span><span class="o">::</span><span class="n">Lock</span><span class="o">::</span><span class="n">EXCLUSIVE</span><span class="p">,</span><span class="w"> </span><span class="n">target_rank</span><span class="p">);</span>
+
+<span class="c1">// Write payload into target_rank's window starting at index 0</span>
+<span class="n">win</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">payload</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">payload</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="n">target_rank</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+
+<span class="n">win</span><span class="p">.</span><span class="n">unlock</span><span class="p">(</span><span class="n">target_rank</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="synchronization-with-fences">
+<span id="index-2"></span><h2>Synchronization with Fences<a class="headerlink" href="#synchronization-with-fences" title="Link to this heading"></a></h2>
+<p>When all processes in the communicator access windows collectively in iterative phases, <code class="docutils literal notranslate"><span class="pre">win.fence()</span></code> provides active-target synchronization (acting like an epoch boundary):</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="c1">// Start RMA access epoch</span>
+<span class="n">win</span><span class="p">.</span><span class="n">fence</span><span class="p">();</span>
+
+<span class="c1">// Rank i writes data directly to neighbor rank i+1</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">neighbor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+<span class="n">win</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="o">&amp;</span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">(),</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">neighbor</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="c1">// End RMA access epoch: guarantees all remote puts have finished</span>
+<span class="n">win</span><span class="p">.</span><span class="n">fence</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="releasing-windows">
+<h2>Releasing Windows<a class="headerlink" href="#releasing-windows" title="Link to this heading"></a></h2>
+<p>When remote access is no longer required, destroy the window resource with <code class="docutils literal notranslate"><span class="pre">win.free()</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">win</span><span class="p">.</span><span class="n">free</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="topologies.html" class="btn btn-neutral float-left" title="Process Topologies" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../devel/classes/communicator.html" class="btn btn-neutral float-right" title="Communicator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-present, David Andrs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

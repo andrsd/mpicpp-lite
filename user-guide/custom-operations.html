@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Reductions &amp; Operations &mdash; mpicpp-lite  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/design-tabs.js?v=f930bc37"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Parallel Exception Handling" href="parallel-exceptions.html" />
+    <link rel="prev" title="Custom Datatypes" href="custom-datatypes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            mpicpp-lite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/install.html">Installation &amp; Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="environment-and-comm.html">Environment &amp; Communicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="point-to-point.html">Point-to-Point Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collectives.html">Collective Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="non-blocking.html">Non-Blocking Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom-datatypes.html">Custom Datatypes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Custom Reductions &amp; Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#extremum-with-location">Extremum with Location</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tie-breaking-rule">Tie-Breaking Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supported-native-types">Supported Native Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#user-defined-reduction-operations">User-Defined Reduction Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-declare-commutativity">Step 1: Declare Commutativity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-specialize-userop">Step 2: Specialize <cite>UserOp</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-execute-reduction">Step 3: Execute Reduction</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parallel-exceptions.html">Parallel Exception Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topologies.html">Process Topologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="one-sided.html">One-Sided Communication</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/communicator.html">Communicator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/datatype.html">Datatype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/message.html">Message</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/request.html">Request</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/status.html">Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/test.html">Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/wait.html">Wait</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mpicpp-lite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Custom Reductions &amp; Operations</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="custom-reductions-operations">
+<h1>Custom Reductions &amp; Operations<a class="headerlink" href="#custom-reductions-operations" title="Link to this heading"></a></h1>
+<p>Beyond standard arithmetic and bitwise reductions, <code class="docutils literal notranslate"><span class="pre">mpicpp-lite</span></code> supports finding extrema with their process locations (via <code class="docutils literal notranslate"><span class="pre">ValueLoc</span></code>) and writing arbitrary user-defined reduction operations for custom types.</p>
+<section id="extremum-with-location">
+<span id="index-0"></span><h2>Extremum with Location<a class="headerlink" href="#extremum-with-location" title="Link to this heading"></a></h2>
+<p>When optimizing, searching, or computing error metrics across a cluster, you often need to know not just the minimum or maximum value, but also <em>which</em> process holds that value.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">mpicpp-lite</span></code>, this is handled using the <code class="docutils literal notranslate"><span class="pre">mpi::ValueLoc&lt;T,</span> <span class="pre">L&gt;</span></code> struct and the <code class="docutils literal notranslate"><span class="pre">mpi::op::minloc&lt;&gt;</span></code> / <code class="docutils literal notranslate"><span class="pre">mpi::op::maxloc&lt;&gt;</span></code> operators:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mpicpp-lite/mpicpp-lite.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">Communicator</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
+
+<span class="c1">// Each process evaluates its local error and attaches its rank</span>
+<span class="kt">double</span><span class="w"> </span><span class="n">local_residual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_local_residual</span><span class="p">();</span>
+<span class="n">mpi</span><span class="o">::</span><span class="n">ValueLoc</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">local_residual</span><span class="p">,</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="p">};</span>
+<span class="n">mpi</span><span class="o">::</span><span class="n">ValueLoc</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">global</span><span class="p">;</span>
+
+<span class="c1">// Global reduction for minimum residual and its rank:</span>
+<span class="n">comm</span><span class="p">.</span><span class="n">all_reduce</span><span class="p">(</span><span class="n">local</span><span class="p">,</span><span class="w"> </span><span class="n">global</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">op</span><span class="o">::</span><span class="n">minloc</span><span class="o">&lt;&gt;</span><span class="p">());</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Lowest residual: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">global</span><span class="p">.</span><span class="n">value</span>
+<span class="w">          </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" found on rank: "</span><span class="w">  </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">global</span><span class="p">.</span><span class="n">loc</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<section id="tie-breaking-rule">
+<h3>Tie-Breaking Rule<a class="headerlink" href="#tie-breaking-rule" title="Link to this heading"></a></h3>
+<p>If two or more processes share the exact same minimum or maximum value, <code class="docutils literal notranslate"><span class="pre">minloc</span></code> and <code class="docutils literal notranslate"><span class="pre">maxloc</span></code> follow standard MPI semantics: the process with the <strong>smaller rank/location</strong> wins the tie.</p>
+</section>
+<section id="supported-native-types">
+<h3>Supported Native Types<a class="headerlink" href="#supported-native-types" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">mpi::ValueLoc</span></code> natively maps to fast MPI hardware-accelerated pair datatypes when using standard numeric types:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ValueLoc&lt;short,</span> <span class="pre">int&gt;</span></code> (<code class="docutils literal notranslate"><span class="pre">MPI_SHORT_INT</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ValueLoc&lt;int,</span> <span class="pre">int&gt;</span></code> (<code class="docutils literal notranslate"><span class="pre">MPI_2INT</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ValueLoc&lt;long,</span> <span class="pre">int&gt;</span></code> (<code class="docutils literal notranslate"><span class="pre">MPI_LONG_INT</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ValueLoc&lt;float,</span> <span class="pre">int&gt;</span></code> (<code class="docutils literal notranslate"><span class="pre">MPI_FLOAT_INT</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ValueLoc&lt;double,</span> <span class="pre">int&gt;</span></code> (<code class="docutils literal notranslate"><span class="pre">MPI_DOUBLE_INT</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ValueLoc&lt;long</span> <span class="pre">double,</span> <span class="pre">int&gt;</span></code> (<code class="docutils literal notranslate"><span class="pre">MPI_LONG_DOUBLE_INT</span></code>)</p></li>
+</ul>
+</section>
+</section>
+<section id="user-defined-reduction-operations">
+<span id="index-1"></span><h2>User-Defined Reduction Operations<a class="headerlink" href="#user-defined-reduction-operations" title="Link to this heading"></a></h2>
+<p>You can define custom reduction operations for both standard and registered custom datatypes.</p>
+<section id="step-1-declare-commutativity">
+<h3>Step 1: Declare Commutativity<a class="headerlink" href="#step-1-declare-commutativity" title="Link to this heading"></a></h3>
+<p>If your operation is mathematically commutative (<span class="math notranslate nohighlight">\(x \circ y = y \circ x\)</span>), inform the MPI runtime by specializing <code class="docutils literal notranslate"><span class="pre">mpi::op::IsCommutative</span></code> with <code class="docutils literal notranslate"><span class="pre">std::true_type</span></code>. This allows MPI to perform the reduction using faster tree-based algorithms:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="o">::</span><span class="nn">op</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">template</span><span class="w"> </span><span class="o">&lt;&gt;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">IsCommutative</span><span class="o">&lt;</span><span class="n">sum</span><span class="o">&lt;</span><span class="n">Particle</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">Particle</span><span class="o">&gt;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">true_type</span><span class="w"> </span><span class="p">{};</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace mpicpp_lite::op</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-specialize-userop">
+<h3>Step 2: Specialize <cite>UserOp</cite><a class="headerlink" href="#step-2-specialize-userop" title="Link to this heading"></a></h3>
+<p>Specialize your operation template and inherit from <code class="docutils literal notranslate"><span class="pre">mpi::op::UserOp</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="o">::</span><span class="nn">op</span><span class="w"> </span><span class="p">{</span>
+
+<span class="k">template</span><span class="w"> </span><span class="o">&lt;&gt;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sum</span><span class="o">&lt;</span><span class="n">Particle</span><span class="o">&gt;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">UserOp</span><span class="o">&lt;</span><span class="n">sum</span><span class="o">&lt;</span><span class="n">Particle</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">Particle</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Particle</span>
+<span class="w">    </span><span class="nf">operator</span><span class="p">()(</span><span class="k">const</span><span class="w"> </span><span class="n">Particle</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Particle</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="k">const</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Particle</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="w">        </span><span class="n">result</span><span class="p">.</span><span class="n">mass</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">mass</span><span class="p">;</span>
+<span class="w">        </span><span class="n">result</span><span class="p">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="w">        </span><span class="n">result</span><span class="p">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="w">        </span><span class="n">result</span><span class="p">.</span><span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace mpicpp_lite::op</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-execute-reduction">
+<h3>Step 3: Execute Reduction<a class="headerlink" href="#step-3-execute-reduction" title="Link to this heading"></a></h3>
+<p>Once specialized, your custom operation can be used directly in any collective reduction:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Particle</span><span class="w"> </span><span class="n">local_particle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_local_particle</span><span class="p">();</span>
+<span class="n">Particle</span><span class="w"> </span><span class="n">total_particle</span><span class="w"> </span><span class="p">{};</span>
+
+<span class="n">comm</span><span class="p">.</span><span class="n">all_reduce</span><span class="p">(</span><span class="n">local_particle</span><span class="p">,</span><span class="w"> </span><span class="n">total_particle</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">op</span><span class="o">::</span><span class="n">sum</span><span class="o">&lt;&gt;</span><span class="p">());</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Total mass: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_particle</span><span class="p">.</span><span class="n">mass</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="custom-datatypes.html" class="btn btn-neutral float-left" title="Custom Datatypes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="parallel-exceptions.html" class="btn btn-neutral float-right" title="Parallel Exception Handling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-present, David Andrs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

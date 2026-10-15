@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Non-Blocking Communication &mdash; mpicpp-lite  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Custom Datatypes" href="custom-datatypes.html" />
+    <link rel="prev" title="Collective Operations" href="collectives.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            mpicpp-lite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/install.html">Installation &amp; Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="environment-and-comm.html">Environment &amp; Communicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="point-to-point.html">Point-to-Point Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collectives.html">Collective Operations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Non-Blocking Communication</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#initiating-transfers">Initiating Transfers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#waiting-for-completion">Waiting for Completion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#waiting-with-a-timeout">Waiting with a Timeout</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-for-completion">Testing for Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#managing-collections-of-requests">Managing Collections of Requests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#waiting-for-all-requests">Waiting for All Requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waiting-for-any-request">Waiting for Any Request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testing-collections">Testing Collections</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#non-blocking-collectives">Non-Blocking Collectives</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom-datatypes.html">Custom Datatypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom-operations.html">Custom Reductions &amp; Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel-exceptions.html">Parallel Exception Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topologies.html">Process Topologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="one-sided.html">One-Sided Communication</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/communicator.html">Communicator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/datatype.html">Datatype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/message.html">Message</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/operation.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/request.html">Request</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/status.html">Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/test.html">Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devel/classes/wait.html">Wait</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mpicpp-lite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Non-Blocking Communication</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="non-blocking-communication">
+<h1>Non-Blocking Communication<a class="headerlink" href="#non-blocking-communication" title="Link to this heading"></a></h1>
+<p>Non-blocking communication decouples the initiation of a message transfer from its completion. This allows computation to overlap with data movement and prevents deadlock in cyclic communication patterns.</p>
+<section id="initiating-transfers">
+<span id="index-0"></span><h2>Initiating Transfers<a class="headerlink" href="#initiating-transfers" title="Link to this heading"></a></h2>
+<p>Non-blocking operations begin with an <code class="docutils literal notranslate"><span class="pre">i</span></code> prefix (such as <code class="docutils literal notranslate"><span class="pre">isend</span></code> and <code class="docutils literal notranslate"><span class="pre">irecv</span></code>) and return an <code class="docutils literal notranslate"><span class="pre">mpi::Request</span></code> handle immediately:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mpicpp-lite/mpicpp-lite.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">Communicator</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">send_buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="n">mpi</span><span class="o">::</span><span class="n">Request</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">isend</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Tag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">send_buf</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Perform local computation while message is in transit</span>
+<span class="w">    </span><span class="n">do_computation</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Wait until buffer can be safely reused or modified</span>
+<span class="w">    </span><span class="n">mpi</span><span class="o">::</span><span class="n">wait</span><span class="p">(</span><span class="n">req</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">comm</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">recv_buf</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="w">    </span><span class="n">mpi</span><span class="o">::</span><span class="n">Request</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">irecv</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Tag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">recv_buf</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">do_computation</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">mpi</span><span class="o">::</span><span class="n">wait</span><span class="p">(</span><span class="n">req</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="waiting-for-completion">
+<span id="index-1"></span><h2>Waiting for Completion<a class="headerlink" href="#waiting-for-completion" title="Link to this heading"></a></h2>
+<p>To block until an operation has finished, use <code class="docutils literal notranslate"><span class="pre">mpi::wait()</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">Request</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">irecv</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Tag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">buffer</span><span class="p">);</span>
+
+<span class="c1">// Wait and receive the Status object:</span>
+<span class="n">mpi</span><span class="o">::</span><span class="n">Status</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">wait</span><span class="p">(</span><span class="n">req</span><span class="p">);</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Received "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="n">count</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">          </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" elements from rank "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="n">source</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<section id="waiting-with-a-timeout">
+<span id="index-2"></span><h3>Waiting with a Timeout<a class="headerlink" href="#waiting-with-a-timeout" title="Link to this heading"></a></h3>
+<p>You can also specify a timeout in seconds to prevent indefinitely hanging processes:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">completed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">wait_with_timeout</span><span class="p">(</span><span class="n">req</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5</span><span class="p">);</span><span class="w"> </span><span class="c1">// 2.5 seconds timeout</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">completed</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Communication timed out!"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">req</span><span class="p">.</span><span class="n">cancel</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-for-completion">
+<span id="index-3"></span><h2>Testing for Completion<a class="headerlink" href="#testing-for-completion" title="Link to this heading"></a></h2>
+<p>To check if a transfer has completed without blocking the calling thread, use <code class="docutils literal notranslate"><span class="pre">mpi::test()</span></code>. It returns an <code class="docutils literal notranslate"><span class="pre">std::optional&lt;mpi::Status&gt;</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">Request</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">irecv</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Tag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">buffer</span><span class="p">);</span>
+
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">status_opt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">test</span><span class="p">(</span><span class="n">req</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status_opt</span><span class="p">.</span><span class="n">has_value</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Request has completed</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Finished receiving from "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">status_opt</span><span class="o">-&gt;</span><span class="n">source</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Still in progress: perform background work</span>
+<span class="w">    </span><span class="n">do_background_work</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="managing-collections-of-requests">
+<span id="index-4"></span><h2>Managing Collections of Requests<a class="headerlink" href="#managing-collections-of-requests" title="Link to this heading"></a></h2>
+<p>When coordinating transfers with multiple neighbors, you can collect <code class="docutils literal notranslate"><span class="pre">mpi::Request</span></code> handles in a <code class="docutils literal notranslate"><span class="pre">std::vector&lt;mpi::Request&gt;</span></code>:</p>
+<section id="waiting-for-all-requests">
+<h3>Waiting for All Requests<a class="headerlink" href="#waiting-for-all-requests" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">mpi</span><span class="o">::</span><span class="n">Request</span><span class="o">&gt;</span><span class="w"> </span><span class="n">requests</span><span class="p">;</span>
+
+<span class="c1">// Post non-blocking sends to all neighbors</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">dest</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">neighbors</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">requests</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">comm</span><span class="p">.</span><span class="n">isend</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">Tag</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">data_out</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="c1">// Wait for all posted sends to complete:</span>
+<span class="n">mpi</span><span class="o">::</span><span class="n">wait_all</span><span class="p">(</span><span class="n">requests</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="waiting-for-any-request">
+<h3>Waiting for Any Request<a class="headerlink" href="#waiting-for-any-request" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">mpi::wait_any()</span></code> blocks until at least one request completes, returning the index of the completed request:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="n">mpi</span><span class="o">::</span><span class="n">TestAnyResult</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">wait_any</span><span class="p">(</span><span class="n">requests</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Request at index "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">index</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" completed."</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="testing-collections">
+<h3>Testing Collections<a class="headerlink" href="#testing-collections" title="Link to this heading"></a></h3>
+<p>You can also test whether all requests or any request in a collection has completed:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mpi</span><span class="o">::</span><span class="n">test_all</span><span class="p">(</span><span class="n">requests</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// All operations finished</span>
+<span class="p">}</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">any_result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">test_any</span><span class="p">(</span><span class="n">requests</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">any_result</span><span class="p">.</span><span class="n">has_value</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Request "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">any_result</span><span class="o">-&gt;</span><span class="n">index</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" finished."</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="non-blocking-collectives">
+<span id="index-5"></span><h2>Non-Blocking Collectives<a class="headerlink" href="#non-blocking-collectives" title="Link to this heading"></a></h2>
+<p>All standard collective operations have non-blocking counterparts returning an <code class="docutils literal notranslate"><span class="pre">mpi::Request</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">comm.ibroadcast(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comm.iscatter(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comm.igather(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comm.iall_gather(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comm.iall_to_all(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comm.ireduce(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comm.iall_reduce(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comm.iscan(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comm.iexscan(...)</span></code></p></li>
+</ul>
+<p>This enables overlapping heavy global reductions with local computation:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span><span class="w"> </span><span class="nn">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">mpicpp_lite</span><span class="p">;</span>
+
+<span class="kt">double</span><span class="w"> </span><span class="n">local_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_energy</span><span class="p">();</span>
+<span class="kt">double</span><span class="w"> </span><span class="n">global_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+
+<span class="c1">// Start global reduction asynchronously</span>
+<span class="n">mpi</span><span class="o">::</span><span class="n">Request</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">.</span><span class="n">iall_reduce</span><span class="p">(</span><span class="n">local_energy</span><span class="p">,</span><span class="w"> </span><span class="n">global_energy</span><span class="p">,</span><span class="w"> </span><span class="n">mpi</span><span class="o">::</span><span class="n">op</span><span class="o">::</span><span class="n">sum</span><span class="o">&lt;&gt;</span><span class="p">());</span>
+
+<span class="c1">// Compute boundary conditions or update local physics in parallel</span>
+<span class="n">compute_local_physics</span><span class="p">();</span>
+
+<span class="c1">// Finish reduction before using the global result</span>
+<span class="n">mpi</span><span class="o">::</span><span class="n">wait</span><span class="p">(</span><span class="n">req</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="collectives.html" class="btn btn-neutral float-left" title="Collective Operations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom-datatypes.html" class="btn btn-neutral float-right" title="Custom Datatypes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-present, David Andrs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
