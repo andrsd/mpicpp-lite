@@ -5,21 +5,35 @@
 
 #include "mpi.h"
 #include "Error.h"
+#include "ValueLoc.h"
 #include <algorithm>
 #include <type_traits>
 #include <concepts>
+#include <cstddef>
 
 namespace mpicpp_lite {
 
 template <typename T>
 concept Numeric = std::integral<T> || std::floating_point<T>;
 
+template <typename T>
+concept Bitwise = std::integral<T> || std::same_as<T, std::byte>;
+
+template <typename T>
+concept ValueLocation =
+    std::same_as<T, ValueLoc<short, int>> ||
+    std::same_as<T, ValueLoc<int, int>> ||
+    std::same_as<T, ValueLoc<long int, int>> ||
+    std::same_as<T, ValueLoc<float, int>> ||
+    std::same_as<T, ValueLoc<double, int>> ||
+    std::same_as<T, ValueLoc<long double, int>>;
+
 namespace op {
 
 /// Template for summation operation on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <typename T = void>
 struct sum {
     /// Call operator
     ///
@@ -33,12 +47,25 @@ struct sum {
     }
 };
 
+// Transparent specialization for void
+template <>
+struct sum<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) + std::forward<V>(y))
+    {
+        return std::forward<U>(x) + std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
 // Product
 
 /// Template for product operation on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <typename T = void>
 struct prod {
     /// Call operator
     ///
@@ -52,10 +79,23 @@ struct prod {
     }
 };
 
+// Transparent specialization for void
+template <>
+struct prod<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) * std::forward<V>(y))
+    {
+        return std::forward<U>(x) * std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
 /// Template for finding maximum on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <typename T = void>
 struct max {
     /// Call operator
     ///
@@ -69,10 +109,25 @@ struct max {
     }
 };
 
+// Transparent specialization for void
+template <>
+struct max<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const
+        -> decltype(std::forward<U>(x) < std::forward<V>(y) ? std::forward<V>(y)
+                                                            : std::forward<U>(x))
+    {
+        return std::forward<U>(x) < std::forward<V>(y) ? std::forward<V>(y) : std::forward<U>(x);
+    }
+
+    using is_transparent = void;
+};
+
 /// Template for finding minimum on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <typename T = void>
 struct min {
     /// Call operator
     ///
@@ -86,10 +141,25 @@ struct min {
     }
 };
 
+// Transparent specialization for void
+template <>
+struct min<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const
+        -> decltype(std::forward<U>(x) < std::forward<V>(y) ? std::forward<U>(x)
+                                                            : std::forward<V>(y))
+    {
+        return std::forward<U>(x) < std::forward<V>(y) ? std::forward<U>(x) : std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
 /// Template for logical AND on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <typename T = void>
 struct logical_and {
     /// Call operator
     ///
@@ -103,10 +173,29 @@ struct logical_and {
     }
 };
 
+// Transparent specialization for void
+template <>
+struct logical_and<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) && std::forward<V>(y))
+    {
+        return std::forward<U>(x) && std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template alias for logical AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using land = logical_and<T>;
+
 /// Template for logical OR on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <typename T = void>
 struct logical_or {
     /// Call operator
     ///
@@ -120,10 +209,29 @@ struct logical_or {
     }
 };
 
+// Transparent specialization for void
+template <>
+struct logical_or<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) || std::forward<V>(y))
+    {
+        return std::forward<U>(x) || std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template alias for logical OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using lor = logical_or<T>;
+
 /// Template for logical XOR on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
+template <typename T = void>
 struct logical_xor {
     /// Call operator
     ///
@@ -137,16 +245,238 @@ struct logical_xor {
     }
 };
 
-/// Template for replace on a `T` type
+// Transparent specialization for void
+template <>
+struct logical_xor<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(!std::forward<U>(x) != !std::forward<V>(y))
+    {
+        return !std::forward<U>(x) != !std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template alias for logical XOR on a `T` type
 ///
 /// @tparam T Datatype
-template <typename T>
-struct replace {
+template <typename T = void>
+using lxor = logical_xor<T>;
+
+/// Template for bitwise AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct bitwise_and {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return `x` AND `y`
     T
     operator()(const T & x, const T & y) const
     {
+        return x & y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct bitwise_and<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) & std::forward<V>(y))
+    {
+        return std::forward<U>(x) & std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template alias for bitwise AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using band = bitwise_and<T>;
+
+/// Template for bitwise OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct bitwise_or {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return `x` OR `y`
+    T
+    operator()(const T & x, const T & y) const
+    {
+        return x | y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct bitwise_or<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) | std::forward<V>(y))
+    {
+        return std::forward<U>(x) | std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template alias for bitwise OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using bor = bitwise_or<T>;
+
+/// Template for bitwise XOR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct bitwise_xor {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return `x` XOR `y`
+    T
+    operator()(const T & x, const T & y) const
+    {
+        return x ^ y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct bitwise_xor<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const -> decltype(std::forward<U>(x) ^ std::forward<V>(y))
+    {
+        return std::forward<U>(x) ^ std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template alias for bitwise XOR on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+using bxor = bitwise_xor<T>;
+
+/// Template for finding minimum value and its location on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct minloc {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return The operand with minimum value (tie broken by smaller location)
+    T
+    operator()(const T & x, const T & y) const
+    {
+        if (x.value < y.value)
+            return x;
+        else if (y.value < x.value)
+            return y;
+        else
+            return (x.loc < y.loc) ? x : y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct minloc<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const
+        -> decltype((x.value < y.value) ? std::forward<U>(x) : std::forward<V>(y))
+    {
+        if (x.value < y.value)
+            return std::forward<U>(x);
+        else if (y.value < x.value)
+            return std::forward<V>(y);
+        else
+            return (x.loc < y.loc) ? std::forward<U>(x) : std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template for finding maximum value and its location on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct maxloc {
+    /// Call operator
+    ///
+    /// @param x First operand
+    /// @param y Second operand
+    /// @return The operand with maximum value (tie broken by smaller location)
+    T
+    operator()(const T & x, const T & y) const
+    {
+        if (x.value > y.value)
+            return x;
+        else if (y.value > x.value)
+            return y;
+        else
+            return (x.loc < y.loc) ? x : y;
+    }
+};
+
+// Transparent specialization for void
+template <>
+struct maxloc<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && y) const
+        -> decltype((x.value > y.value) ? std::forward<U>(x) : std::forward<V>(y))
+    {
+        if (x.value > y.value)
+            return std::forward<U>(x);
+        else if (y.value > x.value)
+            return std::forward<V>(y);
+        else
+            return (x.loc < y.loc) ? std::forward<U>(x) : std::forward<V>(y);
+    }
+
+    using is_transparent = void;
+};
+
+/// Template for replace on a `T` type
+///
+/// @tparam T Datatype
+template <typename T = void>
+struct replace {
+    T
+    operator()(const T & x, const T & /*y*/) const
+    {
         return x;
     }
+};
+
+// Transparent specialization for void
+template <>
+struct replace<void> {
+    template <typename U, typename V>
+    constexpr auto
+    operator()(U && x, V && /*y*/) const -> decltype(std::forward<U>(x))
+    {
+        return std::forward<U>(x);
+    }
+
+    using is_transparent = void;
 };
 
 /// Determine if a function object type is commutative.
@@ -157,6 +487,77 @@ struct replace {
 /// derive from the class `std::true_type`.
 template <typename Op, typename T>
 struct IsCommutative : public std::false_type {};
+
+/// Map potentially transparent operation template to its specialized type `T` representation.
+template <typename Op, typename T>
+struct MapOp {
+    using type = Op;
+};
+
+template <typename T>
+struct MapOp<sum<void>, T> {
+    using type = sum<T>;
+};
+
+template <typename T>
+struct MapOp<prod<void>, T> {
+    using type = prod<T>;
+};
+
+template <typename T>
+struct MapOp<max<void>, T> {
+    using type = max<T>;
+};
+
+template <typename T>
+struct MapOp<min<void>, T> {
+    using type = min<T>;
+};
+
+template <typename T>
+struct MapOp<logical_and<void>, T> {
+    using type = logical_and<T>;
+};
+
+template <typename T>
+struct MapOp<logical_or<void>, T> {
+    using type = logical_or<T>;
+};
+
+template <typename T>
+struct MapOp<logical_xor<void>, T> {
+    using type = logical_xor<T>;
+};
+
+template <typename T>
+struct MapOp<bitwise_and<void>, T> {
+    using type = bitwise_and<T>;
+};
+
+template <typename T>
+struct MapOp<bitwise_or<void>, T> {
+    using type = bitwise_or<T>;
+};
+
+template <typename T>
+struct MapOp<bitwise_xor<void>, T> {
+    using type = bitwise_xor<T>;
+};
+
+template <typename T>
+struct MapOp<minloc<void>, T> {
+    using type = minloc<T>;
+};
+
+template <typename T>
+struct MapOp<maxloc<void>, T> {
+    using type = maxloc<T>;
+};
+
+template <typename T>
+struct MapOp<replace<void>, T> {
+    using type = replace<T>;
+};
 
 /// Template for MPI operation `Op` on a `T` type
 ///
@@ -172,8 +573,9 @@ struct Operation {
 /// Template for summation operation on a `T` type
 ///
 /// @tparam T Datatype
-template <Numeric T>
-struct Operation<sum<T>, T> {
+template <typename Op, Numeric T>
+    requires std::same_as<Op, op::sum<void>> || std::same_as<Op, op::sum<T>>
+struct Operation<Op, T> {
     using is_native = std::true_type;
 
     /// Call operator
@@ -189,8 +591,9 @@ struct Operation<sum<T>, T> {
 /// Template for product operation on a `T` type
 ///
 /// @tparam T Datatype
-template <Numeric T>
-struct Operation<prod<T>, T> {
+template <typename Op, Numeric T>
+    requires std::same_as<Op, op::prod<void>> || std::same_as<Op, op::prod<T>>
+struct Operation<Op, T> {
     using is_native = std::true_type;
 
     /// Call operator
@@ -206,8 +609,9 @@ struct Operation<prod<T>, T> {
 /// Template for finding maximum on a `T` type
 ///
 /// @tparam T Datatype
-template <Numeric T>
-struct Operation<max<T>, T> {
+template <typename Op, Numeric T>
+    requires std::same_as<Op, op::max<void>> || std::same_as<Op, op::max<T>>
+struct Operation<Op, T> {
     using is_native = std::true_type;
 
     /// Call operator
@@ -223,8 +627,9 @@ struct Operation<max<T>, T> {
 /// Template for finding minimum on a `T` type
 ///
 /// @tparam T Datatype
-template <Numeric T>
-struct Operation<min<T>, T> {
+template <typename Op, Numeric T>
+    requires std::same_as<Op, op::min<void>> || std::same_as<Op, op::min<T>>
+struct Operation<Op, T> {
     using is_native = std::true_type;
 
     /// Call operator
@@ -240,8 +645,9 @@ struct Operation<min<T>, T> {
 /// Template for logical AND on a `T` type
 ///
 /// @tparam T Datatype
-template <Numeric T>
-struct Operation<logical_and<T>, T> {
+template <typename Op, Numeric T>
+    requires std::same_as<Op, op::logical_and<void>> || std::same_as<Op, op::logical_and<T>>
+struct Operation<Op, T> {
     using is_native = std::true_type;
 
     /// Call operator
@@ -257,8 +663,9 @@ struct Operation<logical_and<T>, T> {
 /// Template for logical OR on a `T` type
 ///
 /// @tparam T Datatype
-template <Numeric T>
-struct Operation<logical_or<T>, T> {
+template <typename Op, Numeric T>
+    requires std::same_as<Op, op::logical_or<void>> || std::same_as<Op, op::logical_or<T>>
+struct Operation<Op, T> {
     using is_native = std::true_type;
 
     /// Call operator
@@ -274,8 +681,9 @@ struct Operation<logical_or<T>, T> {
 /// Template for logical XOR on a `T` type
 ///
 /// @tparam T Datatype
-template <Numeric T>
-struct Operation<logical_xor<T>, T> {
+template <typename Op, Numeric T>
+    requires std::same_as<Op, op::logical_xor<void>> || std::same_as<Op, op::logical_xor<T>>
+struct Operation<Op, T> {
     using is_native = std::true_type;
 
     /// Call operator
@@ -288,11 +696,102 @@ struct Operation<logical_xor<T>, T> {
     }
 };
 
+/// Template for bitwise AND on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, Bitwise T>
+    requires std::same_as<Op, op::bitwise_and<void>> || std::same_as<Op, op::bitwise_and<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for bitwise AND
+    static MPI_Op
+    op()
+    {
+        return MPI_BAND;
+    }
+};
+
+/// Template for bitwise OR on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, Bitwise T>
+    requires std::same_as<Op, op::bitwise_or<void>> || std::same_as<Op, op::bitwise_or<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for bitwise OR
+    static MPI_Op
+    op()
+    {
+        return MPI_BOR;
+    }
+};
+
+/// Template for bitwise XOR on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, Bitwise T>
+    requires std::same_as<Op, op::bitwise_xor<void>> || std::same_as<Op, op::bitwise_xor<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for bitwise XOR
+    static MPI_Op
+    op()
+    {
+        return MPI_BXOR;
+    }
+};
+
+/// Template for finding minimum value and its location on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, ValueLocation T>
+    requires std::same_as<Op, op::minloc<void>> || std::same_as<Op, op::minloc<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for finding minimum and location
+    static MPI_Op
+    op()
+    {
+        return MPI_MINLOC;
+    }
+};
+
+/// Template for finding maximum value and its location on a `T` type
+///
+/// @tparam T Datatype
+template <typename Op, ValueLocation T>
+    requires std::same_as<Op, op::maxloc<void>> || std::same_as<Op, op::maxloc<T>>
+struct Operation<Op, T> {
+    using is_native = std::true_type;
+
+    /// Call operator
+    ///
+    /// @return MPI operation for finding maximum and location
+    static MPI_Op
+    op()
+    {
+        return MPI_MAXLOC;
+    }
+};
+
 /// Template for replace on a `T` type
 ///
 /// @tparam T Datatype
-template <Numeric T>
-struct Operation<replace<T>, T> {
+template <typename Op, Numeric T>
+    requires std::same_as<Op, op::replace<void>> || std::same_as<Op, op::replace<T>>
+struct Operation<Op, T> {
     using is_native = std::true_type;
 
     /// Call operator
@@ -324,11 +823,13 @@ create(MPI_User_function * user_fn, bool commute)
 /// @tparam T Datatype
 template <typename Op, typename T>
 struct UserOp {
+    using MappedOp = typename MapOp<Op, T>::type;
+
     /// Get the `MPI_Op` for the user-defined operation
     static MPI_Op
     op()
     {
-        static auto mop = create(&UserOp<Op, T>::perform, IsCommutative<Op, T>::value);
+        static auto mop = create(&UserOp<Op, T>::perform, IsCommutative<MappedOp, T>::value);
         return mop;
     }
 
@@ -338,7 +839,7 @@ private:
     {
         T * invec = static_cast<T *>(a);
         T * outvec = static_cast<T *>(b);
-        Op op;
+        MappedOp op;
         std::transform(invec, invec + *len, outvec, outvec, op);
     }
 };

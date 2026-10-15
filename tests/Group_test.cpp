@@ -15,24 +15,31 @@ TEST(GroupTest, include)
     auto world_group = comm.group();
     auto sub_group = world_group.include({ 0, 2, 3 });
     EXPECT_EQ(sub_group.size(), 3);
-    if (rank == 0)
+    if (rank == 0) {
         EXPECT_EQ(sub_group.rank(), 0);
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_EQ(sub_group.rank(), UNDEFINED);
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_EQ(sub_group.rank(), 1);
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_EQ(sub_group.rank(), 2);
+    }
 
     auto sub_comm = comm.create(sub_group);
     if (sub_comm.is_valid()) {
         EXPECT_EQ(sub_comm.size(), 3);
-        if (rank == 0)
+        if (rank == 0) {
             EXPECT_EQ(sub_comm.rank(), 0);
-        else if (rank == 2)
+        }
+        else if (rank == 2) {
             EXPECT_EQ(sub_comm.rank(), 1);
-        else if (rank == 3)
+        }
+        else if (rank == 3) {
             EXPECT_EQ(sub_comm.rank(), 2);
+        }
         sub_comm.free();
     }
 
@@ -53,22 +60,28 @@ TEST(GroupTest, exclude)
     auto world_group = comm.group();
     auto sub_group = world_group.exclude({ 0, 3 });
     EXPECT_EQ(sub_group.size(), 2);
-    if (rank == 0)
+    if (rank == 0) {
         EXPECT_EQ(sub_group.rank(), UNDEFINED);
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_EQ(sub_group.rank(), 0);
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_EQ(sub_group.rank(), 1);
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_EQ(sub_group.rank(), UNDEFINED);
+    }
 
     auto sub_comm = comm.create(sub_group);
     if (sub_comm.is_valid()) {
         EXPECT_EQ(sub_comm.size(), 2);
-        if (rank == 1)
+        if (rank == 1) {
             EXPECT_EQ(sub_comm.rank(), 0);
-        else if (rank == 2)
+        }
+        else if (rank == 2) {
             EXPECT_EQ(sub_comm.rank(), 1);
+        }
     }
 
     sub_group.free();

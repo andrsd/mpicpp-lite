@@ -8,6 +8,7 @@
 #include <optional>
 #include <vector>
 #include <format>
+#include <stdexcept>
 
 namespace mpicpp_lite {
 
@@ -182,6 +183,21 @@ inline Info
 Info::env()
 {
     return { MPI_INFO_ENV };
+}
+
+/// Retrieve hardware resource information
+///
+/// @return Info object containing hardware-specific key-value pairs
+inline Info
+hw_resource_info()
+{
+#if (MPI_VERSION >= 4)
+    MPI_Info hw_info;
+    MPI_CHECK(MPI_Get_hw_resource_info(&hw_info));
+    return Info(hw_info);
+#else
+    throw std::runtime_error("hw_resource_info() is available from MPI 4+");
+#endif
 }
 
 } // namespace mpicpp_lite

@@ -6,7 +6,9 @@
 #include "mpi.h"
 #include <vector>
 #include <map>
+#include <utility>
 #include <cassert>
+#include <concepts>
 #include "Datatype.h"
 #include "Status.h"
 #include "Request.h"
@@ -24,6 +26,45 @@ class CartesianCommunicator;
 /// Wrapper around `MPI_Comm`
 class Communicator {
 public:
+    class Key {
+    public:
+        constexpr Key() : value_(0) {}
+        explicit constexpr Key(int tag) : value_(tag) {}
+
+        constexpr int
+        value() const
+        {
+            return this->value_;
+        }
+
+        constexpr bool
+        operator==(Key other) const
+        {
+            return this->value_ == other.value_;
+        }
+
+        constexpr bool
+        operator==(int other) const
+        {
+            return this->value_ == other;
+        }
+
+        constexpr bool
+        operator!=(Key other) const
+        {
+            return this->value_ != other.value_;
+        }
+
+        constexpr bool
+        operator!=(int other) const
+        {
+            return this->value_ != other;
+        }
+
+    private:
+        int value_;
+    };
+
     /// Create `MPI_COMM_WORLD` communicator
     Communicator();
 
@@ -60,6 +101,24 @@ public:
     ///
     /// @return A new communicator over the same group as comm but with a new context.
     Communicator duplicate() const;
+
+    /// Duplicates an existing communicator with all its cached information and associated info
+    /// hints
+    ///
+    /// @param info Info object containing the hints to associate with the new communicator
+    /// @return A new communicator over the same group as comm but with a new context.
+    Communicator duplicate(const Info & info) const;
+
+    /// Non-blocking duplication of an existing communicator
+    ///
+    /// @return Pair with the new communicator and the request associated with the duplication
+    std::pair<Communicator, Request> iduplicate() const;
+
+    /// Non-blocking duplication of an existing communicator with info hints
+    ///
+    /// @param info Info object containing the hints to associate with the new communicator
+    /// @return Pair with the new communicator and the request associated with the duplication
+    std::pair<Communicator, Request> iduplicate(const Info & info) const;
 
     /// Accesses the group associated with given communicator
     ///
@@ -199,6 +258,46 @@ public:
     template <typename T>
     Request irecv(int source, Tag tag, T * values, int n) const;
 
+    /// Send and receive messages in a single blocking call
+    template <typename TSend, typename TRecv>
+    Status send_recv(int dest,
+                     Tag send_tag,
+                     const TSend & send_value,
+                     int source,
+                     Tag recv_tag,
+                     TRecv & recv_value) const;
+
+    /// Send and receive messages in a single blocking call
+    template <typename TSend, typename TRecv>
+    Status send_recv(int dest,
+                     Tag send_tag,
+                     const TSend * send_values,
+                     int send_count,
+                     int source,
+                     Tag recv_tag,
+                     TRecv * recv_values,
+                     int recv_count) const;
+
+    /// Send and receive messages in a single non-blocking call
+    template <typename TSend, typename TRecv>
+    Request isend_recv(int dest,
+                       Tag send_tag,
+                       const TSend & send_value,
+                       int source,
+                       Tag recv_tag,
+                       TRecv & recv_value) const;
+
+    /// Send and receive messages in a single non-blocking call
+    template <typename TSend, typename TRecv>
+    Request isend_recv(int dest,
+                       Tag send_tag,
+                       const TSend * send_values,
+                       int send_count,
+                       int source,
+                       Tag recv_tag,
+                       TRecv * recv_values,
+                       int recv_count) const;
+
     /// Nonblocking test for a message
     ///
     /// @param source Rank of source or `ANY_SOURCE`
@@ -261,6 +360,9 @@ public:
     /// Wait for all processes within a communicator to reach the barrier.
     void barrier() const;
 
+    /// Wait for all processes within a communicator to reach the barrier (non-blocking).
+    Request ibarrier() const;
+
     /// Broadcast a value from a root process to all other processes
     ///
     /// @tparam T C++ type of the data
@@ -294,6 +396,18 @@ public:
     /// @param root Rank of the sending process
     template <typename KEY, typename VALUE>
     void broadcast(std::map<KEY, VALUE> & map, int root) const;
+
+    /// Broadcast a value from a root process to all other processes (non-blocking)
+    template <typename T>
+    Request ibroadcast(T & value, int root) const;
+
+    /// Broadcast a std::vector of values from a root process to all other processes (non-blocking)
+    template <typename T>
+    Request ibroadcast(std::vector<T> & value, int root) const;
+
+    /// Broadcast a value from a root process to all other processes (non-blocking)
+    template <typename T>
+    Request ibroadcast(T * values, int n, int root) const;
 
     /// Gather together values from a group of processes
     ///
@@ -351,6 +465,30 @@ public:
                 const std::vector<int> & out_offsets,
                 int root) const;
 
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const T & in_value, T * out_values, int root) const;
+
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const T & in_value, std::vector<T> & out_values, int root) const;
+
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const T * in_values, int n, T * out_values, int root) const;
+
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const T * in_values, int n, std::vector<T> & out_values, int root) const;
+
+    /// Gather together values from a group of processes (non-blocking)
+    template <typename T>
+    Request igather(const std::vector<T> & in_values,
+                    std::vector<T> & out_values,
+                    const std::vector<int> & counts,
+                    const std::vector<int> & offsets,
+                    int root) const;
+
     /// Gathers data from all tasks and distribute the combined data to all tasks
     ///
     /// @tparam T C++ type of the data
@@ -394,6 +532,21 @@ public:
                     const std::vector<int> & out_counts,
                     const std::vector<int> & out_offsets) const;
 
+    /// Gathers data from all tasks and distribute the combined data to all tasks (non-blocking)
+    template <typename T>
+    Request iall_gather(const T * in_value, int n, T * out_values, int m) const;
+
+    /// Gathers data from all tasks and distribute the combined data to all tasks (non-blocking)
+    template <typename T>
+    Request iall_gather(const T & in_value, std::vector<T> & out_values) const;
+
+    /// Gathers data from all tasks and deliver the combined data to all tasks (non-blocking)
+    template <typename T>
+    Request iall_gather(const std::vector<T> & in_values,
+                        std::vector<T> & out_values,
+                        const std::vector<int> & out_counts,
+                        const std::vector<int> & out_offsets) const;
+
     /// Send data from one process to all other processes in a communicator
     ///
     /// @tparam T C++ type of the data
@@ -431,6 +584,30 @@ public:
     /// @param root Rank of the sending process
     template <typename T>
     void scatter(const std::vector<T> & in_values, T * out_values, int n, int root) const;
+
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const T * in_values, T & out_value, int root) const;
+
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const std::vector<T> & in_values, T & out_value, int root) const;
+
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const T * in_values, T * out_values, int n, int root) const;
+
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const std::vector<T> & in_values, T * out_values, int n, int root) const;
+
+    /// Send data from one process to all other processes in a communicator (non-blocking)
+    template <typename T>
+    Request iscatter(const std::vector<T> & in_values,
+                     const std::vector<int> & counts,
+                     const std::vector<int> & offsets,
+                     std::vector<T> & out_values,
+                     int root) const;
 
     /// Reduce values on all processes to a single value
     ///
@@ -481,6 +658,19 @@ public:
     void reduce(std::vector<T> & values, Op op, int root) const;
     template <typename T, typename Op>
     void reduce(T & value, Op op, int root) const;
+
+    /// Reduce values on all processes to a single value (non-blocking)
+    template <typename T, typename Op>
+    Request ireduce(const T * in_values, int n, T * out_values, Op op, int root) const;
+
+    /// Reduce values on all processes to a single value (non-blocking)
+    template <typename T, typename Op>
+    Request
+    ireduce(const std::vector<T> & in_values, std::vector<T> & out_values, Op op, int root) const;
+
+    /// Reduce values on all processes to a single value (non-blocking)
+    template <typename T, typename Op>
+    Request ireduce(const T & in_value, T & out_value, Op op, int root) const;
 
     /// Combine values from all processes and distributes the result back to all processes
     ///
@@ -614,6 +804,23 @@ public:
                     const std::vector<int> & out_counts,
                     const std::vector<int> & out_offsets) const;
 
+    /// Sends data from all to all processes (non-blocking)
+    template <typename T>
+    Request iall_to_all(const T * in_values, int n, T * out_values, int m) const;
+
+    /// Sends data from all to all processes (non-blocking)
+    template <typename T>
+    Request iall_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const;
+
+    /// Sends data from all to all processes (non-blocking)
+    template <typename T>
+    Request iall_to_all(const std::vector<T> & in_values,
+                        const std::vector<int> & in_counts,
+                        const std::vector<int> & in_offsets,
+                        std::vector<T> & out_values,
+                        const std::vector<int> & out_counts,
+                        const std::vector<int> & out_offsets) const;
+
     /// Split a communicator
     ///
     /// @param color Control of subset assignment. Processes with the same color are in the same
@@ -659,6 +866,18 @@ public:
     template <typename T, typename Op>
     void scan(const T & in_value, T & out_value, Op op) const;
 
+    /// Computes the scan (partial reductions) of data on a collection of processes (non-blocking)
+    template <typename T, typename Op>
+    Request iscan(const T * in_values, int n, T * out_values, Op op) const;
+
+    /// Computes the scan (partial reductions) of data on a collection of processes (non-blocking)
+    template <typename T, typename Op>
+    Request iscan(const std::vector<T> & in_values, std::vector<T> & out_values, Op op) const;
+
+    /// Computes the scan (partial reductions) of data on a collection of processes (non-blocking)
+    template <typename T, typename Op>
+    Request iscan(const T & in_value, T & out_value, Op op) const;
+
     /// Computes the exclusive scan (partial reductions) of data on a collection of processes
     ///
     /// @tparam T C++ type of the data
@@ -690,6 +909,66 @@ public:
     template <typename T, typename Op>
     void exscan(const T & in_value, T & out_value, Op op) const;
 
+    /// Computes the exclusive scan (partial reductions) of data on a collection of processes
+    /// (non-blocking)
+    template <typename T, typename Op>
+    Request iexscan(const T * in_values, int n, T * out_value, Op op) const;
+
+    /// Computes the exclusive scan (partial reductions) of data on a collection of processes
+    /// (non-blocking)
+    template <typename T, typename Op>
+    Request iexscan(const std::vector<T> & in_values, std::vector<T> & out_values, Op op) const;
+
+    /// Computes the exclusive scan (partial reductions) of data on a collection of processes
+    /// (non-blocking)
+    template <typename T, typename Op>
+    Request iexscan(const T & in_value, T & out_value, Op op) const;
+
+    /// Retrieves attribute value by key
+    ///
+    /// @param key Key of the attribute to get
+    /// @return Attribute value, if found, otherwise `std::nullopt`
+    template <typename T>
+        requires std::copyable<T>
+    std::optional<T> attr(Key key) const;
+
+    /// Stores attribute value associated with a key
+    template <typename T>
+        requires std::copyable<T>
+    void set_attr(Key key, const T & val);
+
+    /// Deletes an attribute value associated with a key on a communicator
+    ///
+    /// @param key Key of the attribute to delete
+    void delete_attr(Key key);
+
+    /// Set new configuration hints for a communicator
+    ///
+    /// @param info Info object containing the new hints
+    void set_info(const Info & info) const;
+
+    /// Get active hints associated with a communicator
+    ///
+    /// @return Info object containing the hints
+    Info info() const;
+
+    /// Set the print name for an MPI communicator
+    ///
+    /// @param name The character string which is remembered as the name
+    void set_name(const char * name) const;
+
+    /// Get the print name associated with the MPI communicator
+    ///
+    /// @return The name of the communicator
+    std::string name() const;
+
+    enum ComparisonResult {
+        IDENTICAL = MPI_IDENT,
+        CONGRUENT = MPI_CONGRUENT,
+        SIMILAR = MPI_SIMILAR,
+        UNEQUAL = MPI_UNEQUAL,
+    };
+
     /// Abort all tasks in the group of this communicator
     ///
     /// @param errcode Error code to return to invoking environment
@@ -705,6 +984,26 @@ public:
 
 protected:
     MPI_Comm comm_;
+
+public:
+    static inline Key
+    create_key(void * extra_state = nullptr)
+    {
+        int keyval = MPI_KEYVAL_INVALID;
+        MPI_CHECK(MPI_Comm_create_keyval(MPI_COMM_NULL_COPY_FN,
+                                         MPI_COMM_NULL_DELETE_FN,
+                                         &keyval,
+                                         extra_state));
+        Environment::comm_key_vals_.push_back(keyval);
+        return Key { keyval };
+    }
+
+    /// Compares two communicators
+    ///
+    /// @param c1 First communicator
+    /// @param c2 Second communicator
+    /// @return Comparison result
+    static ComparisonResult compare(const Communicator & c1, const Communicator & c2);
 };
 
 //
@@ -747,6 +1046,12 @@ private:
 };
 
 //
+
+constexpr Communicator::Key tag_ub { MPI_TAG_UB };
+[[deprecated]] constexpr Communicator::Key host { MPI_HOST };
+constexpr Communicator::Key io { MPI_IO };
+constexpr Communicator::Key wtime_is_global { MPI_WTIME_IS_GLOBAL };
+constexpr Communicator::Key keyval_invalid { MPI_KEYVAL_INVALID };
 
 inline Communicator::Communicator() : comm_(MPI_COMM_WORLD) {}
 
@@ -801,6 +1106,33 @@ Communicator::duplicate() const
     MPI_Comm new_comm;
     MPI_CHECK_SELF(MPI_Comm_dup(this->comm_, &new_comm));
     return { new_comm };
+}
+
+inline Communicator
+Communicator::duplicate(const Info & info) const
+{
+    MPI_Comm new_comm;
+    MPI_CHECK_SELF(MPI_Comm_dup_with_info(this->comm_, info.native(), &new_comm));
+    return { new_comm };
+}
+
+inline std::pair<Communicator, Request>
+Communicator::iduplicate() const
+{
+    Communicator new_comm;
+    Request request;
+    MPI_CHECK_SELF(MPI_Comm_idup(this->comm_, &new_comm.comm_, &request.native()));
+    return { new_comm, request };
+}
+
+inline std::pair<Communicator, Request>
+Communicator::iduplicate(const Info & info) const
+{
+    Communicator new_comm;
+    Request request;
+    MPI_CHECK_SELF(
+        MPI_Comm_idup_with_info(this->comm_, info.native(), &new_comm.comm_, &request.native()));
+    return { new_comm, request };
 }
 
 inline Group
@@ -978,6 +1310,84 @@ Communicator::irecv(int source, Tag tag, T * values, int n) const
     return request;
 }
 
+template <typename TSend, typename TRecv>
+inline Status
+Communicator::send_recv(int dest,
+                        Tag send_tag,
+                        const TSend & send_value,
+                        int source,
+                        Tag recv_tag,
+                        TRecv & recv_value) const
+{
+    return send_recv(dest, send_tag, &send_value, 1, source, recv_tag, &recv_value, 1);
+}
+
+template <typename TSend, typename TRecv>
+inline Status
+Communicator::send_recv(int dest,
+                        Tag send_tag,
+                        const TSend * send_values,
+                        int send_count,
+                        int source,
+                        Tag recv_tag,
+                        TRecv * recv_values,
+                        int recv_count) const
+{
+    Status status;
+    MPI_CHECK_SELF(MPI_Sendrecv(const_cast<TSend *>(send_values),
+                                send_count,
+                                mpi_datatype<TSend>(),
+                                dest,
+                                send_tag.value(),
+                                recv_values,
+                                recv_count,
+                                mpi_datatype<TRecv>(),
+                                source,
+                                recv_tag.value(),
+                                this->comm_,
+                                &status.native()));
+    return status;
+}
+
+template <typename TSend, typename TRecv>
+inline Request
+Communicator::isend_recv(int dest,
+                         Tag send_tag,
+                         const TSend & send_value,
+                         int source,
+                         Tag recv_tag,
+                         TRecv & recv_value) const
+{
+    return isend_recv(dest, send_tag, &send_value, 1, source, recv_tag, &recv_value, 1);
+}
+
+template <typename TSend, typename TRecv>
+inline Request
+Communicator::isend_recv(int dest,
+                         Tag send_tag,
+                         const TSend * send_values,
+                         int send_count,
+                         int source,
+                         Tag recv_tag,
+                         TRecv * recv_values,
+                         int recv_count) const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Isendrecv(const_cast<TSend *>(send_values),
+                                 send_count,
+                                 mpi_datatype<TSend>(),
+                                 dest,
+                                 send_tag.value(),
+                                 recv_values,
+                                 recv_count,
+                                 mpi_datatype<TRecv>(),
+                                 source,
+                                 recv_tag.value(),
+                                 this->comm_,
+                                 &request.native()));
+    return request;
+}
+
 inline std::optional<Status>
 Communicator::iprobe(int source, Tag tag) const
 {
@@ -1090,6 +1500,14 @@ Communicator::barrier() const
     MPI_CHECK_SELF(MPI_Barrier(this->comm_));
 }
 
+inline Request
+Communicator::ibarrier() const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Ibarrier(this->comm_, &request.native()));
+    return request;
+}
+
 // Broadcast
 
 template <typename T>
@@ -1173,6 +1591,29 @@ Communicator::broadcast(std::string & value, int root) const
     }
 }
 
+template <typename T>
+inline Request
+Communicator::ibroadcast(T & value, int root) const
+{
+    return ibroadcast(&value, 1, root);
+}
+
+template <typename T>
+inline Request
+Communicator::ibroadcast(std::vector<T> & value, int root) const
+{
+    return ibroadcast(value.data(), value.size(), root);
+}
+
+template <typename T>
+inline Request
+Communicator::ibroadcast(T * values, int n, int root) const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Ibcast(values, n, mpi_datatype<T>(), root, this->comm_, &request.native()));
+    return request;
+}
+
 // Gather
 
 template <typename T>
@@ -1218,8 +1659,8 @@ Communicator::gather(const std::vector<T> & in_values,
                      const std::vector<int> & out_offsets,
                      int root) const
 {
-    assert(out_counts.size() == size());
-    assert(out_offsets.size() == size());
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
     int n_out_vals = 0;
     for (std::size_t i = 0; i < out_counts.size(); i++)
         n_out_vals += out_counts[i];
@@ -1233,6 +1674,79 @@ Communicator::gather(const std::vector<T> & in_values,
                                mpi_datatype<T>(),
                                root,
                                this->comm_));
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const T & in_value, T * out_values, int root) const
+{
+    return igather(&in_value, 1, out_values, root);
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const T & in_value, std::vector<T> & out_values, int root) const
+{
+    if (rank() == root)
+        out_values.resize(size());
+    return igather(&in_value, 1, out_values.data(), root);
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const T * in_values, int n, T * out_values, int root) const
+{
+    Request request;
+    auto type = mpi_datatype<T>();
+    MPI_CHECK_SELF(MPI_Igather(const_cast<T *>(in_values),
+                               n,
+                               type,
+                               out_values,
+                               n,
+                               type,
+                               root,
+                               this->comm_,
+                               &request.native()));
+    return request;
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const T * in_values, int n, std::vector<T> & out_values, int root) const
+{
+    if (rank() == root)
+        out_values.resize(size() * (std::size_t) n);
+    return igather(in_values, n, out_values.data(), root);
+}
+
+template <typename T>
+inline Request
+Communicator::igather(const std::vector<T> & in_values,
+                      std::vector<T> & out_values,
+                      const std::vector<int> & counts,
+                      const std::vector<int> & offsets,
+                      int root) const
+{
+    assert(static_cast<int>(counts.size()) == size());
+    assert(static_cast<int>(offsets.size()) == size());
+    if (this->rank() == root) {
+        int n_out_vals = 0;
+        for (std::size_t i = 0; i < counts.size(); i++)
+            n_out_vals += counts[i];
+        out_values.resize(n_out_vals);
+    }
+    Request request;
+    MPI_CHECK_SELF(MPI_Igatherv(in_values.data(),
+                                in_values.size(),
+                                mpi_datatype<T>(),
+                                out_values.data(),
+                                counts.data(),
+                                offsets.data(),
+                                mpi_datatype<T>(),
+                                root,
+                                this->comm_,
+                                &request.native()));
+    return request;
 }
 
 template <typename T>
@@ -1268,7 +1782,7 @@ Communicator::all_gather(const std::vector<T> & in_values, std::vector<T> & out_
         all_gather(sz, n);
         std::vector<int> offsets(size());
         offsets[0] = 0;
-        for (int i = 0; i < n.size() - 1; i++)
+        for (std::size_t i = 0; i < n.size() - 1; i++)
             offsets[i + 1] = offsets[i] + n[i];
         all_gather(in_values, out_values, n, offsets);
     }
@@ -1281,8 +1795,8 @@ Communicator::all_gather(const std::vector<T> & in_values,
                          const std::vector<int> & out_counts,
                          const std::vector<int> & out_offsets) const
 {
-    assert(out_counts.size() == size());
-    assert(out_offsets.size() == size());
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
     int n_out_vals = 0;
     for (std::size_t i = 0; i < out_counts.size(); i++)
         n_out_vals += out_counts[i];
@@ -1295,6 +1809,56 @@ Communicator::all_gather(const std::vector<T> & in_values,
                                   out_offsets.data(),
                                   mpi_datatype<T>(),
                                   this->comm_));
+}
+
+template <typename T>
+inline Request
+Communicator::iall_gather(const T * in_value, int n, T * out_values, int m) const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Iallgather(in_value,
+                                  n,
+                                  mpi_datatype<T>(),
+                                  out_values,
+                                  m,
+                                  mpi_datatype<T>(),
+                                  this->comm_,
+                                  &request.native()));
+    return request;
+}
+
+template <typename T>
+inline Request
+Communicator::iall_gather(const T & in_value, std::vector<T> & out_values) const
+{
+    out_values.resize(this->size());
+    return iall_gather(&in_value, 1, out_values.data(), 1);
+}
+
+template <typename T>
+inline Request
+Communicator::iall_gather(const std::vector<T> & in_values,
+                          std::vector<T> & out_values,
+                          const std::vector<int> & out_counts,
+                          const std::vector<int> & out_offsets) const
+{
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
+    int n_out_vals = 0;
+    for (std::size_t i = 0; i < out_counts.size(); i++)
+        n_out_vals += out_counts[i];
+    out_values.resize(n_out_vals);
+    Request request;
+    MPI_CHECK_SELF(MPI_Iallgatherv(in_values.data(),
+                                   in_values.size(),
+                                   mpi_datatype<T>(),
+                                   out_values.data(),
+                                   out_counts.data(),
+                                   out_offsets.data(),
+                                   mpi_datatype<T>(),
+                                   this->comm_,
+                                   &request.native()));
+    return request;
 }
 
 // Scatter
@@ -1327,6 +1891,70 @@ inline void
 Communicator::scatter(const std::vector<T> & in_values, T * out_values, int n, int root) const
 {
     scatter(in_values.data(), out_values, n, root);
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const T * in_values, T & out_value, int root) const
+{
+    return iscatter(in_values, &out_value, 1, root);
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const std::vector<T> & in_values, T & out_value, int root) const
+{
+    return iscatter(in_values.data(), &out_value, 1, root);
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const T * in_values, T * out_values, int n, int root) const
+{
+    Request request;
+    auto type = mpi_datatype<T>();
+    MPI_CHECK_SELF(MPI_Iscatter(const_cast<T *>(in_values),
+                                n,
+                                type,
+                                out_values,
+                                n,
+                                type,
+                                root,
+                                this->comm_,
+                                &request.native()));
+    return request;
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const std::vector<T> & in_values, T * out_values, int n, int root) const
+{
+    return iscatter(in_values.data(), out_values, n, root);
+}
+
+template <typename T>
+inline Request
+Communicator::iscatter(const std::vector<T> & in_values,
+                       const std::vector<int> & counts,
+                       const std::vector<int> & offsets,
+                       std::vector<T> & out_values,
+                       int root) const
+{
+    assert(static_cast<int>(counts.size()) == size());
+    assert(static_cast<int>(offsets.size()) == size());
+    out_values.resize(counts[this->rank()]);
+    Request request;
+    MPI_CHECK_SELF(MPI_Iscatterv(in_values.data(),
+                                 counts.data(),
+                                 offsets.data(),
+                                 mpi_datatype<T>(),
+                                 out_values.data(),
+                                 out_values.size(),
+                                 mpi_datatype<T>(),
+                                 root,
+                                 this->comm_,
+                                 &request.native()));
+    return request;
 }
 
 // Reduce
@@ -1388,6 +2016,41 @@ inline void
 Communicator::reduce(T & out_value, Op op, int root) const
 {
     reduce(1, &out_value, op, root);
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::ireduce(const T * in_values, int n, T * out_values, Op, int root) const
+{
+    Request request;
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
+    MPI_CHECK_SELF(MPI_Ireduce(const_cast<T *>(in_values),
+                               out_values,
+                               n,
+                               mpi_datatype<T>(),
+                               mpi_op,
+                               root,
+                               this->comm_,
+                               &request.native()));
+    return request;
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::ireduce(const std::vector<T> & in_values,
+                      std::vector<T> & out_values,
+                      Op op,
+                      int root) const
+{
+    assert(in_values.size() == out_values.size());
+    return ireduce(in_values.data(), in_values.size(), out_values.data(), op, root);
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::ireduce(const T & in_value, T & out_value, Op op, int root) const
+{
+    return ireduce(&in_value, 1, &out_value, op, root);
 }
 
 // All reduce
@@ -1494,7 +2157,7 @@ template <typename T>
 inline void
 Communicator::all_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const
 {
-    assert(in_values.size() == size());
+    assert(static_cast<int>(in_values.size()) == size());
     out_values.resize(size());
     all_to_all(in_values.data(), 1, out_values.data(), 1);
 }
@@ -1541,10 +2204,10 @@ Communicator::all_to_all(const std::vector<T> & in_values,
                          const std::vector<int> & out_counts,
                          const std::vector<int> & out_offsets) const
 {
-    assert(in_counts.size() == size());
-    assert(in_offsets.size() == size());
-    assert(out_counts.size() == size());
-    assert(out_offsets.size() == size());
+    assert(static_cast<int>(in_counts.size()) == size());
+    assert(static_cast<int>(in_offsets.size()) == size());
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
     int n_receive_vals = 0;
     for (std::size_t i = 0; i < out_counts.size(); i++)
         n_receive_vals += out_counts[i];
@@ -1558,6 +2221,62 @@ Communicator::all_to_all(const std::vector<T> & in_values,
                                  out_offsets.data(),
                                  mpi_datatype<T>(),
                                  this->comm_));
+}
+
+template <typename T>
+inline Request
+Communicator::iall_to_all(const T * in_values, int n, T * out_values, int m) const
+{
+    Request request;
+    MPI_CHECK_SELF(MPI_Ialltoall(in_values,
+                                 n,
+                                 mpi_datatype<T>(),
+                                 out_values,
+                                 m,
+                                 mpi_datatype<T>(),
+                                 this->comm_,
+                                 &request.native()));
+    return request;
+}
+
+template <typename T>
+inline Request
+Communicator::iall_to_all(const std::vector<T> & in_values, std::vector<T> & out_values) const
+{
+    assert(static_cast<int>(in_values.size()) == size());
+    out_values.resize(size());
+    return iall_to_all(in_values.data(), 1, out_values.data(), 1);
+}
+
+template <typename T>
+inline Request
+Communicator::iall_to_all(const std::vector<T> & in_values,
+                          const std::vector<int> & in_counts,
+                          const std::vector<int> & in_offsets,
+                          std::vector<T> & out_values,
+                          const std::vector<int> & out_counts,
+                          const std::vector<int> & out_offsets) const
+{
+    assert(static_cast<int>(in_counts.size()) == size());
+    assert(static_cast<int>(in_offsets.size()) == size());
+    assert(static_cast<int>(out_counts.size()) == size());
+    assert(static_cast<int>(out_offsets.size()) == size());
+    int n_receive_vals = 0;
+    for (std::size_t i = 0; i < out_counts.size(); i++)
+        n_receive_vals += out_counts[i];
+    out_values.resize(n_receive_vals);
+    Request request;
+    MPI_CHECK_SELF(MPI_Ialltoallv(in_values.data(),
+                                  in_counts.data(),
+                                  in_offsets.data(),
+                                  mpi_datatype<T>(),
+                                  out_values.data(),
+                                  out_counts.data(),
+                                  out_offsets.data(),
+                                  mpi_datatype<T>(),
+                                  this->comm_,
+                                  &request.native()));
+    return request;
 }
 
 inline Communicator
@@ -1610,6 +2329,37 @@ Communicator::scan(const T & in_value, T & out_value, Op op) const
     scan(&in_value, 1, &out_value, op);
 }
 
+template <typename T, typename Op>
+inline Request
+Communicator::iscan(const T * in_values, int n, T * out_values, Op) const
+{
+    Request request;
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
+    MPI_CHECK_SELF(MPI_Iscan(const_cast<T *>(in_values),
+                             out_values,
+                             n,
+                             mpi_datatype<T>(),
+                             mpi_op,
+                             this->comm_,
+                             &request.native()));
+    return request;
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iscan(const std::vector<T> & in_values, std::vector<T> & out_values, Op op) const
+{
+    assert(in_values.size() == out_values.size());
+    return iscan(in_values.data(), in_values.size(), out_values.data(), op);
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iscan(const T & in_value, T & out_value, Op op) const
+{
+    return iscan(&in_value, 1, &out_value, op);
+}
+
 // Exscan
 
 template <typename T, typename Op>
@@ -1640,7 +2390,103 @@ Communicator::exscan(const T & in_value, T & out_value, Op op) const
     exscan(&in_value, 1, &out_value, op);
 }
 
+template <typename T, typename Op>
+inline Request
+Communicator::iexscan(const T * in_values, int n, T * out_value, Op) const
+{
+    Request request;
+    auto mpi_op = op::provider<T, Op, op::Operation<Op, T>::is_native::value>::op();
+    MPI_CHECK_SELF(MPI_Iexscan(const_cast<T *>(in_values),
+                               out_value,
+                               n,
+                               mpi_datatype<T>(),
+                               mpi_op,
+                               this->comm_,
+                               &request.native()));
+    return request;
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iexscan(const std::vector<T> & in_values, std::vector<T> & out_values, Op op) const
+{
+    assert(in_values.size() == out_values.size());
+    return iexscan(in_values.data(), in_values.size(), out_values.data(), op);
+}
+
+template <typename T, typename Op>
+inline Request
+Communicator::iexscan(const T & in_value, T & out_value, Op op) const
+{
+    return iexscan(&in_value, 1, &out_value, op);
+}
+
 //
+
+template <typename T>
+    requires std::copyable<T>
+inline std::optional<T>
+Communicator::attr(Key key) const
+{
+    T * val = nullptr;
+    int flag = 0;
+    MPI_CHECK_SELF(MPI_Comm_get_attr(this->comm_, key.value(), &val, &flag));
+    if (flag)
+        return *val;
+    else
+        return std::nullopt;
+}
+
+template <typename T>
+    requires std::copyable<T>
+inline void
+Communicator::set_attr(Key key, const T & val)
+{
+    MPI_CHECK_SELF(MPI_Comm_set_attr(this->comm_, key.value(), const_cast<T *>(&val)));
+}
+
+inline void
+Communicator::delete_attr(Key key)
+{
+    MPI_CHECK_SELF(MPI_Comm_delete_attr(this->comm_, key.value()));
+}
+
+inline void
+Communicator::set_info(const Info & info) const
+{
+    MPI_CHECK_SELF(MPI_Comm_set_info(this->comm_, info.native()));
+}
+
+inline Info
+Communicator::info() const
+{
+    MPI_Info info;
+    MPI_CHECK_SELF(MPI_Comm_get_info(this->comm_, &info));
+    return Info(info);
+}
+
+inline void
+Communicator::set_name(const char * name) const
+{
+    MPI_CHECK_SELF(MPI_Comm_set_name(this->comm_, name));
+}
+
+inline std::string
+Communicator::name() const
+{
+    char nm[MPI_MAX_OBJECT_NAME];
+    int len;
+    MPI_CHECK_SELF(MPI_Comm_get_name(this->comm_, nm, &len));
+    return std::string(nm);
+}
+
+inline Communicator::ComparisonResult
+Communicator::compare(const Communicator & c1, const Communicator & c2)
+{
+    int result;
+    MPI_CHECK(MPI_Comm_compare(c1.comm_, c2.comm_, &result));
+    return static_cast<ComparisonResult>(result);
+}
 
 inline void
 Communicator::abort(int errcode) const

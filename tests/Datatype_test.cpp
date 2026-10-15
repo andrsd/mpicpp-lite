@@ -106,7 +106,7 @@ template <>
 struct logical_and<CustomEnum> : public UserOp<logical_and<CustomEnum>, CustomEnum> {
 public:
     CustomEnum
-    operator()(const CustomEnum & x, const CustomEnum & y) const
+    operator()(const CustomEnum &, const CustomEnum &) const
     {
         return CustomEnum::RED;
     }
@@ -116,7 +116,7 @@ template <>
 struct logical_or<CustomEnum> : public UserOp<logical_or<CustomEnum>, CustomEnum> {
 public:
     CustomEnum
-    operator()(const CustomEnum & x, const CustomEnum & y) const
+    operator()(const CustomEnum &, const CustomEnum &) const
     {
         return CustomEnum::BLUE;
     }
@@ -191,9 +191,10 @@ TEST(DatatypeTest, custom_op_reduce)
         e = CustomEnum::GREEN;
 
     CustomEnum f = CustomEnum::GREEN;
-    comm.reduce(e, f, mpi::op::logical_and<CustomEnum>(), 0);
-    if (comm.rank() == 0)
+    comm.reduce(e, f, mpi::op::logical_and<>(), 0);
+    if (comm.rank() == 0) {
         EXPECT_EQ(f, CustomEnum::RED);
+    }
 }
 
 TEST(DatatypeTest, custom_op_all_reduce)
@@ -213,7 +214,7 @@ TEST(DatatypeTest, custom_op_all_reduce)
         e = CustomEnum::GREEN;
 
     CustomEnum f = CustomEnum::GREEN;
-    comm.all_reduce(e, f, mpi::op::logical_or<CustomEnum>());
+    comm.all_reduce(e, f, mpi::op::logical_or<>());
     EXPECT_EQ(f, CustomEnum::BLUE);
 }
 
@@ -225,7 +226,7 @@ TEST(DatatypeTest, custom_op_scan)
 
     CustomData d = { comm.rank(), (comm.rank() + 1) * 2., false, "text" };
     CustomData e = { 1234, 5678., true, "A" };
-    comm.scan(d, e, mpi::op::sum<CustomData>());
+    comm.scan(d, e, mpi::op::sum<>());
     if (comm.rank() == 0) {
         EXPECT_EQ(e.id, 0);
         EXPECT_NEAR(e.value, 2., 1e-10);
@@ -260,7 +261,7 @@ TEST(DatatypeTest, custom_op_exscan)
 
     CustomData d = { comm.rank(), (comm.rank() + 1) * 2., false, "text" };
     CustomData e = { 4321, 8765., true, "B" };
-    comm.exscan(d, e, mpi::op::sum<CustomData>());
+    comm.exscan(d, e, mpi::op::sum<>());
 
     if (comm.rank() == 0) {
         EXPECT_EQ(e.id, 4321);

@@ -1,5 +1,6 @@
 #include "gmock/gmock.h"
 #include "mpicpp-lite/mpicpp-lite.h"
+#include <numeric>
 
 using namespace mpicpp_lite;
 using namespace testing;
@@ -9,6 +10,141 @@ TEST(MPITest, duplicate)
     Communicator comm;
     auto dup = comm.duplicate();
     EXPECT_EQ(comm.size(), dup.size());
+}
+
+TEST(MPITest, name)
+{
+    Communicator comm;
+    auto dup = comm.duplicate();
+    dup.set_name("test-comm");
+    EXPECT_EQ(dup.name(), "test-comm");
+    dup.free();
+}
+
+TEST(MPITest, compare)
+{
+    Communicator comm;
+    EXPECT_EQ(Communicator::compare(comm, comm), Communicator::IDENTICAL);
+
+    auto dup = comm.duplicate();
+    EXPECT_EQ(Communicator::compare(comm, dup), Communicator::CONGRUENT);
+    dup.free();
+}
+
+TEST(MPITest, info)
+{
+    Communicator comm;
+    auto dup = comm.duplicate();
+
+    Info info;
+    info.set("key1", "val1");
+
+    dup.set_info(info);
+
+    auto info_back = dup.info();
+    EXPECT_TRUE(info_back.is_valid());
+
+    dup.free();
+}
+
+TEST(MPITest, duplicate_with_info)
+{
+    Communicator comm;
+    Info info;
+    info.set("key1", "val1");
+
+    auto dup = comm.duplicate(info);
+    EXPECT_EQ(comm.size(), dup.size());
+    EXPECT_TRUE(dup.is_valid());
+    dup.free();
+}
+
+TEST(MPITest, iduplicate)
+{
+    Communicator comm;
+    auto [dup, req] = comm.iduplicate();
+
+    wait(req);
+
+    EXPECT_EQ(comm.size(), dup.size());
+    EXPECT_TRUE(dup.is_valid());
+    dup.free();
+}
+
+TEST(MPITest, iduplicate_with_info)
+{
+    Communicator comm;
+    Info info;
+    info.set("key1", "val1");
+
+    auto [dup, req] = comm.iduplicate(info);
+
+    wait(req);
+
+    EXPECT_EQ(comm.size(), dup.size());
+    EXPECT_TRUE(dup.is_valid());
+    dup.free();
+}
+
+TEST(MPITest, status_cancel)
+{
+    Communicator comm;
+    int val = 0;
+    Tag tag(9999);
+    auto req = comm.irecv(comm.rank(), tag, val);
+
+    req.cancel();
+
+    Status status = wait(req);
+    EXPECT_TRUE(status.is_cancelled());
+}
+
+TEST(MPITest, send_recv_api)
+{
+    Communicator comm;
+    if (comm.size() < 2)
+        return;
+
+    Tag send_tag(100), recv_tag(200);
+    if (comm.rank() == 0) {
+        int val_send = 123;
+        int val_recv = 0;
+        auto status = comm.send_recv(1, send_tag, val_send, 1, recv_tag, val_recv);
+        EXPECT_EQ(val_recv, 456);
+        EXPECT_EQ(status.source(), 1);
+        EXPECT_EQ(status.tag(), recv_tag);
+    }
+    else if (comm.rank() == 1) {
+        int val_send = 456;
+        int val_recv = 0;
+        auto status = comm.send_recv(0, recv_tag, val_send, 0, send_tag, val_recv);
+        EXPECT_EQ(val_recv, 123);
+        EXPECT_EQ(status.source(), 0);
+        EXPECT_EQ(status.tag(), send_tag);
+    }
+}
+
+TEST(MPITest, isend_recv_api)
+{
+    Communicator comm;
+    if (comm.size() < 2)
+        return;
+
+    Tag send_tag(300), recv_tag(400);
+    if (comm.rank() == 0) {
+        int val_send = 789;
+        int val_recv = 0;
+        auto req = comm.isend_recv(1, send_tag, val_send, 1, recv_tag, val_recv);
+        wait(req);
+        EXPECT_EQ(val_recv, 999);
+    }
+    else if (comm.rank() == 1) {
+        int val_send = 999;
+        int val_recv = 0;
+        auto req = comm.isend_recv(0, recv_tag, val_send, 0, send_tag, val_recv);
+        wait(req);
+        EXPECT_EQ(val_recv, 789);
+    }
 }
 
 TEST(MPITest, get_version)
@@ -63,6 +199,13 @@ TEST(MPITest, barrier)
 {
     Communicator comm;
     comm.barrier();
+}
+
+TEST(MPITest, ibarrier)
+{
+    Communicator comm;
+    auto req = comm.ibarrier();
+    wait(req);
 }
 
 TEST(MPITest, send_recv_int)
@@ -146,7 +289,7 @@ TEST(MPITest, send_recv_arr_int)
             auto status = comm.recv(i, tag, arr);
             auto sz = arr.size();
             EXPECT_EQ(sz, i);
-            for (int j = 0; j < sz; j++)
+            for (std::size_t j = 0; j < sz; j++)
                 EXPECT_EQ(arr[j], 2 * j);
             EXPECT_EQ(status.source(), i);
             EXPECT_EQ(status.tag(), tag);
@@ -277,6 +420,15 @@ TEST(MPITest, broadcast_str)
     EXPECT_EQ(str, "text to bcast");
 }
 
+TEST(MPITest, ibroadcast)
+{
+    Communicator comm;
+    int bcast_val = (comm.rank() == 0) ? 555 : 0;
+    auto req = comm.ibroadcast(bcast_val, 0);
+    wait(req);
+    EXPECT_EQ(bcast_val, 555);
+}
+
 TEST(MPITest, gather)
 {
     Communicator comm;
@@ -287,7 +439,7 @@ TEST(MPITest, gather)
     std::vector<int> vals;
     comm.gather(number, vals, 0);
     if (comm.rank() == 0) {
-        for (std::size_t i = 0; i < comm.size(); i++)
+        for (int i = 0; i < comm.size(); i++)
             EXPECT_EQ(vals[i], i * 5);
     }
 }
@@ -302,7 +454,7 @@ TEST(MPITest, gather_n)
     std::vector<int> vals;
     comm.gather(number, 2, vals, 0);
     if (comm.rank() == 0) {
-        for (std::size_t i = 0; i < comm.size(); i++) {
+        for (int i = 0; i < comm.size(); i++) {
             EXPECT_EQ(vals[2 * i], i * 5);
             EXPECT_EQ(vals[2 * i + 1], i * 7);
         }
@@ -333,6 +485,21 @@ TEST(MPITest, gather_std_vec)
     if (comm.rank() == 0) {
         EXPECT_EQ(out_vals.size(), 6);
         EXPECT_THAT(out_vals, ElementsAre(1, 3, 0, 2, 4, 5));
+    }
+}
+
+TEST(MPITest, igather)
+{
+    Communicator comm;
+    int gather_val = comm.rank();
+    std::vector<int> gathered_vals;
+    auto req = comm.igather(gather_val, gathered_vals, 0);
+    wait(req);
+    if (comm.rank() == 0) {
+        ASSERT_EQ(gathered_vals.size(), comm.size());
+        for (int i = 0; i < comm.size(); i++) {
+            EXPECT_EQ(gathered_vals[i], i);
+        }
     }
 }
 
@@ -385,6 +552,19 @@ TEST(MPITest, all_gather_vec_4_procs)
     comm.all_gather(vals, all_vals);
     EXPECT_EQ(all_vals.size(), 6);
     EXPECT_THAT(all_vals, ElementsAre(1, 3, 0, 2, 4, 5));
+}
+
+TEST(MPITest, iall_gather)
+{
+    Communicator comm;
+    int gather_val = comm.rank();
+    std::vector<int> gathered_vals;
+    auto req = comm.iall_gather(gather_val, gathered_vals);
+    wait(req);
+    ASSERT_EQ(gathered_vals.size(), comm.size());
+    for (int i = 0; i < comm.size(); i++) {
+        EXPECT_EQ(gathered_vals[i], i);
+    }
 }
 
 TEST(MPITest, scatter)
@@ -444,6 +624,22 @@ TEST(MPITest, scatter_n)
     EXPECT_EQ(number[1], (comm.rank() + 1) * 7);
 }
 
+TEST(MPITest, iscatter)
+{
+    Communicator comm;
+    std::vector<int> send_vals;
+    if (comm.rank() == 0) {
+        send_vals.resize(comm.size());
+        for (int i = 0; i < comm.size(); i++) {
+            send_vals[i] = i * 10;
+        }
+    }
+    int out_val = -1;
+    auto req = comm.iscatter(send_vals, out_val, 0);
+    wait(req);
+    EXPECT_EQ(out_val, comm.rank() * 10);
+}
+
 TEST(MPITest, reduce_sum)
 {
     Communicator comm;
@@ -453,7 +649,7 @@ TEST(MPITest, reduce_sum)
     int n = comm.size();
     double loc_sum = (comm.rank() + 1) * 3;
     double glob_sum;
-    comm.reduce(loc_sum, glob_sum, op::sum<double>(), 0);
+    comm.reduce(loc_sum, glob_sum, op::sum<>(), 0);
 
     if (comm.rank() == 0) {
         double gold = 3. * (n * (1 + n) / 2.);
@@ -469,10 +665,10 @@ TEST(MPITest, reduce_sum_arr)
 
     int n = comm.size();
     std::vector<int> loc_sum(3);
-    for (int i = 0; i < loc_sum.size(); i++)
+    for (std::size_t i = 0; i < loc_sum.size(); i++)
         loc_sum[i] = (comm.rank() * loc_sum.size()) + i;
     std::vector<int> glob_sum;
-    comm.reduce(loc_sum, glob_sum, op::sum<int>(), 0);
+    comm.reduce(loc_sum, glob_sum, op::sum<>(), 0);
 
     if (comm.rank() == 0) {
         EXPECT_EQ(glob_sum.size(), 3);
@@ -491,7 +687,7 @@ TEST(MPITest, reduce_sum_in_place)
 
     int n = comm.size();
     double loc_sum = (comm.rank() + 1) * 3;
-    comm.reduce(loc_sum, op::sum<double>(), 0);
+    comm.reduce(loc_sum, op::sum<>(), 0);
 
     if (comm.rank() == 0) {
         double gold = 3. * (n * (1 + n) / 2.);
@@ -507,9 +703,9 @@ TEST(MPITest, reduce_sum_arr_in_place)
 
     int n = comm.size();
     std::vector<int> loc_sum(3);
-    for (int i = 0; i < loc_sum.size(); i++)
+    for (std::size_t i = 0; i < loc_sum.size(); i++)
         loc_sum[i] = (comm.rank() * loc_sum.size()) + i;
-    comm.reduce(loc_sum, op::sum<int>(), 0);
+    comm.reduce(loc_sum, op::sum<>(), 0);
 
     if (comm.rank() == 0) {
         EXPECT_EQ(loc_sum.size(), 3);
@@ -517,6 +713,18 @@ TEST(MPITest, reduce_sum_arr_in_place)
             int gold = n * (2 * i + (3 * (n - 1))) / 2;
             EXPECT_EQ(loc_sum[i], gold);
         }
+    }
+}
+
+TEST(MPITest, ireduce)
+{
+    Communicator comm;
+    int reduce_val = 1;
+    int reduced_sum = 0;
+    auto req = comm.ireduce(reduce_val, reduced_sum, std::plus<int> {}, 0);
+    wait(req);
+    if (comm.rank() == 0) {
+        EXPECT_EQ(reduced_sum, comm.size());
     }
 }
 
@@ -529,8 +737,8 @@ TEST(MPITest, reduce_all_sum)
     int n = comm.size();
     int loc_sum = (comm.rank() + 1) * 3;
     int glob_sum;
-    comm.all_reduce(loc_sum, glob_sum, op::sum<int>());
-    comm.all_reduce(loc_sum, op::sum<int>());
+    comm.all_reduce(loc_sum, glob_sum, op::sum<>());
+    comm.all_reduce(loc_sum, op::sum<>());
 
     int gold = 3 * (n * (1 + n) / 2);
     EXPECT_EQ(loc_sum, gold);
@@ -546,7 +754,7 @@ TEST(MPITest, all_reduce_sum_arr)
     int n = comm.size();
     std::vector<int> loc_sum = { (comm.rank() * 2) + 1, (comm.rank() * 2) + 2 };
     std::vector<int> glob_sum = { 0, 0 };
-    comm.all_reduce(loc_sum, glob_sum, op::sum<int>());
+    comm.all_reduce(loc_sum, glob_sum, op::sum<>());
 
     int gold0 = n * n;
     int gold1 = n * (n + 1);
@@ -562,8 +770,8 @@ TEST(MPITest, reduce_all_prod)
 
     int loc_prod = (comm.rank() + 1) * 3;
     int glob_prod;
-    comm.all_reduce(loc_prod, glob_prod, op::prod<int>());
-    comm.all_reduce(loc_prod, op::prod<int>());
+    comm.all_reduce(loc_prod, glob_prod, op::prod<>());
+    comm.all_reduce(loc_prod, op::prod<>());
 
     int gold = 1;
     for (int i = 1; i <= comm.size(); i++)
@@ -581,8 +789,8 @@ TEST(MPITest, reduce_all_min)
 
     int loc = (comm.rank() + 1) * 3;
     int glob;
-    comm.all_reduce(loc, glob, op::min<int>());
-    comm.all_reduce(loc, op::min<int>());
+    comm.all_reduce(loc, glob, op::min<>());
+    comm.all_reduce(loc, op::min<>());
 
     int gold = 3;
     EXPECT_EQ(loc, gold);
@@ -597,8 +805,8 @@ TEST(MPITest, reduce_all_max)
 
     int loc = (comm.rank() + 1) * 3;
     int glob;
-    comm.all_reduce(loc, glob, op::max<int>());
-    comm.all_reduce(loc, op::max<int>());
+    comm.all_reduce(loc, glob, op::max<>());
+    comm.all_reduce(loc, op::max<>());
 
     int gold = comm.size() * 3;
     EXPECT_EQ(loc, gold);
@@ -614,21 +822,21 @@ TEST(MPITest, reduce_all_logical_and)
     bool loc = false;
     bool glob;
 
-    comm.all_reduce(loc, glob, op::logical_and<bool>());
-    comm.all_reduce(loc, op::logical_and<bool>());
+    comm.all_reduce(loc, glob, op::logical_and<>());
+    comm.all_reduce(loc, op::logical_and<>());
     EXPECT_FALSE(loc);
     EXPECT_FALSE(glob);
 
     loc = true;
-    comm.all_reduce(loc, glob, op::logical_and<bool>());
-    comm.all_reduce(loc, op::logical_and<bool>());
+    comm.all_reduce(loc, glob, op::logical_and<>());
+    comm.all_reduce(loc, op::logical_and<>());
     EXPECT_TRUE(loc);
     EXPECT_TRUE(glob);
 
     if (comm.rank() == 0)
         loc = false;
-    comm.all_reduce(loc, glob, op::logical_and<bool>());
-    comm.all_reduce(loc, op::logical_and<bool>());
+    comm.all_reduce(loc, glob, op::logical_and<>());
+    comm.all_reduce(loc, op::logical_and<>());
     EXPECT_FALSE(loc);
     EXPECT_FALSE(glob);
 }
@@ -642,21 +850,21 @@ TEST(MPITest, reduce_all_logical_or)
     bool loc = false;
     bool glob;
 
-    comm.all_reduce(loc, glob, op::logical_or<bool>());
-    comm.all_reduce(loc, op::logical_or<bool>());
+    comm.all_reduce(loc, glob, op::logical_or<>());
+    comm.all_reduce(loc, op::logical_or<>());
     EXPECT_FALSE(loc);
     EXPECT_FALSE(glob);
 
     loc = true;
-    comm.all_reduce(loc, glob, op::logical_or<bool>());
-    comm.all_reduce(loc, op::logical_or<bool>());
+    comm.all_reduce(loc, glob, op::logical_or<>());
+    comm.all_reduce(loc, op::logical_or<>());
     EXPECT_TRUE(loc);
     EXPECT_TRUE(glob);
 
     if (comm.rank() != 0)
         loc = false;
-    comm.all_reduce(loc, glob, op::logical_or<bool>());
-    comm.all_reduce(loc, op::logical_or<bool>());
+    comm.all_reduce(loc, glob, op::logical_or<>());
+    comm.all_reduce(loc, op::logical_or<>());
     EXPECT_TRUE(loc);
     EXPECT_TRUE(glob);
 }
@@ -668,14 +876,14 @@ TEST(MPITest, reduce_all_logical_xor)
     bool loc = false;
     bool glob;
 
-    comm.all_reduce(loc, glob, op::logical_xor<bool>());
-    comm.all_reduce(loc, op::logical_xor<bool>());
+    comm.all_reduce(loc, glob, op::logical_xor<>());
+    comm.all_reduce(loc, op::logical_xor<>());
     EXPECT_FALSE(loc);
     EXPECT_FALSE(glob);
 
     loc = true;
-    comm.all_reduce(loc, glob, op::logical_xor<bool>());
-    comm.all_reduce(loc, op::logical_xor<bool>());
+    comm.all_reduce(loc, glob, op::logical_xor<>());
+    comm.all_reduce(loc, op::logical_xor<>());
     if (comm.size() % 2 == 0) {
         EXPECT_FALSE(loc);
         EXPECT_FALSE(glob);
@@ -686,6 +894,181 @@ TEST(MPITest, reduce_all_logical_xor)
     }
 }
 
+TEST(MPITest, reduce_all_land)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    bool loc = false;
+    bool glob;
+
+    comm.all_reduce(loc, glob, op::land<>());
+    comm.all_reduce(loc, op::land<>());
+    EXPECT_FALSE(loc);
+    EXPECT_FALSE(glob);
+
+    loc = true;
+    comm.all_reduce(loc, glob, op::land<>());
+    comm.all_reduce(loc, op::land<>());
+    EXPECT_TRUE(loc);
+    EXPECT_TRUE(glob);
+
+    if (comm.rank() == 0)
+        loc = false;
+    comm.all_reduce(loc, glob, op::land<>());
+    comm.all_reduce(loc, op::land<>());
+    EXPECT_FALSE(loc);
+    EXPECT_FALSE(glob);
+}
+
+TEST(MPITest, reduce_all_lor)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    bool loc = false;
+    bool glob;
+
+    comm.all_reduce(loc, glob, op::lor<>());
+    comm.all_reduce(loc, op::lor<>());
+    EXPECT_FALSE(loc);
+    EXPECT_FALSE(glob);
+
+    loc = true;
+    comm.all_reduce(loc, glob, op::lor<>());
+    comm.all_reduce(loc, op::lor<>());
+    EXPECT_TRUE(loc);
+    EXPECT_TRUE(glob);
+
+    if (comm.rank() != 0)
+        loc = false;
+    comm.all_reduce(loc, glob, op::lor<>());
+    comm.all_reduce(loc, op::lor<>());
+    EXPECT_TRUE(loc);
+    EXPECT_TRUE(glob);
+}
+
+TEST(MPITest, reduce_all_lxor)
+{
+    Communicator comm;
+
+    bool loc = false;
+    bool glob;
+
+    comm.all_reduce(loc, glob, op::lxor<>());
+    comm.all_reduce(loc, op::lxor<>());
+    EXPECT_FALSE(loc);
+    EXPECT_FALSE(glob);
+
+    loc = true;
+    comm.all_reduce(loc, glob, op::lxor<>());
+    comm.all_reduce(loc, op::lxor<>());
+    if (comm.size() % 2 == 0) {
+        EXPECT_FALSE(loc);
+        EXPECT_FALSE(glob);
+    }
+    else {
+        EXPECT_TRUE(loc);
+        EXPECT_TRUE(glob);
+    }
+}
+
+TEST(MPITest, reduce_all_bitwise_and)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int loc = 0b1111;
+    if (comm.rank() == 0)
+        loc = 0b1101;
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bitwise_and<>());
+    comm.all_reduce(loc, op::bitwise_and<>());
+    EXPECT_EQ(loc, 0b1101);
+    EXPECT_EQ(glob, 0b1101);
+}
+
+TEST(MPITest, reduce_all_band)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int loc = 0b1111;
+    if (comm.rank() == 0)
+        loc = 0b1101;
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::band<>());
+    comm.all_reduce(loc, op::band<>());
+    EXPECT_EQ(loc, 0b1101);
+    EXPECT_EQ(glob, 0b1101);
+}
+
+TEST(MPITest, reduce_all_bitwise_or)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int loc = 1 << comm.rank();
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bitwise_or<>());
+    comm.all_reduce(loc, op::bitwise_or<>());
+    int expected = (1 << comm.size()) - 1;
+    EXPECT_EQ(loc, expected);
+    EXPECT_EQ(glob, expected);
+}
+
+TEST(MPITest, reduce_all_bor)
+{
+    Communicator comm;
+    if (comm.size() == 1)
+        return;
+
+    int loc = 1 << comm.rank();
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bor<>());
+    comm.all_reduce(loc, op::bor<>());
+    int expected = (1 << comm.size()) - 1;
+    EXPECT_EQ(loc, expected);
+    EXPECT_EQ(glob, expected);
+}
+
+TEST(MPITest, reduce_all_bitwise_xor)
+{
+    Communicator comm;
+
+    int loc = 1;
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bitwise_xor<>());
+    comm.all_reduce(loc, op::bitwise_xor<>());
+    int expected = (comm.size() % 2 == 0) ? 0 : 1;
+    EXPECT_EQ(loc, expected);
+    EXPECT_EQ(glob, expected);
+}
+
+TEST(MPITest, reduce_all_bxor)
+{
+    Communicator comm;
+
+    int loc = 1;
+    int glob = 0;
+
+    comm.all_reduce(loc, glob, op::bxor<>());
+    comm.all_reduce(loc, op::bxor<>());
+    int expected = (comm.size() % 2 == 0) ? 0 : 1;
+    EXPECT_EQ(loc, expected);
+    EXPECT_EQ(glob, expected);
+}
+
 TEST(MPITest, all_reduce_sum_arr_in_place)
 {
     Communicator comm;
@@ -694,7 +1077,7 @@ TEST(MPITest, all_reduce_sum_arr_in_place)
 
     int n = comm.size();
     std::vector<int> loc_sum = { (comm.rank() * 2) + 1, (comm.rank() * 2) + 2 };
-    comm.all_reduce(loc_sum, op::sum<int>());
+    comm.all_reduce(loc_sum, op::sum<>());
 
     int gold0 = n * n;
     int gold1 = n * (n + 1);
@@ -710,7 +1093,7 @@ TEST(MPITest, iall_reduce_min)
 
     int loc = (comm.rank() + 1) * 3;
     int glob;
-    auto rq1 = comm.iall_reduce(loc, glob, op::min<int>());
+    auto rq1 = comm.iall_reduce(loc, glob, op::min<>());
     wait(rq1);
 
     int gold = 3;
@@ -1030,7 +1413,12 @@ TEST(MPITest, test_any)
 
         int timeout = 2;
         while (timeout > 0) {
-            if (test_any(reqs)) {
+            if (auto r = test_any(reqs)) {
+                for (int i = 0; i < n; i++) {
+                    if (i != r->index) {
+                        wait(reqs[i]);
+                    }
+                }
                 SUCCEED();
                 return;
             }
@@ -1063,7 +1451,7 @@ TEST(MPITest, test_some)
         for (int i = 0; i < n; i++)
             reqs[i] = comm.irecv(i + 1, tag, vals[i]);
 
-        std::vector<bool> finished(n - 1, false);
+        std::vector<bool> finished(n, false);
         while (true) {
             std::vector<int> indices;
             if (test_some(reqs, indices)) {
@@ -1098,7 +1486,7 @@ TEST(MPITest, wait_some)
         for (int i = 0; i < n; i++)
             reqs[i] = comm.irecv(i + 1, tag, vals[i]);
 
-        std::vector<bool> finished(n - 1, false);
+        std::vector<bool> finished(n, false);
         while (true) {
             std::vector<int> indices;
             if (wait_some(reqs, indices)) {
@@ -1128,12 +1516,12 @@ TEST(MPITest, all_to_all_1)
         return;
 
     std::vector<int> in_vals(comm.size());
-    for (int i = 0; i < in_vals.size(); i++)
+    for (std::size_t i = 0; i < in_vals.size(); i++)
         in_vals[i] = (10 * comm.rank()) + i;
     std::vector<int> out_vals;
     comm.all_to_all(in_vals, out_vals);
 
-    for (int i = 0; i < out_vals.size(); i++)
+    for (std::size_t i = 0; i < out_vals.size(); i++)
         EXPECT_EQ(out_vals[i], (10 * i) + comm.rank());
 }
 
@@ -1156,14 +1544,34 @@ TEST(MPITest, all_to_all_vec)
     std::vector<int> out;
     comm.all_to_all(in_vals, out);
 
-    if (comm.rank() == 0)
+    if (comm.rank() == 0) {
         EXPECT_THAT(out, ElementsAre(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-    else if (comm.rank() == 1)
+    }
+    else if (comm.rank() == 1) {
         EXPECT_THAT(out, ElementsAre(2, 4, 6, 8));
-    else if (comm.rank() == 2)
+    }
+    else if (comm.rank() == 2) {
         EXPECT_THAT(out, ElementsAre(-10, -11, -12, -13, -14, -15, -16, -17));
-    else if (comm.rank() == 3)
+    }
+    else if (comm.rank() == 3) {
         EXPECT_THAT(out, ElementsAre(100, 200));
+    }
+}
+
+TEST(MPITest, iall_to_all)
+{
+    Communicator comm;
+    std::vector<int> send_vals(comm.size());
+    for (int i = 0; i < comm.size(); i++) {
+        send_vals[i] = comm.rank() * 10 + i;
+    }
+    std::vector<int> recv_vals;
+    auto req = comm.iall_to_all(send_vals, recv_vals);
+    wait(req);
+    ASSERT_EQ(recv_vals.size(), comm.size());
+    for (int i = 0; i < comm.size(); i++) {
+        EXPECT_EQ(recv_vals[i], i * 10 + comm.rank());
+    }
 }
 
 TEST(MPITest, split)
@@ -1204,15 +1612,19 @@ TEST(MPITest, scan_single)
     auto rank = comm.rank();
     std::vector<int> size = { 2, 3, 6, 4 };
     int offset = 0;
-    comm.scan(size[rank], offset, op::sum<int>());
-    if (rank == 0)
+    comm.scan(size[rank], offset, op::sum<>());
+    if (rank == 0) {
         EXPECT_EQ(offset, 2);
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_EQ(offset, 5);
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_EQ(offset, 11);
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_EQ(offset, 15);
+    }
 }
 
 TEST(MPITest, scan_array)
@@ -1233,16 +1645,30 @@ TEST(MPITest, scan_array)
         vals = { 4, 7 };
 
     std::vector<int> sum(2, 0);
-    comm.scan(vals, sum, op::sum<int>());
+    comm.scan(vals, sum, op::sum<>());
 
-    if (rank == 0)
+    if (rank == 0) {
         EXPECT_THAT(sum, testing::ElementsAre(2, 3));
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_THAT(sum, testing::ElementsAre(3, 8));
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_THAT(sum, testing::ElementsAre(9, 17));
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_THAT(sum, testing::ElementsAre(13, 24));
+    }
+}
+
+TEST(MPITest, iscan)
+{
+    Communicator comm;
+    int scan_val = 1;
+    int scanned_sum = 0;
+    auto req = comm.iscan(scan_val, scanned_sum, std::plus<int> {});
+    wait(req);
+    EXPECT_EQ(scanned_sum, comm.rank() + 1);
 }
 
 TEST(MPITest, exscan_single)
@@ -1254,15 +1680,19 @@ TEST(MPITest, exscan_single)
     auto rank = comm.rank();
     std::vector<int> size = { 2, 3, 6, 4 };
     int offset = 0;
-    comm.exscan(size[rank], offset, op::sum<int>());
-    if (rank == 0)
+    comm.exscan(size[rank], offset, op::sum<>());
+    if (rank == 0) {
         EXPECT_EQ(offset, 0);
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_EQ(offset, 2);
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_EQ(offset, 5);
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_EQ(offset, 11);
+    }
 }
 
 TEST(MPITest, exscan_array)
@@ -1283,16 +1713,32 @@ TEST(MPITest, exscan_array)
         vals = { 4, 7 };
 
     std::vector<int> sum(2, 0);
-    comm.exscan(vals, sum, op::sum<int>());
+    comm.exscan(vals, sum, op::sum<>());
 
-    if (rank == 0)
+    if (rank == 0) {
         EXPECT_THAT(sum, testing::ElementsAre(0, 0));
-    else if (rank == 1)
+    }
+    else if (rank == 1) {
         EXPECT_THAT(sum, testing::ElementsAre(2, 3));
-    else if (rank == 2)
+    }
+    else if (rank == 2) {
         EXPECT_THAT(sum, testing::ElementsAre(3, 8));
-    else if (rank == 3)
+    }
+    else if (rank == 3) {
         EXPECT_THAT(sum, testing::ElementsAre(9, 17));
+    }
+}
+
+TEST(MPITest, iexscan)
+{
+    Communicator comm;
+    int exscan_val = 1;
+    int exscanned_sum = 0;
+    auto req = comm.iexscan(exscan_val, exscanned_sum, std::plus<int> {});
+    wait(req);
+    if (comm.rank() > 0) {
+        EXPECT_EQ(exscanned_sum, comm.rank());
+    }
 }
 
 //
@@ -1323,5 +1769,55 @@ TEST(MPITest, probe)
         int value;
         comm.recv(0, tag, value);
         EXPECT_EQ(value, 42);
+    }
+}
+
+TEST(MPITest, get_attr_predefined)
+{
+    Communicator comm;
+    auto upper_bound = comm.attr<int>(tag_ub);
+    ASSERT_TRUE(upper_bound.has_value());
+    // See MPI standard, section 7.1.1.1 Tag values
+    EXPECT_GE(upper_bound.value(), 32767);
+}
+
+TEST(MPITest, attributes)
+{
+    Communicator comm;
+
+    auto k1 = Communicator::create_key();
+    int my_value = 1234;
+    comm.set_attr(k1, my_value);
+
+    {
+        auto existing_value = comm.attr<int>(k1);
+        ASSERT_TRUE(existing_value.has_value());
+        EXPECT_EQ(existing_value.value(), 1234);
+    }
+
+    comm.delete_attr(k1);
+    {
+        auto non_existing_value = comm.attr<int>(k1);
+        ASSERT_FALSE(non_existing_value.has_value());
+    }
+
+    // dynamically allocated attribute
+    {
+        auto k2 = Communicator::create_key();
+
+        auto * data = new double[3];
+        data[0] = 1;
+        data[1] = 2;
+        data[2] = 3;
+
+        comm.set_attr(k2, data);
+        auto existing_value = comm.attr<double *>(k2);
+        ASSERT_TRUE(existing_value.has_value());
+        auto d = existing_value.value();
+        EXPECT_DOUBLE_EQ(d[0], 1);
+        EXPECT_DOUBLE_EQ(d[1], 2);
+        EXPECT_DOUBLE_EQ(d[2], 3);
+
+        delete[] data;
     }
 }
