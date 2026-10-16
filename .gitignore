@@ -1,5 +1,6 @@
 /build*
 .DS_Store
-.idea
-.zed
-.vscode
+.idea/
+.zed/
+.vscode/
+.cache/
