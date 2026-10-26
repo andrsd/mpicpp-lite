@@ -796,7 +796,7 @@ struct Operation<Op, T> {
 
     /// Call operator
     ///
-    /// @return MPI operation for logical XOR
+    /// @return MPI operation for replace
     static MPI_Op
     op()
     {
