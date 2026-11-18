@@ -9,6 +9,7 @@
 #include <utility>
 #include <cassert>
 #include <concepts>
+#include <optional>
 #include "Datatype.h"
 #include "Status.h"
 #include "Request.h"

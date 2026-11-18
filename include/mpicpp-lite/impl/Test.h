@@ -5,6 +5,7 @@
 
 #include "mpi.h"
 #include <vector>
+#include <optional>
 #include "Request.h"
 #include "Status.h"
 #include "Error.h"
